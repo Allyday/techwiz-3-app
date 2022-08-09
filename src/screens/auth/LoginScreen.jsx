@@ -1,0 +1,22 @@
+import { StyleSheet, Text, View, Button } from 'react-native';
+
+export default function LoginScreen({ navigation }) {
+  return (
+    <View style={styles.container}>
+      <Text>LoginScreen</Text>
+      <Button
+        title="Go to Home"
+        onPress={() => navigation.replace('Root', { screen: 'Home' })}
+      />
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+});
