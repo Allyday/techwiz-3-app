@@ -14,7 +14,7 @@ const Stack = createNativeStackNavigator();
 const tabBarConfig = {
   ReportCard: { icon: 'flag', label: 'Report Card' },
   Resources: { icon: 'book', label: 'Resources' },
-  Revision: { icon: 'calendar', label: 'Revision' },
+  Revision: { icon: 'calendar-alt', label: 'Revision' },
   Helplines: { icon: 'phone', label: 'Helplines' },
   Marks: { icon: 'list-alt', label: 'Marks' },
   Progress: { icon: 'chalkboard-teacher', label: 'Progress' },
