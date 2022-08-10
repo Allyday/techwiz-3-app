@@ -192,10 +192,7 @@ export default function Resources({ navigation }) {
     { key: 8, title: "Mỹ thuật" },
   ]);
   const [activeColor, setActiveColor] = React.useState(routes[0].key);
-  const [visible, setVisible] = React.useState(false);
 
-  const showModal = () => setVisible(true);
-  const hideModal = () => setVisible(false);
   const containerStyle = {
     backgroundColor: "white",
     height: SCREEN_HEIGHT,
@@ -213,20 +210,6 @@ export default function Resources({ navigation }) {
         initialLayout={{ width: layout.width }}
         renderTabBar={renderTabBar}
       />
-      <Modal
-        visible={visible}
-        onDismiss={hideModal}
-        contentContainerStyle={containerStyle}
-      >
-        {/* <Button style={{ marginTop: 30 }} onPress={hideModal}>
-          Cancel
-        </Button> */}
-        <PDFReader
-          source={{
-            uri: "https://youreflcorner.files.wordpress.com/2016/11/first-certificate-english-1-cambridge-revised-exam-from-2015.pdf",
-          }}
-        />
-      </Modal>
     </>
   );
 }
