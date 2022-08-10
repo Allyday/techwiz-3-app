@@ -4,7 +4,8 @@ import {
   useWindowDimensions,
   StyleSheet,
   ScrollView,
-  Text,
+  TouchableOpacity,
+  Dimensions,
 } from "react-native";
 import {
   TabView,
@@ -13,8 +14,11 @@ import {
   NavigationState,
   SceneRendererProps,
 } from "react-native-tab-view";
-import { List } from "react-native-paper";
+import { List, Modal, Text, Button } from "react-native-paper";
 import { FontAwesome5 } from "@expo/vector-icons";
+import PDFReader from "rn-pdf-reader-js";
+const SCREEN_HEIGHT = Dimensions.get("window").height;
+const SCREEN_WIDTH = Dimensions.get("window").width;
 
 const Data = [
   {
@@ -67,104 +71,163 @@ const Data = [
   },
 ];
 
-const FirstRoute = () => (
-  <ScrollView style={{ paddingVertical: 10, backgroundColor: "#fff" }}>
-    {Data.map((v, k) => (
-      <List.Item
-        key={k}
-        title={v.name}
-        description={() => <Text numberOfLines={1}>{v.link}</Text>}
-        left={() => (
-          <View
-            style={{
-              width: 50,
-              height: 60,
-              justifyContent: "center",
-              alignItems: "center",
-              backgroundColor: "#fff",
-              borderRadius: 5,
-              borderColor: "#cccbd9",
-              borderWidth: 1,
-            }}
-          >
-            <FontAwesome5
-              name={
-                v.type == "pdf"
-                  ? "file-pdf"
-                  : v.type == "video"
-                  ? "file-video"
-                  : "file-word"
+export default function Resources({ navigation }) {
+  const FirstRoute = () => (
+    <ScrollView
+      style={{
+        paddingVertical: 8,
+        backgroundColor: "#fff",
+        paddingHorizontal: 8,
+      }}
+    >
+      {Data.map((v, k) => (
+        <List.Item
+          key={k}
+          title={() => (
+            <Text numberOfLines={1} style={{ fontSize: 16, fontWeight: "800" }}>
+              {v.name}
+            </Text>
+          )}
+          description={() => <Text numberOfLines={1}>{v.link}</Text>}
+          left={() => (
+            <TouchableOpacity
+              onPress={() =>
+                navigation.navigate("ViewPDF", { screen: "ViewPDF" })
               }
-              size={20}
-              color={"#473f97"}
-            />
-          </View>
-        )}
+              style={{
+                width: 50,
+                height: 60,
+                justifyContent: "center",
+                alignItems: "center",
+                backgroundColor: "#fff",
+                borderRadius: 5,
+                borderColor: "#cccbd9",
+                borderWidth: 1,
+              }}
+            >
+              <FontAwesome5
+                name={
+                  v.type == "pdf"
+                    ? "file-pdf"
+                    : v.type == "video"
+                    ? "file-video"
+                    : "file-word"
+                }
+                size={24}
+                color={"#473f97"}
+              />
+            </TouchableOpacity>
+          )}
+          style={{
+            padding: 16,
+            marginVertical: 8,
+            backgroundColor: "#ffd4d4",
+            marginHorizontal: 12,
+            borderRadius: 10,
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        />
+      ))}
+    </ScrollView>
+  );
+
+  const SecondRoute = () => (
+    <View style={{ flex: 1, backgroundColor: "#fff" }} />
+  );
+
+  const renderScene = SceneMap({
+    0: FirstRoute,
+    1: FirstRoute,
+    2: SecondRoute,
+    3: FirstRoute,
+    4: SecondRoute,
+    5: FirstRoute,
+    6: SecondRoute,
+    7: FirstRoute,
+    8: SecondRoute,
+  });
+  const _renderLabel = ({ route }) => {
+    return (
+      <Text
         style={{
-          padding: 15,
-          marginVertical: 5,
-          backgroundColor: "#ffd4d4",
-          marginHorizontal: 12,
-          borderRadius: 15,
-          justifyContent: "center",
-          alignItems: "center",
+          fontSize: 18,
+          fontWeight: "600",
+          color: activeColor == route.key ? "#fd3667" : "#473f97",
         }}
+      >
+        {route.title}
+      </Text>
+    );
+  };
+
+  const renderTabBar = (SceneRendererProps) => (
+    <View style={{ backgroundColor: "#473f97" }}>
+      <TabBar
+        {...SceneRendererProps}
+        renderLabel={_renderLabel}
+        scrollEnabled
+        indicatorStyle={styles.indicator}
+        style={styles.tabbar}
+        tabStyle={styles.tab}
+        labelStyle={styles.label}
+        activeColor={"#fd3667"}
+        onTabPress={(e) => setActiveColor(e.route.key)}
       />
-    ))}
-  </ScrollView>
-);
-
-const SecondRoute = () => <View style={{ flex: 1, backgroundColor: "#fff" }} />;
-
-const renderScene = SceneMap({
-  first: FirstRoute,
-  second1: SecondRoute,
-  first2: FirstRoute,
-  second3: SecondRoute,
-  first4: FirstRoute,
-  second5: SecondRoute,
-  first6: FirstRoute,
-  second7: SecondRoute,
-});
-
-const renderTabBar = (SceneRendererProps) => (
-  <View style={{ backgroundColor: "#473f97" }}>
-    <TabBar
-      {...SceneRendererProps}
-      scrollEnabled
-      indicatorStyle={styles.indicator}
-      style={styles.tabbar}
-      tabStyle={styles.tab}
-      labelStyle={styles.label}
-      activeColor={"#fd3667"}
-      onTabPress={(e) => console.log(e)}
-    />
-  </View>
-);
-export default function Resources() {
+    </View>
+  );
   const layout = useWindowDimensions();
 
   const [index, setIndex] = React.useState(0);
-  const [routes] = React.useState([
-    { key: "first", title: "Toán" },
-    { key: "second1", title: "Lý" },
-    { key: "first2", title: "Hóa" },
-    { key: "second3", title: "Văn" },
-    { key: "first4", title: "Sử" },
-    { key: "second5", title: "Địa" },
-    { key: "first6", title: "GDCD" },
-    { key: "second7", title: "Mỹ thuật" },
-  ]);
 
+  const [routes] = React.useState([
+    { key: 0, title: "All" },
+    { key: 1, title: "Toán" },
+    { key: 2, title: "Lý" },
+    { key: 3, title: "Hóa" },
+    { key: 4, title: "Văn" },
+    { key: 5, title: "Sử" },
+    { key: 6, title: "Địa" },
+    { key: 7, title: "GDCD" },
+    { key: 8, title: "Mỹ thuật" },
+  ]);
+  const [activeColor, setActiveColor] = React.useState(routes[0].key);
+  const [visible, setVisible] = React.useState(false);
+
+  const showModal = () => setVisible(true);
+  const hideModal = () => setVisible(false);
+  const containerStyle = {
+    backgroundColor: "white",
+    height: SCREEN_HEIGHT,
+    width: SCREEN_WIDTH,
+    paddingTop: 16,
+    zIndex: 100,
+  };
   return (
-    <TabView
-      lazy
-      navigationState={{ index, routes }}
-      renderScene={renderScene}
-      onIndexChange={setIndex}
-      initialLayout={{ width: layout.width }}
-      renderTabBar={renderTabBar}
-    />
+    <>
+      <TabView
+        lazy
+        navigationState={{ index, routes }}
+        renderScene={renderScene}
+        onIndexChange={setIndex}
+        initialLayout={{ width: layout.width }}
+        renderTabBar={renderTabBar}
+      />
+      <Modal
+        visible={visible}
+        onDismiss={hideModal}
+        contentContainerStyle={containerStyle}
+      >
+        {/* <Button style={{ marginTop: 30 }} onPress={hideModal}>
+          Cancel
+        </Button> */}
+        <PDFReader
+          source={{
+            uri: "https://youreflcorner.files.wordpress.com/2016/11/first-certificate-english-1-cambridge-revised-exam-from-2015.pdf",
+          }}
+        />
+      </Modal>
+    </>
   );
 }
 
@@ -172,7 +235,7 @@ const styles = StyleSheet.create({
   tabbar: {
     backgroundColor: "#fff",
     elevation: 0,
-    paddingBottom: 10,
+    paddingBottom: 8,
     borderTopEndRadius: 30,
   },
   tab: {
