@@ -6,17 +6,11 @@ import {
   ScrollView,
   TouchableOpacity,
   Dimensions,
-} from "react-native";
-import {
-  TabView,
-  TabBar,
-  SceneMap,
-  NavigationState,
-  SceneRendererProps,
-} from "react-native-tab-view";
-import { List, Modal, Text, Button } from "react-native-paper";
-import { FontAwesome5 } from "@expo/vector-icons";
-import PDFReader from "rn-pdf-reader-js";
+} from 'react-native';
+import { TabView, TabBar, SceneMap } from 'react-native-tab-view';
+import { List, Text, useTheme } from 'react-native-paper';
+import { FontAwesome5 } from '@expo/vector-icons';
+
 const SCREEN_HEIGHT = Dimensions.get("window").height;
 const SCREEN_WIDTH = Dimensions.get("window").width;
 
@@ -72,12 +66,13 @@ const Data = [
 ];
 
 export default function Resources({ navigation }) {
+  const { colors } = useTheme();
   const FirstRoute = () => (
     <ScrollView
       style={{
         paddingVertical: 8,
+        paddingHorizontal: 18,
         backgroundColor: "#fff",
-        paddingHorizontal: 8,
       }}
     >
       {Data.map((v, k) => (
@@ -92,7 +87,7 @@ export default function Resources({ navigation }) {
           left={() => (
             <TouchableOpacity
               onPress={() =>
-                navigation.navigate("ViewPDF", { screen: "ViewPDF" })
+                navigation.navigate("ViewPDF")
               }
               style={{
                 width: 50,
@@ -114,16 +109,15 @@ export default function Resources({ navigation }) {
                     : "file-word"
                 }
                 size={24}
-                color={"#473f97"}
+                color={colors.secondary}
               />
             </TouchableOpacity>
           )}
           style={{
             padding: 16,
-            marginVertical: 8,
-            backgroundColor: "#ffd4d4",
-            marginHorizontal: 12,
-            borderRadius: 10,
+            marginVertical: 6,
+            backgroundColor: colors.lightPink,
+            borderRadius: 12,
             justifyContent: "center",
             alignItems: "center",
           }}
@@ -153,7 +147,7 @@ export default function Resources({ navigation }) {
         style={{
           fontSize: 18,
           fontWeight: "600",
-          color: activeColor == route.key ? "#fd3667" : "#473f97",
+          color: activeColor == route.key ? colors.primary : colors.secondary,
         }}
       >
         {route.title}
@@ -162,7 +156,7 @@ export default function Resources({ navigation }) {
   };
 
   const renderTabBar = (SceneRendererProps) => (
-    <View style={{ backgroundColor: "#473f97" }}>
+    <View style={{ backgroundColor: colors.secondary }}>
       <TabBar
         {...SceneRendererProps}
         renderLabel={_renderLabel}
@@ -171,7 +165,7 @@ export default function Resources({ navigation }) {
         style={styles.tabbar}
         tabStyle={styles.tab}
         labelStyle={styles.label}
-        activeColor={"#fd3667"}
+        activeColor={colors.primary}
         onTabPress={(e) => setActiveColor(e.route.key)}
       />
     </View>
@@ -230,6 +224,5 @@ const styles = StyleSheet.create({
   },
   label: {
     fontWeight: "600",
-    color: "#473f97",
   },
 });
