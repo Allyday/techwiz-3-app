@@ -6,6 +6,7 @@ import { FontAwesome5 } from '@expo/vector-icons';
 
 import HomeScreen from '../screens/home/HomeScreen';
 import Resources from '../screens/Resources/Resources';
+import MarksScreen from '../screens/marks/MarksScreen';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -43,26 +44,20 @@ export default function RootStack() {
     },
     headerTintColor: 'white',
   });
-  const [statusTabBar, setStatusTabBar] = useState(ROLES.STUDENT);
+  const [statusTabBar, setStatusTabBar] = useState(ROLES.TEACHER);
 
   return (
     <Tab.Navigator screenOptions={screenOptions}>
-      {
-        (statusTabBar === ROLES.TEACHER && (
-          <>
-            <Tab.Screen
-              name="Marks"
-              component={MoreStack}
-              options={{ headerShown: false }}
-            />
-            <Tab.Screen
-              name="Progress"
-              component={MoreStack}
-              options={{ headerShown: false }}
-            />
-          </>
-        ))
-      }
+      {statusTabBar === ROLES.TEACHER && (
+        <>
+          <Tab.Screen
+            name="Marks"
+            component={MarkStack}
+            options={{ headerShown: false }}
+          />
+          <Tab.Screen name="Progress" component={HomeScreen} />
+        </>
+      )}
       {[ROLES.STUDENT, ROLES.PARENT].includes(statusTabBar) && (
         <Tab.Screen name="ReportCard" component={HomeScreen} />
       )}
@@ -80,18 +75,23 @@ export default function RootStack() {
   );
 }
 
-function MoreStack() {
+const MarkStack = () => {
+  const { colors } = useTheme();
+
   const screenOptions = ({ route }) => ({
-    headerStyle: { backgroundColor: '#fd3667' },
+    headerStyle: {
+      backgroundColor: colors.secondary,
+      borderBottomStartRadius: 30, // doesnt work??
+    },
     headerTintColor: 'white',
   });
 
   return (
     <Stack.Navigator screenOptions={screenOptions}>
       <Stack.Screen
-        name="MoreScreen"
-        component={HomeScreen}
-        options={{ title: 'More' }}
+        name="MarksScreen"
+        component={MarksScreen}
+        options={{ title: 'Marks' }}
       />
       <Stack.Screen
         name="Account"
@@ -100,4 +100,4 @@ function MoreStack() {
       />
     </Stack.Navigator>
   );
-}
+};
