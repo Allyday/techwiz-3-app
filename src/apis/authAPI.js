@@ -13,10 +13,4 @@ export default {
   verifyOTP: async (payload) => {
     return requests.post(urls.verifyOTP, payload);
   },
-  getClassSubject: async (payload, param) => {
-    return requests.get(urls.getClassSubject, payload);
-  },
-  studyResource: async (payload, param) => {
-    return requests.get(urls.studyResource, payload, param);
-  },
 };
