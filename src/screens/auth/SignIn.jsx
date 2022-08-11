@@ -75,7 +75,7 @@ const SignIn = (props, { navigation }) => {
             label="Email"
             value={email}
             onChangeText={setEmail}
-            autoCapitalize={false}
+            autoCapitalize="none"
           />
           {emailValid && (
             <Text
