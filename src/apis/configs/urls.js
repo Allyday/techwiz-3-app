@@ -19,4 +19,7 @@ export default {
   getPartnerMember: "getPartnerMember",
   /* get-class-subject */
   getClassSubject: "grade/get-class-subject",
+
+  /* studyResource */
+  studyResource: "studyresource",
 };
