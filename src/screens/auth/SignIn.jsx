@@ -1,8 +1,8 @@
-import { StyleSheet, Text, View, Dimensions, SafeAreaView } from "react-native";
-import { SimpleLineIcons } from "@expo/vector-icons";
+import { StyleSheet, Text, View, Dimensions } from "react-native";
 import { useTheme, Button, TextInput } from "react-native-paper";
 import React, { useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+
 import authAPI from "../../apis/authAPI";
 
 const SCREEN_HEIGHT = Dimensions.get("window").height;
@@ -10,7 +10,6 @@ const SCREEN_WIDTH = Dimensions.get("window").width;
 
 const SignIn = (props, { navigation }) => {
   const { colors } = useTheme();
-  const [text, setText] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -54,12 +53,13 @@ const SignIn = (props, { navigation }) => {
         password: password,
       });
       if (resLogin.data.success) {
-        await AsyncStorage.setItem("access", resLogin.data.data.access);
-        await AsyncStorage.setItem(
-          "user",
-          JSON.stringify(resLogin.data.data.user)
-        );
-        await props.navigation.replace("Root", { screen: "Home" });
+        const { access, user} = resLogin.data.data;
+        await AsyncStorage.setItem("access", access);
+        await AsyncStorage.setItem("user", JSON.stringify(user));
+        await props.navigation.replace('Root', {
+          screen: 'Home',
+          role: user.role,
+        });
       } else {
         console.log("sai mật khẩu rồi mày ơi");
       }
@@ -74,7 +74,8 @@ const SignIn = (props, { navigation }) => {
             style={styles.textInput}
             label="Email"
             value={email}
-            onChangeText={(text) => setEmail(text)}
+            onChangeText={setEmail}
+            autoCapitalize={false}
           />
           {emailValid && (
             <Text
@@ -96,11 +97,12 @@ const SignIn = (props, { navigation }) => {
           label="Password"
           value={password}
           secureTextEntry={true}
-          onChangeText={(text) => setPassword(text)}
+          onChangeText={setPassword}
         />
         <Button
           mode="contained"
-          onPress={() => signIn()}
+          uppercase={false}
+          onPress={signIn}
           //   onPress={() => props.navigation.replace("Root", { screen: "Home" })}
           style={{
             borderRadius: 50,
@@ -115,6 +117,7 @@ const SignIn = (props, { navigation }) => {
         <Button
           onPress={() => props.setStatusLogin(1)}
           labelStyle={{ fontSize: 15 }}
+          uppercase={false}
         >
           Forgot password
         </Button>

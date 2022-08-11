@@ -4,7 +4,8 @@ export default function HomeScreen({ navigation }) {
   return (
     <View style={styles.container}>
       <Text>HomeScreen</Text>
-      <Button title="Go to Login" onPress={() => navigation.toggleDrawer()} />
+      <Button title="Go to Login" onPress={() => navigation.replace('Login')} />
+      <Button title="Toggle drawer" onPress={() => navigation.toggleDrawer()} />
     </View>
   );
 }

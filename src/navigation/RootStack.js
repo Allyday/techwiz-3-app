@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from 'react';
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { Colors, useTheme } from "react-native-paper";
@@ -29,8 +29,9 @@ const ROLES = {
   PARENT: "PARENT",
 };
 
-export default function RootStack() {
+export default function RootStack({ route }) {
   const { colors } = useTheme();
+  const { role } = route.params;
 
   const screenOptions = ({ route }) => ({
     title: tabBarConfig[route.name].label,
@@ -51,14 +52,13 @@ export default function RootStack() {
       width: "90%",
     },
   });
-  const [statusTabBar, setStatusTabBar] = useState(ROLES.STUDENT);
 
   return (
     <Tab.Navigator
       screenOptions={screenOptions}
       drawerContent={(props) => <DrawerUser {...props} />}
     >
-      {statusTabBar === ROLES.TEACHER && (
+      {role === ROLES.TEACHER && (
         <>
           <Tab.Screen
             name="Marks"
@@ -68,17 +68,17 @@ export default function RootStack() {
           <Tab.Screen name="Progress" component={HomeScreen} />
         </>
       )}
-      {[ROLES.STUDENT, ROLES.PARENT].includes(statusTabBar) && (
+      {[ROLES.STUDENT, ROLES.PARENT].includes(role) && (
         <Tab.Screen name="ReportCard" component={HomeScreen} />
       )}
-      {[ROLES.STUDENT, ROLES.TEACHER].includes(statusTabBar) && (
+      {[ROLES.STUDENT, ROLES.TEACHER].includes(role) && (
         <>
           <Tab.Screen name="Resources" component={Resources} />
           <Tab.Screen name="Revision" component={HomeScreen} />
         </>
       )}
 
-      {[ROLES.STUDENT, ROLES.PARENT].includes(statusTabBar) && (
+      {[ROLES.STUDENT, ROLES.PARENT].includes(role) && (
         <Tab.Screen name="Helplines" component={HelplinesScreen} />
       )}
     </Tab.Navigator>
