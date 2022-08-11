@@ -1,5 +1,5 @@
-import { StyleSheet, Text, View, Dimensions } from "react-native";
-import { useTheme, Button, TextInput } from "react-native-paper";
+import { StyleSheet, View, Dimensions } from "react-native";
+import { useTheme, Button, HelperText, TextInput } from "react-native-paper";
 import React, { useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -22,30 +22,27 @@ const SignIn = (props, { navigation }) => {
       justifyContent: "space-around",
       borderTopEndRadius: 30,
     },
-    textSignin: {
-      color: "#fff",
-      marginTop: 30,
-      fontSize: 30,
-      fontWeight: "400",
-    },
     textInput: {
       width: SCREEN_WIDTH - 80,
       backgroundColor: "#fff",
     },
   });
-  const [emailValid, setEmailValid] = useState(false);
+  const [emailInvalid, setEmailInvalid] = useState(false);
+  const [wrongPassword, setWrongPassword] = useState(false);
 
   const validateEmail = () => {
     var mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
     if (email.match(mailformat)) {
-      setEmailValid(false);
+      setEmailInvalid(false);
       return true;
     } else {
-      setEmailValid(true);
+      setEmailInvalid(true);
       return false;
     }
   };
+
   const signIn = async () => {
+    setWrongPassword(false)
     const checkEmail = validateEmail();
     if (checkEmail) {
       const resLogin = await authAPI.login({
@@ -53,7 +50,7 @@ const SignIn = (props, { navigation }) => {
         password: password,
       });
       if (resLogin.data.success) {
-        const { access, user} = resLogin.data.data;
+        const { access, user } = resLogin.data.data;
         await AsyncStorage.setItem("access", access);
         await AsyncStorage.setItem("user", JSON.stringify(user));
         await props.navigation.replace('Root', {
@@ -61,6 +58,7 @@ const SignIn = (props, { navigation }) => {
           role: user.role,
         });
       } else {
+        setWrongPassword(true)
         console.log("sai mật khẩu rồi mày ơi");
       }
     }
@@ -77,34 +75,29 @@ const SignIn = (props, { navigation }) => {
             onChangeText={setEmail}
             autoCapitalize="none"
           />
-          {emailValid && (
-            <Text
-              style={{
-                color: "#F1416C",
-                marginLeft: 20,
-                marginTop: 10,
-                width: SCREEN_WIDTH - 80,
-                textAlign: "left",
-              }}
-            >
-              Email không hợp lệ
-            </Text>
-          )}
+          <HelperText type="error" visible={emailInvalid}>
+            Invalid email
+          </HelperText>
         </>
-
-        <TextInput
-          style={styles.textInput}
-          label="Password"
-          value={password}
-          secureTextEntry={true}
-          onChangeText={setPassword}
-        />
+        <>
+          <TextInput
+            style={styles.textInput}
+            label="Password"
+            value={password}
+            secureTextEntry={true}
+            onChangeText={setPassword}
+          />
+          <HelperText type="error" visible={wrongPassword}>
+            Wrong password. Please try again :)
+          </HelperText>
+        </>
         <Button
           mode="contained"
           uppercase={false}
           onPress={signIn}
           //   onPress={() => props.navigation.replace("Root", { screen: "Home" })}
-          style={{
+          style={{ borderRadius: 50, overflow: 'hidden' }}
+          contentStyle={{
             borderRadius: 50,
             width: 300,
             height: 50,
