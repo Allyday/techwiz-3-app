@@ -1,10 +1,13 @@
-import AXIOS from './baseAxios';
+import AXIOS from "./baseAxios";
 
 export default {
-  get: async (route, paramsObj, token) => {
+  get: async (route, token, paramsObj) => {
     let url = route;
     if (paramsObj) url += `?${new URLSearchParams(paramsObj).toString()}`;
-    return AXIOS.get(url, token && { headers: { 'X-Access-Token': token } });
+    return AXIOS.get(
+      url,
+      token && { headers: { Authorization: `Bearer ${token}` } }
+    );
   },
   post: async (route, payload) => {
     return AXIOS.post(route, payload);

@@ -1,4 +1,4 @@
-import { urls, requests } from './configs'
+import { urls, requests } from "./configs";
 
 export default {
   login: async (payload) => {
@@ -13,4 +13,7 @@ export default {
   verifyOTP: async (payload) => {
     return requests.post(urls.verifyOTP, payload);
   },
-}
+  getClassSubject: async (payload) => {
+    return requests.get(urls.getClassSubject, payload);
+  },
+};

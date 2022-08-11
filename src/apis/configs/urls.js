@@ -1,20 +1,22 @@
 export default {
   /* auth */
-  login: 'login',
-  checkMobile: 'check-mobile',
-  requestOTP: 'requestOTP',
-  verifyOTP: 'verifyOTP',
+  login: "auth/login",
+  checkMobile: "check-mobile",
+  requestOTP: "requestOTP",
+  verifyOTP: "verifyOTP",
   /* activity */
-  getBranch: 'getBranch',
-  getAdminActivityReport: 'getAdminActivityReport',
+  getBranch: "getBranch",
+  getAdminActivityReport: "getAdminActivityReport",
   /* sales */
-  getSaleReport: 'getSaleReport',
+  getSaleReport: "getSaleReport",
   /* payment */
-  getPayment: 'getPayment',
+  getPayment: "getPayment",
   /* customer */
-  getProvinceJHL: 'getProvinceJHL',
-  getNameAndRefJHL: 'getNameAndRefJHL',
-  getListCustomerJHL: 'getListCustomerJHL',
+  getProvinceJHL: "getProvinceJHL",
+  getNameAndRefJHL: "getNameAndRefJHL",
+  getListCustomerJHL: "getListCustomerJHL",
   /* member */
-  getPartnerMember: 'getPartnerMember',
+  getPartnerMember: "getPartnerMember",
+  /* get-class-subject */
+  getClassSubject: "grade/get-class-subject",
 };

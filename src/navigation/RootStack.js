@@ -9,6 +9,7 @@ import Resources from "../screens/Resources/Resources";
 import HelplinesScreen from "../screens/helplines/HelplinesScreen";
 import MarksScreen from "../screens/marks/MarksScreen";
 import ClassDetailsScreen from "../screens/marks/ClassDetailsScreen";
+import DrawerUser from "./Drawer";
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -45,11 +46,18 @@ export default function RootStack() {
       borderBottomStartRadius: 30,
     },
     headerTintColor: "white",
+    drawerPosition: "left",
+    drawerStyle: {
+      width: "90%",
+    },
   });
   const [statusTabBar, setStatusTabBar] = useState(ROLES.STUDENT);
 
   return (
-    <Tab.Navigator screenOptions={screenOptions}>
+    <Tab.Navigator
+      screenOptions={screenOptions}
+      drawerContent={(props) => <DrawerUser {...props} />}
+    >
       {statusTabBar === ROLES.TEACHER && (
         <>
           <Tab.Screen
