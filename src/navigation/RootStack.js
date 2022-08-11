@@ -4,11 +4,11 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { Colors, useTheme } from "react-native-paper";
 import { FontAwesome5 } from "@expo/vector-icons";
 
-import HomeScreen from '../screens/home/HomeScreen';
-import Resources from '../screens/Resources/Resources';
+import HomeScreen from "../screens/home/HomeScreen";
+import Resources from "../screens/Resources/Resources";
 import HelplinesScreen from "../screens/helplines/HelplinesScreen";
-import MarksScreen from '../screens/marks/MarksScreen';
-import ClassDetailsScreen from '../screens/marks/ClassDetailsScreen';
+import MarksScreen from "../screens/marks/MarksScreen";
+import ClassDetailsScreen from "../screens/marks/ClassDetailsScreen";
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -46,7 +46,7 @@ export default function RootStack() {
     },
     headerTintColor: "white",
   });
-  const [statusTabBar, setStatusTabBar] = useState(ROLES.TEACHER);
+  const [statusTabBar, setStatusTabBar] = useState(ROLES.STUDENT);
 
   return (
     <Tab.Navigator screenOptions={screenOptions}>
@@ -98,7 +98,7 @@ const MarkStack = () => {
       <Stack.Screen
         name="ClassDetails"
         component={ClassDetailsScreen}
-        options={{ title: 'Class Details' }}
+        options={{ title: "Class Details" }}
       />
     </Stack.Navigator>
   );

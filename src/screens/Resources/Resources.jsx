@@ -6,10 +6,11 @@ import {
   ScrollView,
   TouchableOpacity,
   Dimensions,
-} from 'react-native';
-import { TabView, TabBar, SceneMap } from 'react-native-tab-view';
-import { List, Text, useTheme } from 'react-native-paper';
-import { FontAwesome5 } from '@expo/vector-icons';
+} from "react-native";
+import { TabView, TabBar, SceneMap } from "react-native-tab-view";
+import { List, Text, useTheme, ActivityIndicator } from "react-native-paper";
+import { FontAwesome5 } from "@expo/vector-icons";
+import ContentLoader from "react-native-easy-content-loader";
 
 const SCREEN_HEIGHT = Dimensions.get("window").height;
 const SCREEN_WIDTH = Dimensions.get("window").width;
@@ -64,10 +65,44 @@ const Data = [
     link: "https://shopee.vn/S%C3%A1ch-Chi%E1%BA%BFn-th%E1%BA%AFng-k%C3%AC-thi-9-v%C3%A0o-10-chuy%C3%AAn-m%C3%B4n-V%E1%BA%ADt-L%C3%BD-t%E1%BA%ADp-1-i.17755904.7239258167?sp_atk=1b50e220-588c-443e-8695-bf7560e034af&xptdk=1b50e220-588c-443e-8695-bf7560e034af",
   },
 ];
-
+const DataSubject = [
+  {
+    key: 1,
+    title: "Toán",
+  },
+  {
+    key: 2,
+    title: "Lý",
+  },
+  {
+    key: 3,
+    title: "Hóa",
+  },
+  {
+    key: 4,
+    title: "Văn",
+  },
+  {
+    key: 5,
+    title: "Sử",
+  },
+  {
+    key: 6,
+    title: "Địa",
+  },
+  {
+    key: 7,
+    title: "GDCD",
+  },
+  {
+    key: 8,
+    title: "Mỹ thuật",
+  },
+];
 export default function Resources({ navigation }) {
+  const [routes, setRoutes] = React.useState([]);
   const { colors } = useTheme();
-  const FirstRoute = () => (
+  const SRoute = () => (
     <ScrollView
       style={{
         paddingVertical: 8,
@@ -86,9 +121,7 @@ export default function Resources({ navigation }) {
           description={() => <Text numberOfLines={1}>{v.link}</Text>}
           left={() => (
             <TouchableOpacity
-              onPress={() =>
-                navigation.navigate("ViewPDF")
-              }
+              onPress={() => navigation.navigate("ViewPDF")}
               style={{
                 width: 50,
                 height: 60,
@@ -126,21 +159,25 @@ export default function Resources({ navigation }) {
     </ScrollView>
   );
 
-  const SecondRoute = () => (
-    <View style={{ flex: 1, backgroundColor: "#fff" }} />
-  );
+  const [renderScene, setRenderScene] = React.useState();
+  const [isLoadingRenderScene, setIsLoadingRenderScene] = React.useState(false);
 
-  const renderScene = SceneMap({
-    0: FirstRoute,
-    1: FirstRoute,
-    2: SecondRoute,
-    3: FirstRoute,
-    4: SecondRoute,
-    5: FirstRoute,
-    6: SecondRoute,
-    7: FirstRoute,
-    8: SecondRoute,
-  });
+  React.useEffect(() => {
+    var sce = { 0: SRoute };
+    setTimeout(() => {
+      DataSubject.map((v) => {
+        sce[v.key] = SRoute;
+      });
+      DataSubject.unshift({
+        key: 0,
+        title: "All",
+      });
+      setRenderScene(sce);
+      setRoutes(DataSubject);
+      setIsLoadingRenderScene(true);
+    }, 2000);
+  }, []);
+
   const _renderLabel = ({ route }) => {
     return (
       <Text
@@ -174,18 +211,7 @@ export default function Resources({ navigation }) {
 
   const [index, setIndex] = React.useState(0);
 
-  const [routes] = React.useState([
-    { key: 0, title: "All" },
-    { key: 1, title: "Toán" },
-    { key: 2, title: "Lý" },
-    { key: 3, title: "Hóa" },
-    { key: 4, title: "Văn" },
-    { key: 5, title: "Sử" },
-    { key: 6, title: "Địa" },
-    { key: 7, title: "GDCD" },
-    { key: 8, title: "Mỹ thuật" },
-  ]);
-  const [activeColor, setActiveColor] = React.useState(routes[0].key);
+  const [activeColor, setActiveColor] = React.useState(0);
 
   const containerStyle = {
     backgroundColor: "white",
@@ -196,14 +222,34 @@ export default function Resources({ navigation }) {
   };
   return (
     <>
-      <TabView
-        lazy
-        navigationState={{ index, routes }}
-        renderScene={renderScene}
-        onIndexChange={setIndex}
-        initialLayout={{ width: layout.width }}
-        renderTabBar={renderTabBar}
-      />
+      {isLoadingRenderScene ? (
+        <TabView
+          lazy
+          navigationState={{ index, routes }}
+          renderScene={SceneMap(renderScene)}
+          onIndexChange={setIndex}
+          initialLayout={{ width: layout.width }}
+          renderTabBar={renderTabBar}
+        />
+      ) : (
+        <View
+          style={{
+            paddingRight: 16,
+            backgroundColor: "#fff",
+            marginTop: 10,
+            paddingVertical: 16,
+          }}
+        >
+          <ContentLoader
+            active
+            avatar
+            aSize={60}
+            pRows={1}
+            pWidth={[100]}
+            aShape={"square"}
+          />
+        </View>
+      )}
     </>
   );
 }
