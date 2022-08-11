@@ -8,6 +8,8 @@ import {
 import { useTheme } from 'react-native-paper';
 import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
 
+import AddGradeModal from './components/AddGradeModal';
+import { GradeContextProvider } from './contexts/grade.context';
 import useTermExams from './hooks/useTermExams';
 
 const allExams = [
@@ -17,26 +19,31 @@ const allExams = [
     grades: [
       {
         name: 'Nguyen Tien Duong',
+        id: Math.random().toString(),
         grade: Math.round(Math.random() * 10),
         examDate: new Date(),
       },
       {
         name: 'Tran Hien Anh',
+        id: Math.random().toString(),
         grade: null,
         examDate: new Date(),
       },
       {
         name: 'Giap Van Hien',
+        id: Math.random().toString(),
         grade: Math.round(Math.random() * 10),
         examDate: new Date(),
       },
       {
         name: 'Pham Huy Hoang',
+        id: Math.random().toString(),
         grade: Math.round(Math.random() * 10),
         examDate: new Date(),
       },
       {
         name: 'FPT Aptech',
+        id: Math.random().toString(),
         grade: Math.round(Math.random() * 10),
         examDate: new Date(),
       },
@@ -48,26 +55,31 @@ const allExams = [
     grades: [
       {
         name: 'Nguyen Tien Duong',
+        id: Math.random().toString(),
         grade: Math.round(Math.random() * 10),
         examDate: new Date(),
       },
       {
         name: 'Tran Hien Anh',
+        id: Math.random().toString(),
         grade: Math.round(Math.random() * 10),
         examDate: new Date(),
       },
       {
         name: 'Giap Van Hien',
+        id: Math.random().toString(),
         grade: Math.round(Math.random() * 10),
         examDate: new Date(),
       },
       {
         name: 'Pham Huy Hoang',
+        id: Math.random().toString(),
         grade: null,
         examDate: new Date(),
       },
       {
         name: 'FPT Aptech',
+        id: Math.random().toString(),
         grade: Math.round(Math.random() * 10),
         examDate: new Date(),
       },
@@ -79,26 +91,31 @@ const allExams = [
     grades: [
       {
         name: 'Nguyen Tien Duong',
+        id: Math.random().toString(),
         grade: Math.round(Math.random() * 10),
         examDate: new Date(),
       },
       {
         name: 'Tran Hien Anh',
+        id: Math.random().toString(),
         grade: null,
         examDate: new Date(),
       },
       {
         name: 'Giap Van Hien',
+        id: Math.random().toString(),
         grade: Math.round(Math.random() * 10),
         examDate: new Date(),
       },
       {
         name: 'Pham Huy Hoang',
+        id: Math.random().toString(),
         grade: Math.round(Math.random() * 10),
         examDate: new Date(),
       },
       {
         name: 'FPT Aptech',
+        id: Math.random().toString(),
         grade: null,
         examDate: new Date(),
       },
@@ -110,26 +127,31 @@ const allExams = [
     grades: [
       {
         name: 'Nguyen Tien Duong',
+        id: Math.random().toString(),
         grade: null,
         examDate: new Date(),
       },
       {
         name: 'Tran Hien Anh',
+        id: Math.random().toString(),
         grade: Math.round(Math.random() * 10),
         examDate: new Date(),
       },
       {
         name: 'Giap Van Hien',
+        id: Math.random().toString(),
         grade: Math.round(Math.random() * 10),
         examDate: new Date(),
       },
       {
         name: 'Pham Huy Hoang',
+        id: Math.random().toString(),
         grade: Math.round(Math.random() * 10),
         examDate: new Date(),
       },
       {
         name: 'FPT Aptech',
+        id: Math.random().toString(),
         grade: Math.round(Math.random() * 10),
         examDate: new Date(),
       },
@@ -141,26 +163,31 @@ const allExams = [
     grades: [
       {
         name: 'Nguyen Tien Duong',
+        id: Math.random().toString(),
         grade: null,
         examDate: new Date(),
       },
       {
         name: 'Tran Hien Anh',
+        id: Math.random().toString(),
         grade: null,
         examDate: new Date(),
       },
       {
         name: 'Giap Van Hien',
+        id: Math.random().toString(),
         grade: null,
         examDate: new Date(),
       },
       {
         name: 'Pham Huy Hoang',
+        id: Math.random().toString(),
         grade: null,
         examDate: new Date(),
       },
       {
         name: 'FPT Aptech',
+        id: Math.random().toString(),
         grade: null,
         examDate: new Date(),
       },
@@ -172,26 +199,31 @@ const allExams = [
     grades: [
       {
         name: 'Nguyen Tien Duong',
+        id: Math.random().toString(),
         grade: null,
         examDate: new Date(),
       },
       {
         name: 'Tran Hien Anh',
+        id: Math.random().toString(),
         grade: null,
         examDate: new Date(),
       },
       {
         name: 'Giap Van Hien',
+        id: Math.random().toString(),
         grade: null,
         examDate: new Date(),
       },
       {
         name: 'Pham Huy Hoang',
+        id: Math.random().toString(),
         grade: null,
         examDate: new Date(),
       },
       {
         name: 'FPT Aptech',
+        id: Math.random().toString(),
         grade: null,
         examDate: new Date(),
       },
@@ -203,13 +235,14 @@ export default function ClassDetailsScreen({ route, navigation }) {
   const { colors } = useTheme();
   const layout = useWindowDimensions();
   const { classData, subjectData } = route.params;
+  /* start tab view configs */
   const { TermOne, TermTwo } = useTermExams({ data: allExams });
-
   const [index, setIndex] = useState(0);
   const [routes] = useState([
     { key: 'one', title: 'Term 1' },
     { key: 'two', title: 'Term 2' },
   ]);
+  /* end tab view configs */
 
   /* dynamic header */
   useLayoutEffect(() => {
@@ -241,13 +274,16 @@ export default function ClassDetailsScreen({ route, navigation }) {
   );
 
   return (
-    <TabView
-      navigationState={{ index, routes }}
-      renderScene={renderScene}
-      onIndexChange={setIndex}
-      initialLayout={{ width: layout.width }}
-      renderTabBar={renderTabBar}
-    />
+    <GradeContextProvider>
+      <TabView
+        navigationState={{ index, routes }}
+        renderScene={renderScene}
+        onIndexChange={setIndex}
+        initialLayout={{ width: layout.width }}
+        renderTabBar={renderTabBar}
+      />
+      <AddGradeModal subject={subjectData} />
+    </GradeContextProvider>
   );
 }
 

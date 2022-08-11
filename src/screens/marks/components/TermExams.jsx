@@ -4,22 +4,22 @@ import { List } from 'react-native-paper';
 import StudentGradeItem from './StudentGradeItem';
 
 export default function TermExams({ exams }) {
-  const renderStudentGrade = ({ item }) => {
-    return <StudentGradeItem key={item.name} student={item} />;
-  };
-
   return (
     <List.AccordionGroup>
       {exams.map((exam) => {
-        const studentCount = exam.grades.length;
-        const studentHasGradeCount = exam.grades.filter(
+        exam.studentCount = exam.grades.length;
+        exam.studentHasGradeCount = exam.grades.filter(
           (student) => student.grade !== null
         ).length;
+
+          const renderStudentGrade = ({ item }) => {
+            return <StudentGradeItem key={item.name} student={item} exam={exam}/>;
+          };
 
         return (
           <List.Accordion
             title={exam.name}
-            description={`${studentHasGradeCount} / ${studentCount} completed`}
+            description={`${exam.studentHasGradeCount} / ${exam.studentCount} completed`}
             id={exam.name}
           >
             <FlatList

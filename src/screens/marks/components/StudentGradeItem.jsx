@@ -1,15 +1,26 @@
+import { useContext } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Text, TouchableRipple, useTheme } from 'react-native-paper';
+import { GradeContext } from '../contexts/grade.context';
 
-export default function StudentGradeItem({ student }) {
+export default function StudentGradeItem({ student, exam }) {
   const { colors } = useTheme();
+  const {
+    setGradeModalVisible,
+    setStudent,
+    setExam,
+  } = useContext(GradeContext);
 
   const backgroundColor =
     student.grade !== null ? colors.lightGrey : colors.lightBeige;
   const rippleColor =
     student.grade !== null ? colors.darkGrey : colors.darkBeige;
 
-  const openGradeModal = () => {};
+  const openGradeModal = () => {
+    setStudent(student);
+    setExam(exam);
+    setGradeModalVisible(true)
+  };
 
   return (
     <TouchableRipple
