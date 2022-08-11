@@ -1,13 +1,11 @@
 import { FlatList } from 'react-native';
-import { List, Text } from 'react-native-paper';
+import { List } from 'react-native-paper';
+
+import StudentGradeItem from './StudentGradeItem';
 
 export default function TermExams({ exams }) {
   const renderStudentGrade = ({ item }) => {
-    return (
-      <Text>
-        {item.name}: {item.grade}
-      </Text>
-    );
+    return <StudentGradeItem key={item.name} student={item} />;
   };
 
   return (
@@ -15,7 +13,7 @@ export default function TermExams({ exams }) {
       {exams.map((exam) => {
         const studentCount = exam.grades.length;
         const studentHasGradeCount = exam.grades.filter(
-          (student) => !!student.grade
+          (student) => student.grade !== null
         ).length;
 
         return (
@@ -24,7 +22,11 @@ export default function TermExams({ exams }) {
             description={`${studentHasGradeCount} / ${studentCount} completed`}
             id={exam.name}
           >
-            <FlatList data={exam.grades} renderItem={renderStudentGrade} />
+            <FlatList
+              data={exam.grades}
+              renderItem={renderStudentGrade}
+              contentContainerStyle={{ paddingHorizontal: 12 }}
+            />
           </List.Accordion>
         );
       })}
