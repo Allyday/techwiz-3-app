@@ -1,29 +1,30 @@
-import React, { useState } from 'react';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { Colors, useTheme } from 'react-native-paper';
-import { FontAwesome5 } from '@expo/vector-icons';
+import React, { useState } from "react";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { Colors, useTheme } from "react-native-paper";
+import { FontAwesome5 } from "@expo/vector-icons";
 
-import HomeScreen from '../screens/home/HomeScreen';
-import Resources from '../screens/Resources/Resources';
-import MarksScreen from '../screens/marks/MarksScreen';
+import HomeScreen from "../screens/home/HomeScreen";
+import Resources from "../screens/Resources/Resources";
+import MarksScreen from "../screens/marks/MarksScreen";
+import HelplinesScreen from "../screens/helplines/HelplinesScreen";
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 
 const tabBarConfig = {
-  ReportCard: { icon: 'flag', label: 'Report Card' },
-  Resources: { icon: 'book', label: 'Resources' },
-  Revision: { icon: 'calendar-alt', label: 'Revision' },
-  Helplines: { icon: 'phone', label: 'Helplines' },
-  Marks: { icon: 'list-alt', label: 'Marks' },
-  Progress: { icon: 'chalkboard-teacher', label: 'Progress' },
+  ReportCard: { icon: "flag", label: "Report Card" },
+  Resources: { icon: "book", label: "Resources" },
+  Revision: { icon: "calendar-alt", label: "Revision" },
+  Helplines: { icon: "phone", label: "Helplines" },
+  Marks: { icon: "list-alt", label: "Marks" },
+  Progress: { icon: "chalkboard-teacher", label: "Progress" },
 };
 
 const ROLES = {
-  STUDENT: 'STUDENT',
-  TEACHER: 'TEACHER',
-  PARENT: 'PARENT',
+  STUDENT: "STUDENT",
+  TEACHER: "TEACHER",
+  PARENT: "PARENT",
 };
 
 export default function RootStack() {
@@ -42,9 +43,9 @@ export default function RootStack() {
       backgroundColor: colors.secondary,
       borderBottomStartRadius: 30,
     },
-    headerTintColor: 'white',
+    headerTintColor: "white",
   });
-  const [statusTabBar, setStatusTabBar] = useState(ROLES.TEACHER);
+  const [statusTabBar, setStatusTabBar] = useState(ROLES.STUDENT);
 
   return (
     <Tab.Navigator screenOptions={screenOptions}>
@@ -69,7 +70,7 @@ export default function RootStack() {
       )}
 
       {[ROLES.STUDENT, ROLES.PARENT].includes(statusTabBar) && (
-        <Tab.Screen name="Helplines" component={HomeScreen} />
+        <Tab.Screen name="Helplines" component={HelplinesScreen} />
       )}
     </Tab.Navigator>
   );
@@ -83,7 +84,7 @@ const MarkStack = () => {
       backgroundColor: colors.secondary,
       borderBottomStartRadius: 30, // doesnt work??
     },
-    headerTintColor: 'white',
+    headerTintColor: "white",
   });
 
   return (
@@ -91,12 +92,12 @@ const MarkStack = () => {
       <Stack.Screen
         name="MarksScreen"
         component={MarksScreen}
-        options={{ title: 'Marks' }}
+        options={{ title: "Marks" }}
       />
       <Stack.Screen
         name="Account"
         component={HomeScreen}
-        options={{ title: 'Account' }}
+        options={{ title: "Account" }}
       />
     </Stack.Navigator>
   );
