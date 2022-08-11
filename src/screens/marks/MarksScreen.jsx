@@ -66,6 +66,12 @@ export default function MarksScreen({ navigation }) {
       <List.Item
         key={item.id}
         title={item.name}
+        onPress={() =>
+          navigation.navigate('ClassDetails', {
+            classData: item,
+            subjectData: subject,
+          })
+        }
         style={{ ...styles.classItem, backgroundColor: colors.lightBlue }}
         right={(props) => <List.Icon {...props} icon="chevron-right" />}
       />
