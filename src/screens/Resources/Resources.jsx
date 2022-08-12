@@ -14,6 +14,7 @@ import ContentLoader from "react-native-easy-content-loader";
 import subjectAPI from "../../apis/subjectAPI";
 import resourceAPI from "../../apis/resourceAPI";
 import { useToken } from "../../hooks/useToken";
+import AddResourcesButton from "./components/AddResourcesButton";
 
 export default function Resources({ navigation }) {
   const [routes, setRoutes] = React.useState([]);
@@ -276,6 +277,7 @@ export default function Resources({ navigation }) {
           />
         </View>
       )}
+      <AddResourcesButton />
     </>
   );
 }
