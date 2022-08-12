@@ -5,6 +5,8 @@ import {
   StyleSheet,
   FlatList,
   TouchableOpacity,
+  Dimensions,
+  Image,
 } from "react-native";
 import { TabView, TabBar } from "react-native-tab-view";
 import { List, Text, useTheme } from "react-native-paper";
@@ -15,6 +17,7 @@ import subjectAPI from "../../apis/subjectAPI";
 import resourceAPI from "../../apis/resourceAPI";
 import { useToken } from "../../hooks/useToken";
 import AddResourcesButton from "./components/AddResourcesButton";
+import CustomVideo from "./components/CustomVideo";
 
 export default function Resources({ navigation }) {
   const [routes, setRoutes] = React.useState([]);
@@ -24,7 +27,102 @@ export default function Resources({ navigation }) {
   };
 
   const renderData = (value) => {
-    return (
+    return value.item.type == "MP4" ? (
+      <View
+        style={{
+          padding: 16,
+          marginVertical: 6,
+          backgroundColor: colors.lightPink,
+          borderRadius: 12,
+          justifyContent: "center",
+          alignItems: "center",
+          width: "100%",
+        }}
+      >
+        <CustomVideo
+          videoStyle={{
+            width: Dimensions.get("window").width - 80,
+            height: 100,
+            borderRadius: 6,
+            marginBottom: 20,
+          }}
+          source={{
+            uri: "http://techslides.com/demos/sample-videos/small.mp4",
+          }}
+          posterSource={undefined}
+          autoPlay={false}
+        />
+        <Text
+          numberOfLines={1}
+          style={{
+            fontSize: 16,
+            fontWeight: "800",
+            textAlign: "left",
+            width: "100%",
+          }}
+        >
+          {value.item.name}
+        </Text>
+        <Text
+          numberOfLines={1}
+          style={{
+            fontSize: 16,
+            fontWeight: "400",
+            textAlign: "left",
+            width: "100%",
+          }}
+        >
+          {value.item.link}
+        </Text>
+      </View>
+    ) : value.item.type == "IMAGE" ? (
+      <View
+        style={{
+          padding: 16,
+          marginVertical: 6,
+          backgroundColor: colors.lightPink,
+          borderRadius: 12,
+          justifyContent: "center",
+          alignItems: "center",
+          width: "100%",
+        }}
+      >
+        <Image
+          style={{
+            width: 50,
+            height: 100,
+            borderRadius: 10,
+            zIndex: 100,
+            marginBottom: 20,
+          }}
+          source={{
+            uri: value.item.link,
+          }}
+        />
+        <Text
+          numberOfLines={1}
+          style={{
+            fontSize: 16,
+            fontWeight: "800",
+            textAlign: "left",
+            width: "100%",
+          }}
+        >
+          {value.item.name}
+        </Text>
+        <Text
+          numberOfLines={1}
+          style={{
+            fontSize: 16,
+            fontWeight: "400",
+            textAlign: "left",
+            width: "100%",
+          }}
+        >
+          {value.item.link}
+        </Text>
+      </View>
+    ) : (
       <List.Item
         title={() => (
           <Text numberOfLines={1} style={{ fontSize: 16, fontWeight: "800" }}>
@@ -48,10 +146,12 @@ export default function Resources({ navigation }) {
           >
             <FontAwesome5
               name={
-                value.item.type == "pdf"
+                value.item.type == "PDF"
                   ? "file-pdf"
-                  : value.item.type == "video"
+                  : value.item.type == "MP4"
                   ? "file-video"
+                  : value.item.type == "IMAGE"
+                  ? "file-image"
                   : "file-word"
               }
               size={24}
@@ -78,10 +178,9 @@ export default function Resources({ navigation }) {
       let params = {
         page: dem,
         limit: 10,
-        subjectId: "",
       };
       if (subjectId != 0) {
-        params.subjectId = subjectId;
+        params.subject_id = subjectId;
       }
       setIsFetchingNextPage(true);
       const resStudyResource = await resourceAPI.studyResource(token, params);
@@ -129,14 +228,38 @@ export default function Resources({ navigation }) {
         backgroundColor: "#fff",
       }}
     >
-      <FlatList
-        data={resources}
-        keyExtractor={gameItemExtractorKey}
-        renderItem={renderData}
-        onEndReached={loadMore}
-        onEndReachedThreshold={0.1}
-        ListFooterComponent={renderSpinner}
-      />
+      {resources.length > 0 ? (
+        resources[0] == "No resources" ? (
+          <Text>{resources[0]}</Text>
+        ) : (
+          <FlatList
+            data={resources}
+            keyExtractor={gameItemExtractorKey}
+            renderItem={renderData}
+            onEndReached={loadMore}
+            onEndReachedThreshold={0.1}
+            ListFooterComponent={renderSpinner}
+          />
+        )
+      ) : (
+        <View
+          style={{
+            paddingRight: 16,
+            backgroundColor: "#fff",
+            marginTop: 10,
+            paddingVertical: 16,
+          }}
+        >
+          <ContentLoader
+            active
+            avatar
+            aSize={60}
+            pRows={1}
+            pWidth={[100]}
+            aShape={"square"}
+          />
+        </View>
+      )}
     </View>
   );
 
@@ -153,7 +276,6 @@ export default function Resources({ navigation }) {
       let params = {
         page: 1,
         limit: 10,
-        subjectId: "",
       };
       const resGetSubject = await subjectAPI.getSubject(token);
       if (resGetSubject.data.payload.length > 0) {
@@ -193,28 +315,30 @@ export default function Resources({ navigation }) {
         indicatorStyle={styles.indicator}
         style={styles.tabbar}
         tabStyle={styles.tab}
-        labelStyle={[styles.label, {color: colors.secondary, textTransform: 'none' }]}
+        labelStyle={[
+          styles.label,
+          { color: colors.secondary, textTransform: "none" },
+        ]}
         activeColor={colors.primary}
         onTabPress={async (e) => {
-          console.log("thua");
+          setDsResources([]);
           let params = {
             page: 1,
             limit: 10,
-            subjectId: e.route.key,
           };
-          console.log(params);
+          if (e.route.key != 0) {
+            params.subject_id = e.route.key;
+          }
           const resStudyResource = await resourceAPI.studyResource(
             token,
             params
           );
           if (resStudyResource.data.data.length > 0) {
             const { data, page_info } = resStudyResource.data;
-            if (page_info.total <= 10) {
-              setIsFetchingNextPage(false);
-            }
             setDsResources(data);
             setTotalCount(page_info.total);
           } else {
+            setDsResources(["No resources"]);
             console.log("sai mật khẩu rồi mày ơi");
           }
         }}
@@ -275,7 +399,7 @@ const styles = StyleSheet.create({
     borderTopEndRadius: 30,
   },
   tab: {
-    width: 'auto',
+    width: "auto",
     borderBottomColor: "#fff",
   },
   indicator: {

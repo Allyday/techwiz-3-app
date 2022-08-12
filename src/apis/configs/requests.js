@@ -4,6 +4,7 @@ export default {
   get: async (route, token, paramsObj) => {
     let url = route;
     if (paramsObj) url += `?${new URLSearchParams(paramsObj).toString()}`;
+    console.log(url);
     return AXIOS.get(
       url,
       token && { headers: { Authorization: `Bearer ${token}` } }

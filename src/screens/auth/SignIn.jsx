@@ -11,8 +11,23 @@ const SCREEN_WIDTH = Dimensions.get("window").width;
 
 const SignIn = (props, { navigation }) => {
   const { colors } = useTheme();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("teacher1@gmail.com");
+  const [password, setPassword] = useState("admin");
+
+  const styles = StyleSheet.create({
+    viewInput: {
+      backgroundColor: "#fff",
+      width: "100%",
+      height: SCREEN_HEIGHT / 2,
+      alignItems: "center",
+      justifyContent: "space-around",
+      borderTopEndRadius: 30,
+    },
+    textInput: {
+      width: SCREEN_WIDTH - 80,
+      backgroundColor: "#fff",
+    },
+  });
   const [emailInvalid, setEmailInvalid] = useState(false);
   const [wrongPassword, setWrongPassword] = useState(false);
   const [token, setToken] = useToken();
@@ -37,18 +52,18 @@ const SignIn = (props, { navigation }) => {
         if (resLogin.data.success) {
           const { access, user } = resLogin.data.data;
           setToken(access);
-          await AsyncStorage.setItem('access', access);
-          await AsyncStorage.setItem('user', JSON.stringify(user));
-          await props.navigation.replace('Root', {
-            screen: 'Home',
+          await AsyncStorage.setItem("access", access);
+          await AsyncStorage.setItem("user", JSON.stringify(user));
+          await props.navigation.replace("Root", {
+            screen: "Home",
             role: user.role,
           });
         } else {
-          throw new Error('Wrong password');
+          throw new Error("Wrong password");
         }
       } catch (error) {
         setWrongPassword(true);
-        console.log('sai mật khẩu rồi mày ơi');
+        console.log("sai mật khẩu rồi mày ơi");
       }
     }
   };
@@ -85,7 +100,7 @@ const SignIn = (props, { navigation }) => {
           uppercase={false}
           onPress={signIn}
           //   onPress={() => props.navigation.replace("Root", { screen: "Home" })}
-          style={{ borderRadius: 50, overflow: 'hidden' }}
+          style={{ borderRadius: 50, overflow: "hidden" }}
           contentStyle={{
             borderRadius: 50,
             width: 300,
@@ -114,16 +129,16 @@ const SignIn = (props, { navigation }) => {
 
 const styles = StyleSheet.create({
   viewInput: {
-    backgroundColor: '#fff',
-    width: '100%',
+    backgroundColor: "#fff",
+    width: "100%",
     height: SCREEN_HEIGHT / 2,
-    alignItems: 'center',
-    justifyContent: 'space-around',
+    alignItems: "center",
+    justifyContent: "space-around",
     borderTopEndRadius: 30,
   },
   textInput: {
     width: SCREEN_WIDTH - 80,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
   },
 });
 
