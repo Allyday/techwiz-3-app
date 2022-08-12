@@ -10,7 +10,11 @@ export default {
       token && { headers: { Authorization: `Bearer ${token}` } }
     );
   },
-  post: async (route, payload) => {
-    return AXIOS.post(route, payload);
+  post: async (route, payload, token) => {
+    return AXIOS.post(
+      route,
+      payload,
+      token && { headers: { Authorization: `Bearer ${token}` } }
+    );
   },
 };
