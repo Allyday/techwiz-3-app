@@ -7,4 +7,7 @@ export default {
   getClassSubject: async (payload, param) => {
     return requests.get(urls.getClassSubject, payload, param);
   },
+  getSubject: async (payload) => {
+    return requests.get(urls.getSubject, payload);
+  },
 };

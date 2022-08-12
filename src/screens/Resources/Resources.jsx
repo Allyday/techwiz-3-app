@@ -6,7 +6,7 @@ import {
   FlatList,
   TouchableOpacity,
 } from "react-native";
-import { TabView, TabBar, SceneMap } from "react-native-tab-view";
+import { TabView, TabBar } from "react-native-tab-view";
 import { List, Text, useTheme } from "react-native-paper";
 import { FontAwesome5 } from "@expo/vector-icons";
 import ContentLoader from "react-native-easy-content-loader";
@@ -71,6 +71,7 @@ export default function Resources({ navigation }) {
   };
 
   const loadMore = async () => {
+    if (isFetchingNextPage) return;
     // console.log(dem);
     if (dsResources.length < totalCount) {
       let params = {
@@ -78,73 +79,70 @@ export default function Resources({ navigation }) {
         limit: 10,
         subjectId: "",
       };
-      if (activeColor != 0) {
-        params.subjectId = activeColor;
+      if (subjectId != 0) {
+        params.subjectId = subjectId;
       }
+      setIsFetchingNextPage(true);
       const resStudyResource = await resourceAPI.studyResource(token, params);
       if (resStudyResource.data.data.length > 0) {
-        const { data, page_info } = resStudyResource.data;
-        setDsResources(data);
-        setTotalCount(page_info.total);
+        const { data } = resStudyResource.data;
+        setDsResources(dsResources.concat(data));
+        console.log(totalCount);
       } else {
         console.log("sai mật khẩu rồi mày ơi");
       }
       var de = dem + 1;
       setDem(de);
     }
+    setIsFetchingNextPage(false);
   };
 
   const renderSpinner = () => {
-    if (dsNotes.features.length == totalCount) {
-      setIsFetchingNextPage(false);
-    }
+    if (!isFetchingNextPage) return null;
     return (
-      <>
-        <View
-          style={{
-            paddingRight: 16,
-            backgroundColor: "#fff",
-            marginTop: 10,
-            paddingVertical: 16,
-          }}
-        >
-          <ContentLoader
-            active
-            avatar
-            aSize={140}
-            pRows={4}
-            pWidth={[100]}
-            aShape={"square"}
-          />
-        </View>
-      </>
+      <View
+        style={{
+          paddingRight: 16,
+          backgroundColor: "#fff",
+          marginTop: 10,
+          paddingVertical: 16,
+        }}
+      >
+        <ContentLoader
+          active
+          avatar
+          aSize={60}
+          pRows={1}
+          pWidth={[100]}
+          aShape={"square"}
+        />
+      </View>
     );
   };
 
-  const SRoute = () => (
-    <>
-      {/* <ScrollView
-        style={{
-          paddingVertical: 8,
-          paddingHorizontal: 18,
-          backgroundColor: "#fff",
-        }}
-      ></ScrollView> */}
+  const SRoute = ({ resources }) => (
+    <View
+      style={{
+        paddingVertical: 8,
+        paddingHorizontal: 24,
+        backgroundColor: "#fff",
+      }}
+    >
       <FlatList
-        data={dsResources}
+        data={resources}
         keyExtractor={gameItemExtractorKey}
         renderItem={renderData}
         onEndReached={loadMore}
         onEndReachedThreshold={0.1}
-        ListFooterComponent={isFetchingNextPage ? renderSpinner : null}
+        ListFooterComponent={renderSpinner}
       />
-    </>
+    </View>
   );
 
-  const [renderScene, setRenderScene] = React.useState();
+  const [sceneMap, setSceneMap] = React.useState();
   const [isLoadingRenderScene, setIsLoadingRenderScene] = React.useState(false);
-  const [dem, setDem] = React.useState(1);
-  const [isFetchingNextPage, setIsFetchingNextPage] = React.useState(true);
+  const [dem, setDem] = React.useState(2);
+  const [isFetchingNextPage, setIsFetchingNextPage] = React.useState(false);
   const [totalCount, setTotalCount] = React.useState(0);
   const [dsResources, setDsResources] = React.useState([]);
   const [token] = useToken();
@@ -156,38 +154,31 @@ export default function Resources({ navigation }) {
         limit: 10,
         subjectId: "",
       };
-      const resGetClassSubject = await subjectAPI.getClassSubject(token);
-      if (resGetClassSubject.data.payload.length > 0) {
+      const resGetSubject = await subjectAPI.getSubject(token);
+      if (resGetSubject.data.payload.length > 0) {
         var dsMonHoc = [
           {
             key: 0,
             title: "All",
           },
         ];
-        var sce = { 0: SRoute };
-        resGetClassSubject.data.payload.map((v) => {
+        const sceneMapObj = { 0: SRoute };
+        resGetSubject.data.payload.map((subject) => {
           dsMonHoc.push({
-            key: v.subject.id,
-            title: v.subject.name,
+            key: subject.id,
+            title: subject.name,
           });
-          sce[v.subject.id] = SRoute;
+          sceneMapObj[subject.id] = SRoute;
         });
-        setRenderScene(sce);
+        setSceneMap(sceneMapObj);
         setRoutes(dsMonHoc);
-        const resStudyResource = await resourceAPI.studyResource(
-          token,
-          params
-        );
-        if (resStudyResource.data.data.length > 0) {
-          const { data, page_info } = resStudyResource.data;
-          setDsResources(data);
-          setTotalCount(page_info.total);
-          setIsLoadingRenderScene(true);
-        } else {
-          console.log("sai mật khẩu rồi mày ơi res");
-        }
+        const resStudyResource = await resourceAPI.studyResource(token, params);
+        const { data, page_info } = resStudyResource.data;
+        setDsResources(data);
+        setTotalCount(page_info.total);
+        setIsLoadingRenderScene(true);
       } else {
-        console.log("sai mật khẩu rồi mày ơi subj");
+        console.log("Lỗi subj");
       }
     };
     getData();
@@ -199,7 +190,7 @@ export default function Resources({ navigation }) {
         style={{
           fontSize: 18,
           fontWeight: "600",
-          color: activeColor == route.key ? colors.primary : colors.secondary,
+          color: subjectId == route.key ? colors.primary : colors.secondary,
         }}
       >
         {route.title}
@@ -218,7 +209,29 @@ export default function Resources({ navigation }) {
         tabStyle={styles.tab}
         labelStyle={styles.label}
         activeColor={colors.primary}
-        onTabPress={(e) => setActiveColor(e.route.key)}
+        onTabPress={async (e) => {
+          console.log("thua");
+          let params = {
+            page: 1,
+            limit: 10,
+            subjectId: e.route.key,
+          };
+          console.log(params);
+          const resStudyResource = await resourceAPI.studyResource(
+            token,
+            params
+          );
+          if (resStudyResource.data.data.length > 0) {
+            const { data, page_info } = resStudyResource.data;
+            if (page_info.total <= 10) {
+              setIsFetchingNextPage(false);
+            }
+            setDsResources(data);
+            setTotalCount(page_info.total);
+          } else {
+            console.log("sai mật khẩu rồi mày ơi");
+          }
+        }}
       />
     </View>
   );
@@ -226,7 +239,12 @@ export default function Resources({ navigation }) {
 
   const [index, setIndex] = React.useState(0);
 
-  const [activeColor, setActiveColor] = React.useState(0);
+  const [subjectId, setsubjectId] = React.useState(0);
+
+  const renderSceneFnc = ({ route }) => {
+    const RenderedRoute = sceneMap[route.key];
+    return <RenderedRoute resources={dsResources} />;
+  };
 
   return (
     <>
@@ -234,7 +252,7 @@ export default function Resources({ navigation }) {
         <TabView
           lazy
           navigationState={{ index, routes }}
-          renderScene={SceneMap(renderScene)}
+          renderScene={renderSceneFnc}
           onIndexChange={setIndex}
           initialLayout={{ width: layout.width }}
           renderTabBar={renderTabBar}
