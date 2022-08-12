@@ -1,4 +1,11 @@
-import { StyleSheet, Text, View, Dimensions, SafeAreaView } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  Dimensions,
+  SafeAreaView,
+  Image,
+} from "react-native";
 import { SimpleLineIcons } from "@expo/vector-icons";
 import { useTheme, Button, TextInput } from "react-native-paper";
 import React, { useState } from "react";
@@ -54,10 +61,12 @@ const LoginScreen = ({ navigation }) => {
     <SafeAreaView style={styles.container}>
       <View>
         <View style={styles.viewLogo}>
-          <SimpleLineIcons
-            name="graduation"
-            size={150}
-            color={colors.primary}
+          <Image
+            style={{
+              width: 280,
+              height: 150,
+            }}
+            source={require("../../assets/adaptive-icon.png")}
           />
           <Text style={styles.textLogo}>SMART Study</Text>
           <Text style={styles.textSignin}>Sign In</Text>
