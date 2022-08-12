@@ -185,30 +185,15 @@ export default function Resources({ navigation }) {
     getData();
   }, []);
 
-  const _renderLabel = ({ route }) => {
-    return (
-      <Text
-        style={{
-          fontSize: 18,
-          fontWeight: "600",
-          color: subjectId == route.key ? colors.primary : colors.secondary,
-        }}
-      >
-        {route.title}
-      </Text>
-    );
-  };
-
   const renderTabBar = (SceneRendererProps) => (
     <View style={{ backgroundColor: colors.secondary }}>
       <TabBar
         {...SceneRendererProps}
-        renderLabel={_renderLabel}
         scrollEnabled
         indicatorStyle={styles.indicator}
         style={styles.tabbar}
         tabStyle={styles.tab}
-        labelStyle={styles.label}
+        labelStyle={[styles.label, {color: colors.secondary, textTransform: 'none' }]}
         activeColor={colors.primary}
         onTabPress={async (e) => {
           console.log("thua");
@@ -290,7 +275,7 @@ const styles = StyleSheet.create({
     borderTopEndRadius: 30,
   },
   tab: {
-    width: 100,
+    width: 'auto',
     borderBottomColor: "#fff",
   },
   indicator: {
