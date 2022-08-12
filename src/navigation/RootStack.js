@@ -11,6 +11,8 @@ import MarksScreen from "../screens/marks/MarksScreen";
 import ClassDetailsScreen from "../screens/marks/ClassDetailsScreen";
 import DrawerUser from "./Drawer";
 import RevisionScreen from "../screens/revision/RevisionScreen";
+import SettingsScreen from "../screens/settings/SettingsScreen";
+import FeedbackScreen from "../screens/settings/FeedbackScreen";
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -22,6 +24,7 @@ const tabBarConfig = {
   Helplines: { icon: "phone", label: "Helplines" },
   Marks: { icon: "list-alt", label: "Marks" },
   Progress: { icon: "chalkboard-teacher", label: "Progress" },
+  Settings: { icon: 'cog', label: 'Settings' },
 };
 
 const ROLES = {
@@ -82,6 +85,11 @@ export default function RootStack({ route }) {
       {[ROLES.STUDENT, ROLES.PARENT].includes(role) && (
         <Tab.Screen name="Helplines" component={HelplinesScreen} />
       )}
+      <Tab.Screen
+        name="Settings"
+        component={SettingsStack}
+        options={{ headerShown: false }}
+      />
     </Tab.Navigator>
   );
 }
@@ -108,6 +116,32 @@ const MarkStack = () => {
         name="ClassDetails"
         component={ClassDetailsScreen}
         options={{ title: "Class Details" }}
+      />
+    </Stack.Navigator>
+  );
+};
+
+const SettingsStack = () => {
+  const { colors } = useTheme();
+
+  const screenOptions = ({ route }) => ({
+    headerStyle: {
+      backgroundColor: colors.secondary,
+      borderBottomStartRadius: 30, // doesnt work??
+    },
+    headerTintColor: "white",
+  });
+
+  return (
+    <Stack.Navigator screenOptions={screenOptions}>
+      <Stack.Screen
+        name="SettingsScreen"
+        component={SettingsScreen}
+        options={{ title: "Settings" }}
+      />
+      <Stack.Screen
+        name="Feedback"
+        component={FeedbackScreen}
       />
     </Stack.Navigator>
   );
