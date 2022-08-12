@@ -18,6 +18,7 @@ import resourceAPI from "../../apis/resourceAPI";
 import { useToken } from "../../hooks/useToken";
 import AddResourcesButton from "./components/AddResourcesButton";
 import CustomVideo from "./components/CustomVideo";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function Resources({ navigation }) {
   const [routes, setRoutes] = React.useState([]);
@@ -42,12 +43,12 @@ export default function Resources({ navigation }) {
         <CustomVideo
           videoStyle={{
             width: Dimensions.get("window").width - 80,
-            height: 100,
+            height: 150,
             borderRadius: 6,
             marginBottom: 20,
           }}
           source={{
-            uri: "http://techslides.com/demos/sample-videos/small.mp4",
+            uri: value.item.link,
           }}
           posterSource={undefined}
           autoPlay={false}
@@ -89,8 +90,8 @@ export default function Resources({ navigation }) {
       >
         <Image
           style={{
-            width: 50,
-            height: 100,
+            width: Dimensions.get("window").width - 80,
+            height: 150,
             borderRadius: 10,
             zIndex: 100,
             marginBottom: 20,
@@ -269,10 +270,16 @@ export default function Resources({ navigation }) {
   const [isFetchingNextPage, setIsFetchingNextPage] = React.useState(false);
   const [totalCount, setTotalCount] = React.useState(0);
   const [dsResources, setDsResources] = React.useState([]);
+  const [role, setRole] = React.useState("");
+
   const [token] = useToken();
 
   React.useEffect(() => {
     const getData = async () => {
+      const savedUser = await AsyncStorage.getItem("user");
+      const user = JSON.parse(savedUser);
+      console.log(user);
+      setRole(user.role);
       let params = {
         page: 1,
         limit: 10,
@@ -386,7 +393,7 @@ export default function Resources({ navigation }) {
           />
         </View>
       )}
-      <AddResourcesButton />
+      {role == "TEACHER" && <AddResourcesButton />}
     </>
   );
 }
