@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import authAPI from "../../apis/authAPI";
+import { useToken } from "../../hooks/useToken";
 
 const SCREEN_HEIGHT = Dimensions.get("window").height;
 const SCREEN_WIDTH = Dimensions.get("window").width;
@@ -12,23 +13,9 @@ const SignIn = (props, { navigation }) => {
   const { colors } = useTheme();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
-  const styles = StyleSheet.create({
-    viewInput: {
-      backgroundColor: "#fff",
-      width: "100%",
-      height: SCREEN_HEIGHT / 2,
-      alignItems: "center",
-      justifyContent: "space-around",
-      borderTopEndRadius: 30,
-    },
-    textInput: {
-      width: SCREEN_WIDTH - 80,
-      backgroundColor: "#fff",
-    },
-  });
   const [emailInvalid, setEmailInvalid] = useState(false);
   const [wrongPassword, setWrongPassword] = useState(false);
+  const [token, setToken] = useToken();
 
   const validateEmail = () => {
     var mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
@@ -49,6 +36,7 @@ const SignIn = (props, { navigation }) => {
         const resLogin = await authAPI.login({ email, password });
         if (resLogin.data.success) {
           const { access, user } = resLogin.data.data;
+          setToken(access);
           await AsyncStorage.setItem('access', access);
           await AsyncStorage.setItem('user', JSON.stringify(user));
           await props.navigation.replace('Root', {
@@ -123,5 +111,20 @@ const SignIn = (props, { navigation }) => {
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  viewInput: {
+    backgroundColor: '#fff',
+    width: '100%',
+    height: SCREEN_HEIGHT / 2,
+    alignItems: 'center',
+    justifyContent: 'space-around',
+    borderTopEndRadius: 30,
+  },
+  textInput: {
+    width: SCREEN_WIDTH - 80,
+    backgroundColor: '#fff',
+  },
+});
 
 export default SignIn;

@@ -5,6 +5,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { useToken } from './hooks/useToken';
 import RootStack from './navigation/RootStack';
+import SplashScreen from './screens/auth/SplashScreen';
 import LoginScreen from './screens/auth/LoginScreen';
 import ViewPDF from './screens/viewPDF/ViewPDF';
 
@@ -25,6 +26,11 @@ export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator>
+        <Stack.Screen
+          name="Splash"
+          component={SplashScreen}
+          options={{ headerShown: false }}
+        />
         <Stack.Screen
           name="Login"
           component={LoginScreen}
