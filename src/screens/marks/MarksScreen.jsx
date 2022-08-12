@@ -78,6 +78,7 @@ export default function MarksScreen({ navigation }) {
       <List.Item
         key={item.id}
         title={item.name}
+        rippleColor={colors.darkBlue}
         onPress={() =>
           navigation.navigate('ClassDetails', { classSubject: item })
         }
