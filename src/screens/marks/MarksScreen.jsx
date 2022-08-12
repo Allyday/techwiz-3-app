@@ -1,48 +1,60 @@
 import { useEffect, useState } from 'react';
 import { FlatList, StyleSheet, View } from 'react-native';
 import { Chip, List, Title, useTheme } from 'react-native-paper';
+import _ from 'lodash';
 
-const subjects = [
-  { id: 'all', name: 'All' },
-  { id: 'Maths 6', name: 'Maths 6' },
-  { id: 'Maths 7', name: 'Maths 7' },
-  { id: 'Maths 8', name: 'Maths 8' },
-  { id: 'Maths 9', name: 'Maths 9' },
-];
-
-const classesList = {
-  'Maths 6': [
-    { id: 'class 6a', name: 'Class 6A' },
-    { id: 'class 6b', name: 'Class 6B' },
-  ],
-  'Maths 7': [
-    { id: 'class 7a', name: 'Class 7A' },
-    { id: 'class 7b', name: 'Class 7B' },
-  ],
-  'Maths 8': [
-    { id: 'class 8c', name: 'Class 8C' },
-    { id: 'class 8d', name: 'Class 8D' },
-  ],
-  'Maths 9': [
-    { id: 'class 9c', name: 'Class 9C' },
-    { id: 'class 9d', name: 'Class 9D' },
-  ],
-};
+import { subjectAPI } from '../../apis';
+import { useToken } from '../../hooks/useToken';
 
 export default function MarksScreen({ navigation }) {
   const { colors } = useTheme();
+  const [token] = useToken();
+  const [subjects, setSubjects] = useState([{ id: 'all', name: 'All' }]);
   const [subject, setSubject] = useState(subjects[0]);
+  const [classesList, setClassesList] = useState([]);
   const [classes, setClasses] = useState([]);
+  const [isLoading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (subject.id === 'all') {
-      const allClasses = [];
-      for (let key in classesList) {
-        allClasses.push(...classesList[key]);
-      }
-      setClasses(allClasses);
-    } else setClasses(classesList[subject.id]);
-  }, [subject]);
+    getSubjects();
+  }, []);
+
+  useEffect(() => {
+    if (subject.id === 'all') setClasses(classesList);
+    else {
+      const classesOfCurrentSubject = classesList.filter(
+        (cls) => cls.subjectId === subject.id
+      );
+      setClasses(classesOfCurrentSubject);
+    }
+  }, [subject, classesList]);
+
+  const getSubjects = async () => {
+    try {
+      setLoading(true);
+      const { data } = await subjectAPI.getClassSubject(token);
+      const { payload } = data;
+      console.log({ payload });
+
+      /* unique subjects list */
+      const subjectsData = _.uniqBy(
+        payload.map((obj) => obj.subject),
+        'id'
+      );
+      setSubjects([{ id: 'all', name: 'All' }, ...subjectsData]);
+
+      /* flatten classes list */
+      const classesData = payload.map((obj) => ({
+        ...obj.class,
+        subjectName: obj.subject.name,
+        subjectId: obj.subject.id,
+      }));
+      setClassesList(classesData);
+    } catch (error) {
+      console.log(error);
+    }
+    setLoading(false);
+  };
 
   const renderSubjectItem = ({ item }) => {
     const selected = subject.id === item.id;
@@ -67,10 +79,7 @@ export default function MarksScreen({ navigation }) {
         key={item.id}
         title={item.name}
         onPress={() =>
-          navigation.navigate('ClassDetails', {
-            classData: item,
-            subjectData: subject,
-          })
+          navigation.navigate('ClassDetails', { classSubject: item })
         }
         style={{ ...styles.classItem, backgroundColor: colors.lightBlue }}
         right={(props) => <List.Icon {...props} icon="chevron-right" />}

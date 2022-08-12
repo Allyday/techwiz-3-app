@@ -1,13 +1,10 @@
 import { urls, requests } from "./configs";
 
 export default {
-  getAll: async (payload, param) => {
-    return requests.get(urls.getAll, payload);
+  getClassSubject: async (token) => {
+    return requests.get(urls.getClassSubject, token);
   },
-  getClassSubject: async (payload, param) => {
-    return requests.get(urls.getClassSubject, payload, param);
-  },
-  getSubject: async (payload) => {
-    return requests.get(urls.getSubject, payload);
+  getSubject: async (token) => {
+    return requests.get(urls.getSubject, token);
   },
 };
