@@ -6,11 +6,24 @@ import {
   ScrollView,
   TouchableOpacity,
   Dimensions,
+  Pressable,
 } from "react-native";
 import { TabView, TabBar, SceneMap } from "react-native-tab-view";
-import { List, Text, useTheme, ActivityIndicator } from "react-native-paper";
+import {
+  List,
+  Text,
+  useTheme,
+  ActivityIndicator,
+  IconButton,
+} from "react-native-paper";
 import { FontAwesome5 } from "@expo/vector-icons";
 import ContentLoader from "react-native-easy-content-loader";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import authAPI from "../../apis/authAPI";
+import { Video, AVPlaybackStatus, VideoFullscreenUpdateEvent } from "expo-av";
+import * as ScreenOrientation from "expo-screen-orientation";
+import subjectAPI from "../../apis/subjectAPI";
+import resourceAPI from "../../apis/resourceAPI";
 
 const SCREEN_HEIGHT = Dimensions.get("window").height;
 const SCREEN_WIDTH = Dimensions.get("window").width;
@@ -102,80 +115,180 @@ const DataSubject = [
 export default function Resources({ navigation }) {
   const [routes, setRoutes] = React.useState([]);
   const { colors } = useTheme();
-  const SRoute = () => (
-    <ScrollView
-      style={{
-        paddingVertical: 8,
-        paddingHorizontal: 18,
-        backgroundColor: "#fff",
-      }}
-    >
-      {Data.map((v, k) => (
-        <List.Item
-          key={k}
-          title={() => (
-            <Text numberOfLines={1} style={{ fontSize: 16, fontWeight: "800" }}>
-              {v.name}
-            </Text>
-          )}
-          description={() => <Text numberOfLines={1}>{v.link}</Text>}
-          left={() => (
-            <TouchableOpacity
-              onPress={() => navigation.navigate("ViewPDF")}
-              style={{
-                width: 50,
-                height: 60,
-                justifyContent: "center",
-                alignItems: "center",
-                backgroundColor: "#fff",
-                borderRadius: 5,
-                borderColor: "#cccbd9",
-                borderWidth: 1,
-              }}
-            >
-              <FontAwesome5
-                name={
-                  v.type == "pdf"
-                    ? "file-pdf"
-                    : v.type == "video"
-                    ? "file-video"
-                    : "file-word"
-                }
-                size={24}
-                color={colors.secondary}
-              />
-            </TouchableOpacity>
-          )}
+  const gameItemExtractorKey = (item, index) => {
+    return index.toString();
+  };
+
+  const renderData = (value) => {
+    return (
+      <List.Item
+        title={() => (
+          <Text numberOfLines={1} style={{ fontSize: 16, fontWeight: "800" }}>
+            {value.item.name}
+          </Text>
+        )}
+        description={() => <Text numberOfLines={1}>{value.item.link}</Text>}
+        left={() => (
+          <TouchableOpacity
+            onPress={() => navigation.navigate("ViewPDF")}
+            style={{
+              width: 50,
+              height: 60,
+              justifyContent: "center",
+              alignItems: "center",
+              backgroundColor: "#fff",
+              borderRadius: 5,
+              borderColor: "#cccbd9",
+              borderWidth: 1,
+            }}
+          >
+            <FontAwesome5
+              name={
+                value.item.type == "pdf"
+                  ? "file-pdf"
+                  : value.item.type == "video"
+                  ? "file-video"
+                  : "file-word"
+              }
+              size={24}
+              color={colors.secondary}
+            />
+          </TouchableOpacity>
+        )}
+        style={{
+          padding: 16,
+          marginVertical: 6,
+          backgroundColor: colors.lightPink,
+          borderRadius: 12,
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      />
+    );
+  };
+
+  const loadMore = async () => {
+    // console.log(dem);
+    const accessL = await AsyncStorage.getItem("access");
+    if (dsResources.length < totalCount) {
+      let params = {
+        page: dem,
+        limit: 10,
+        subjectId: "",
+      };
+      if (activeColor != 0) {
+        params.subjectId = activeColor;
+      }
+      const resStudyResource = await resourceAPI.studyResource(accessL, params);
+      if (resStudyResource.data.data.length > 0) {
+        const { data, page_info } = resStudyResource.data;
+        setDsResources(data);
+        setTotalCount(page_info.total);
+      } else {
+        console.log("sai mật khẩu rồi mày ơi");
+      }
+      var de = dem + 1;
+      await setDem(de);
+    }
+  };
+
+  const renderSpinner = () => {
+    if (dsNotes.features.length == totalCount) {
+      setIsFetchingNextPage(false);
+    }
+    return (
+      <>
+        <View
           style={{
-            padding: 16,
-            marginVertical: 6,
-            backgroundColor: colors.lightPink,
-            borderRadius: 12,
-            justifyContent: "center",
-            alignItems: "center",
+            paddingRight: 16,
+            backgroundColor: "#fff",
+            marginTop: 10,
+            paddingVertical: 16,
           }}
-        />
-      ))}
-    </ScrollView>
+        >
+          <ContentLoader
+            active
+            avatar
+            aSize={140}
+            pRows={4}
+            pWidth={[100]}
+            aShape={"square"}
+          />
+        </View>
+      </>
+    );
+  };
+
+  const SRoute = () => (
+    <>
+      {/* <ScrollView
+        style={{
+          paddingVertical: 8,
+          paddingHorizontal: 18,
+          backgroundColor: "#fff",
+        }}
+      ></ScrollView> */}
+      <FlatList
+        data={dsResources}
+        keyExtractor={gameItemExtractorKey}
+        renderItem={renderData}
+        onEndReached={loadMore}
+        onEndReachedThreshold={0.1}
+        ListFooterComponent={isFetchingNextPage ? renderSpinner : null}
+      />
+    </>
   );
 
   const [renderScene, setRenderScene] = React.useState();
   const [isLoadingRenderScene, setIsLoadingRenderScene] = React.useState(false);
+  const [dem, setDem] = React.useState(1);
+  const [isFetchingNextPage, setIsFetchingNextPage] = React.useState(true);
+  const [totalCount, setTotalCount] = React.useState(0);
+  const [dsResources, setDsResources] = React.useState([]);
 
   React.useEffect(() => {
-    var sce = { 0: SRoute };
-    setTimeout(() => {
-      DataSubject.map((v) => {
-        sce[v.key] = SRoute;
-      });
-      DataSubject.unshift({
-        key: 0,
-        title: "All",
-      });
-      setRenderScene(sce);
-      setRoutes(DataSubject);
-      setIsLoadingRenderScene(true);
-    }, 2000);
+    const a = async () => {
+      let params = {
+        page: 1,
+        limit: 10,
+        subjectId: "",
+      };
+      const accessL = await AsyncStorage.getItem("access");
+      const resGetClassSubject = await subjectAPI.getClassSubject(accessL);
+      if (resGetClassSubject.data.payload.length > 0) {
+        var dsMonHoc = [
+          {
+            key: 0,
+            title: "All",
+          },
+        ];
+        var sce = { 0: SRoute };
+        resGetClassSubject.data.payload.map((v) => {
+          dsMonHoc.push({
+            key: v.subject.id,
+            title: v.subject.name,
+          });
+          sce[v.subject.id] = SRoute;
+        });
+        setRenderScene(sce);
+        setRoutes(dsMonHoc);
+        const resStudyResource = await resourceAPI.studyResource(
+          accessL,
+          params
+        );
+        if (resStudyResource.data.data.length > 0) {
+          const { data, page_info } = resStudyResource.data;
+          setDsResources(data);
+          setTotalCount(page_info.total);
+          setIsLoadingRenderScene(true);
+        } else {
+          console.log("sai mật khẩu rồi mày ơi res");
+        }
+      } else {
+        console.log("sai mật khẩu rồi mày ơi subj");
+      }
+    };
+    a();
   }, []);
 
   const _renderLabel = ({ route }) => {

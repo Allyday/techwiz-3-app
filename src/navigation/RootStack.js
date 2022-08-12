@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { Colors, useTheme } from "react-native-paper";
@@ -10,6 +10,7 @@ import HelplinesScreen from "../screens/helplines/HelplinesScreen";
 import MarksScreen from "../screens/marks/MarksScreen";
 import ClassDetailsScreen from "../screens/marks/ClassDetailsScreen";
 import DrawerUser from "./Drawer";
+import RevisionScreen from "../screens/revision/RevisionScreen";
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -74,7 +75,7 @@ export default function RootStack({ route }) {
       {[ROLES.STUDENT, ROLES.TEACHER].includes(role) && (
         <>
           <Tab.Screen name="Resources" component={Resources} />
-          <Tab.Screen name="Revision" component={HomeScreen} />
+          <Tab.Screen name="Revision" component={RevisionScreen} />
         </>
       )}
 
