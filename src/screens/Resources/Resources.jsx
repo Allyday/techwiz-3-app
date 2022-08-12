@@ -3,115 +3,18 @@ import {
   View,
   useWindowDimensions,
   StyleSheet,
-  ScrollView,
+  FlatList,
   TouchableOpacity,
-  Dimensions,
-  Pressable,
 } from "react-native";
 import { TabView, TabBar, SceneMap } from "react-native-tab-view";
-import {
-  List,
-  Text,
-  useTheme,
-  ActivityIndicator,
-  IconButton,
-} from "react-native-paper";
+import { List, Text, useTheme } from "react-native-paper";
 import { FontAwesome5 } from "@expo/vector-icons";
 import ContentLoader from "react-native-easy-content-loader";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import authAPI from "../../apis/authAPI";
-import { Video, AVPlaybackStatus, VideoFullscreenUpdateEvent } from "expo-av";
-import * as ScreenOrientation from "expo-screen-orientation";
+
 import subjectAPI from "../../apis/subjectAPI";
 import resourceAPI from "../../apis/resourceAPI";
+import { useToken } from "../../hooks/useToken";
 
-const SCREEN_HEIGHT = Dimensions.get("window").height;
-const SCREEN_WIDTH = Dimensions.get("window").width;
-
-const Data = [
-  {
-    name: "Toán",
-    type: "pdf",
-    idSubject: 1,
-    link: "https://shopee.vn/S%C3%A1ch-Chi%E1%BA%BFn-th%E1%BA%AFng-k%C3%AC-thi-9-v%C3%A0o-10-chuy%C3%AAn-m%C3%B4n-V%E1%BA%ADt-L%C3%BD-t%E1%BA%ADp-1-i.17755904.7239258167?sp_atk=1b50e220-588c-443e-8695-bf7560e034af&xptdk=1b50e220-588c-443e-8695-bf7560e034af",
-  },
-  {
-    name: "Toán",
-    type: "pdf",
-    idSubject: 1,
-    link: "https://shopee.vn/S%C3%A1ch-Chi%E1%BA%BFn-th%E1%BA%AFng-k%C3%AC-thi-9-v%C3%A0o-10-chuy%C3%AAn-m%C3%B4n-V%E1%BA%ADt-L%C3%BD-t%E1%BA%ADp-1-i.17755904.7239258167?sp_atk=1b50e220-588c-443e-8695-bf7560e034af&xptdk=1b50e220-588c-443e-8695-bf7560e034af",
-  },
-  {
-    name: "Toán",
-    type: "pdf",
-    idSubject: 1,
-    link: "https://shopee.vn/S%C3%A1ch-Chi%E1%BA%BFn-th%E1%BA%AFng-k%C3%AC-thi-9-v%C3%A0o-10-chuy%C3%AAn-m%C3%B4n-V%E1%BA%ADt-L%C3%BD-t%E1%BA%ADp-1-i.17755904.7239258167?sp_atk=1b50e220-588c-443e-8695-bf7560e034af&xptdk=1b50e220-588c-443e-8695-bf7560e034af",
-  },
-  {
-    name: "Toán",
-    type: "pdf",
-    idSubject: 1,
-    link: "https://shopee.vn/S%C3%A1ch-Chi%E1%BA%BFn-th%E1%BA%AFng-k%C3%AC-thi-9-v%C3%A0o-10-chuy%C3%AAn-m%C3%B4n-V%E1%BA%ADt-L%C3%BD-t%E1%BA%ADp-1-i.17755904.7239258167?sp_atk=1b50e220-588c-443e-8695-bf7560e034af&xptdk=1b50e220-588c-443e-8695-bf7560e034af",
-  },
-  {
-    name: "Toán",
-    type: "pdf",
-    idSubject: 1,
-    link: "https://shopee.vn/S%C3%A1ch-Chi%E1%BA%BFn-th%E1%BA%AFng-k%C3%AC-thi-9-v%C3%A0o-10-chuy%C3%AAn-m%C3%B4n-V%E1%BA%ADt-L%C3%BD-t%E1%BA%ADp-1-i.17755904.7239258167?sp_atk=1b50e220-588c-443e-8695-bf7560e034af&xptdk=1b50e220-588c-443e-8695-bf7560e034af",
-  },
-  {
-    name: "Toán",
-    type: "pdf",
-    idSubject: 1,
-    link: "https://shopee.vn/S%C3%A1ch-Chi%E1%BA%BFn-th%E1%BA%AFng-k%C3%AC-thi-9-v%C3%A0o-10-chuy%C3%AAn-m%C3%B4n-V%E1%BA%ADt-L%C3%BD-t%E1%BA%ADp-1-i.17755904.7239258167?sp_atk=1b50e220-588c-443e-8695-bf7560e034af&xptdk=1b50e220-588c-443e-8695-bf7560e034af",
-  },
-  {
-    name: "Toán",
-    type: "pdf",
-    idSubject: 1,
-    link: "https://shopee.vn/S%C3%A1ch-Chi%E1%BA%BFn-th%E1%BA%AFng-k%C3%AC-thi-9-v%C3%A0o-10-chuy%C3%AAn-m%C3%B4n-V%E1%BA%ADt-L%C3%BD-t%E1%BA%ADp-1-i.17755904.7239258167?sp_atk=1b50e220-588c-443e-8695-bf7560e034af&xptdk=1b50e220-588c-443e-8695-bf7560e034af",
-  },
-  {
-    name: "Toán",
-    type: "pdf",
-    idSubject: 1,
-    link: "https://shopee.vn/S%C3%A1ch-Chi%E1%BA%BFn-th%E1%BA%AFng-k%C3%AC-thi-9-v%C3%A0o-10-chuy%C3%AAn-m%C3%B4n-V%E1%BA%ADt-L%C3%BD-t%E1%BA%ADp-1-i.17755904.7239258167?sp_atk=1b50e220-588c-443e-8695-bf7560e034af&xptdk=1b50e220-588c-443e-8695-bf7560e034af",
-  },
-];
-const DataSubject = [
-  {
-    key: 1,
-    title: "Toán",
-  },
-  {
-    key: 2,
-    title: "Lý",
-  },
-  {
-    key: 3,
-    title: "Hóa",
-  },
-  {
-    key: 4,
-    title: "Văn",
-  },
-  {
-    key: 5,
-    title: "Sử",
-  },
-  {
-    key: 6,
-    title: "Địa",
-  },
-  {
-    key: 7,
-    title: "GDCD",
-  },
-  {
-    key: 8,
-    title: "Mỹ thuật",
-  },
-];
 export default function Resources({ navigation }) {
   const [routes, setRoutes] = React.useState([]);
   const { colors } = useTheme();
@@ -169,7 +72,6 @@ export default function Resources({ navigation }) {
 
   const loadMore = async () => {
     // console.log(dem);
-    const accessL = await AsyncStorage.getItem("access");
     if (dsResources.length < totalCount) {
       let params = {
         page: dem,
@@ -179,7 +81,7 @@ export default function Resources({ navigation }) {
       if (activeColor != 0) {
         params.subjectId = activeColor;
       }
-      const resStudyResource = await resourceAPI.studyResource(accessL, params);
+      const resStudyResource = await resourceAPI.studyResource(token, params);
       if (resStudyResource.data.data.length > 0) {
         const { data, page_info } = resStudyResource.data;
         setDsResources(data);
@@ -188,7 +90,7 @@ export default function Resources({ navigation }) {
         console.log("sai mật khẩu rồi mày ơi");
       }
       var de = dem + 1;
-      await setDem(de);
+      setDem(de);
     }
   };
 
@@ -245,16 +147,16 @@ export default function Resources({ navigation }) {
   const [isFetchingNextPage, setIsFetchingNextPage] = React.useState(true);
   const [totalCount, setTotalCount] = React.useState(0);
   const [dsResources, setDsResources] = React.useState([]);
+  const [token] = useToken();
 
   React.useEffect(() => {
-    const a = async () => {
+    const getData = async () => {
       let params = {
         page: 1,
         limit: 10,
         subjectId: "",
       };
-      const accessL = await AsyncStorage.getItem("access");
-      const resGetClassSubject = await subjectAPI.getClassSubject(accessL);
+      const resGetClassSubject = await subjectAPI.getClassSubject(token);
       if (resGetClassSubject.data.payload.length > 0) {
         var dsMonHoc = [
           {
@@ -273,7 +175,7 @@ export default function Resources({ navigation }) {
         setRenderScene(sce);
         setRoutes(dsMonHoc);
         const resStudyResource = await resourceAPI.studyResource(
-          accessL,
+          token,
           params
         );
         if (resStudyResource.data.data.length > 0) {
@@ -288,7 +190,7 @@ export default function Resources({ navigation }) {
         console.log("sai mật khẩu rồi mày ơi subj");
       }
     };
-    a();
+    getData();
   }, []);
 
   const _renderLabel = ({ route }) => {
@@ -326,13 +228,6 @@ export default function Resources({ navigation }) {
 
   const [activeColor, setActiveColor] = React.useState(0);
 
-  const containerStyle = {
-    backgroundColor: "white",
-    height: SCREEN_HEIGHT,
-    width: SCREEN_WIDTH,
-    paddingTop: 16,
-    zIndex: 100,
-  };
   return (
     <>
       {isLoadingRenderScene ? (
