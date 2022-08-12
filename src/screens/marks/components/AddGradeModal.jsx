@@ -15,7 +15,6 @@ export default function AddGradeModal({ subject }) {
   const { colors } = useTheme();
   const {
     exam,
-    setExam,
     isGradeModalVisible,
     setGradeModalVisible,
     student,
@@ -65,7 +64,7 @@ export default function AddGradeModal({ subject }) {
         onDismiss={hideModal}
         contentContainerStyle={styles.modalContent}
       >
-        <Title>{student.name}</Title>
+        <Title>{student.student_name}</Title>
         <Caption>
           {subject.name} | {exam.name}
         </Caption>

@@ -5,6 +5,12 @@ export default {
   requestOTP: "requestOTP",
   verifyOTP: "verifyOTP",
 
+  /* grade */
+  grade: 'grade',
+  
+  /* student */
+  student: 'student/list',
+  
   /* subject */
   getClassSubject: "grade/get-class-subject",
   getSubject: "grade/get-subject",

@@ -1,35 +1,41 @@
-import { FlatList } from 'react-native';
+import _ from 'lodash';
+import { ScrollView } from 'react-native';
 import { List } from 'react-native-paper';
 
 import StudentGradeItem from './StudentGradeItem';
 
-export default function TermExams({ exams }) {
+const examNameMap = {
+  ASSIGNMENT: 'Assignment',
+  MIDDLE: 'Midterm',
+  FINAL: 'Final',
+};
+
+export default function TermExams({ exams, students }) {
+  const renderExams = (exam) => {
+    const studentsWithGrades = _.unionBy(exam.grades, students, 'id');
+    exam.studentCount = studentsWithGrades.length;
+    exam.studentHasGradeCount = exam.grades.length;
+    exam.name = examNameMap[exam.exam_name];
+
+    const renderStudentGrade = (student) => (
+      <StudentGradeItem key={student.id} student={student} exam={exam} />
+    );
+
+    return (
+      <List.Accordion
+        id={exam.name}
+        key={exam.name}
+        title={exam.name}
+        description={`${exam.studentHasGradeCount} / ${exam.studentCount} completed`}
+      >
+        {studentsWithGrades.map(renderStudentGrade)}
+      </List.Accordion>
+    );
+  };
+
   return (
-    <List.AccordionGroup>
-      {exams.map((exam) => {
-        exam.studentCount = exam.grades.length;
-        exam.studentHasGradeCount = exam.grades.filter(
-          (student) => student.grade !== null
-        ).length;
-
-          const renderStudentGrade = ({ item }) => {
-            return <StudentGradeItem key={item.name} student={item} exam={exam}/>;
-          };
-
-        return (
-          <List.Accordion
-            title={exam.name}
-            description={`${exam.studentHasGradeCount} / ${exam.studentCount} completed`}
-            id={exam.name}
-          >
-            <FlatList
-              data={exam.grades}
-              renderItem={renderStudentGrade}
-              contentContainerStyle={{ paddingHorizontal: 12 }}
-            />
-          </List.Accordion>
-        );
-      })}
-    </List.AccordionGroup>
+    <ScrollView>
+      <List.AccordionGroup>{exams.map(renderExams)}</List.AccordionGroup>
+    </ScrollView>
   );
 }

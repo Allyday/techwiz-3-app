@@ -1,4 +1,4 @@
-import { useLayoutEffect, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useState } from 'react';
 import {
   StyleSheet,
   View,
@@ -6,237 +6,23 @@ import {
   Dimensions,
 } from 'react-native';
 import { useTheme } from 'react-native-paper';
-import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
+import { TabView, TabBar } from 'react-native-tab-view';
 
 import AddGradeModal from './components/AddGradeModal';
 import { GradeContextProvider } from './contexts/grade.context';
-import useTermExams from './hooks/useTermExams';
-
-const allExams = [
-  {
-    name: 'Assignment',
-    term: 1,
-    grades: [
-      {
-        name: 'Nguyen Tien Duong',
-        id: Math.random().toString(),
-        grade: Math.round(Math.random() * 10),
-        examDate: new Date(),
-      },
-      {
-        name: 'Tran Hien Anh',
-        id: Math.random().toString(),
-        grade: null,
-        examDate: new Date(),
-      },
-      {
-        name: 'Giap Van Hien',
-        id: Math.random().toString(),
-        grade: Math.round(Math.random() * 10),
-        examDate: new Date(),
-      },
-      {
-        name: 'Pham Huy Hoang',
-        id: Math.random().toString(),
-        grade: Math.round(Math.random() * 10),
-        examDate: new Date(),
-      },
-      {
-        name: 'FPT Aptech',
-        id: Math.random().toString(),
-        grade: Math.round(Math.random() * 10),
-        examDate: new Date(),
-      },
-    ],
-  },
-  {
-    name: 'Midterm',
-    term: 1,
-    grades: [
-      {
-        name: 'Nguyen Tien Duong',
-        id: Math.random().toString(),
-        grade: Math.round(Math.random() * 10),
-        examDate: new Date(),
-      },
-      {
-        name: 'Tran Hien Anh',
-        id: Math.random().toString(),
-        grade: Math.round(Math.random() * 10),
-        examDate: new Date(),
-      },
-      {
-        name: 'Giap Van Hien',
-        id: Math.random().toString(),
-        grade: Math.round(Math.random() * 10),
-        examDate: new Date(),
-      },
-      {
-        name: 'Pham Huy Hoang',
-        id: Math.random().toString(),
-        grade: null,
-        examDate: new Date(),
-      },
-      {
-        name: 'FPT Aptech',
-        id: Math.random().toString(),
-        grade: Math.round(Math.random() * 10),
-        examDate: new Date(),
-      },
-    ],
-  },
-  {
-    name: 'Final',
-    term: 1,
-    grades: [
-      {
-        name: 'Nguyen Tien Duong',
-        id: Math.random().toString(),
-        grade: Math.round(Math.random() * 10),
-        examDate: new Date(),
-      },
-      {
-        name: 'Tran Hien Anh',
-        id: Math.random().toString(),
-        grade: null,
-        examDate: new Date(),
-      },
-      {
-        name: 'Giap Van Hien',
-        id: Math.random().toString(),
-        grade: Math.round(Math.random() * 10),
-        examDate: new Date(),
-      },
-      {
-        name: 'Pham Huy Hoang',
-        id: Math.random().toString(),
-        grade: Math.round(Math.random() * 10),
-        examDate: new Date(),
-      },
-      {
-        name: 'FPT Aptech',
-        id: Math.random().toString(),
-        grade: null,
-        examDate: new Date(),
-      },
-    ],
-  },
-  {
-    name: 'Assignment',
-    term: 2,
-    grades: [
-      {
-        name: 'Nguyen Tien Duong',
-        id: Math.random().toString(),
-        grade: null,
-        examDate: new Date(),
-      },
-      {
-        name: 'Tran Hien Anh',
-        id: Math.random().toString(),
-        grade: Math.round(Math.random() * 10),
-        examDate: new Date(),
-      },
-      {
-        name: 'Giap Van Hien',
-        id: Math.random().toString(),
-        grade: Math.round(Math.random() * 10),
-        examDate: new Date(),
-      },
-      {
-        name: 'Pham Huy Hoang',
-        id: Math.random().toString(),
-        grade: Math.round(Math.random() * 10),
-        examDate: new Date(),
-      },
-      {
-        name: 'FPT Aptech',
-        id: Math.random().toString(),
-        grade: Math.round(Math.random() * 10),
-        examDate: new Date(),
-      },
-    ],
-  },
-  {
-    name: 'Midterm',
-    term: 2,
-    grades: [
-      {
-        name: 'Nguyen Tien Duong',
-        id: Math.random().toString(),
-        grade: null,
-        examDate: new Date(),
-      },
-      {
-        name: 'Tran Hien Anh',
-        id: Math.random().toString(),
-        grade: null,
-        examDate: new Date(),
-      },
-      {
-        name: 'Giap Van Hien',
-        id: Math.random().toString(),
-        grade: null,
-        examDate: new Date(),
-      },
-      {
-        name: 'Pham Huy Hoang',
-        id: Math.random().toString(),
-        grade: null,
-        examDate: new Date(),
-      },
-      {
-        name: 'FPT Aptech',
-        id: Math.random().toString(),
-        grade: null,
-        examDate: new Date(),
-      },
-    ],
-  },
-  {
-    name: 'Final',
-    term: 2,
-    grades: [
-      {
-        name: 'Nguyen Tien Duong',
-        id: Math.random().toString(),
-        grade: null,
-        examDate: new Date(),
-      },
-      {
-        name: 'Tran Hien Anh',
-        id: Math.random().toString(),
-        grade: null,
-        examDate: new Date(),
-      },
-      {
-        name: 'Giap Van Hien',
-        id: Math.random().toString(),
-        grade: null,
-        examDate: new Date(),
-      },
-      {
-        name: 'Pham Huy Hoang',
-        id: Math.random().toString(),
-        grade: null,
-        examDate: new Date(),
-      },
-      {
-        name: 'FPT Aptech',
-        id: Math.random().toString(),
-        grade: null,
-        examDate: new Date(),
-      },
-    ],
-  },
-];
+import { gradeAPI, studentAPI } from '../../apis';
+import { useToken } from '../../hooks/useToken';
+import TermExams from './components/TermExams';
 
 export default function ClassDetailsScreen({ route, navigation }) {
   const { colors } = useTheme();
-  const layout = useWindowDimensions();
-  const { classData, subjectData } = route.params;
+  const { classSubject } = route.params;
+  const [token] = useToken();
+  const [students, setStudents] = useState([]);
+  const [exams, setExams] = useState([]);
   /* start tab view configs */
-  const { TermOne, TermTwo } = useTermExams({ data: allExams });
+  const layout = useWindowDimensions();
+  // const { TermOne, TermTwo } = useTermExams({ data: allExams, students });
   const [index, setIndex] = useState(0);
   const [routes] = useState([
     { key: 'one', title: 'Term 1' },
@@ -246,17 +32,44 @@ export default function ClassDetailsScreen({ route, navigation }) {
 
   /* dynamic header */
   useLayoutEffect(() => {
-    if (classData?.name)
+    if (classSubject?.name)
       navigation.setOptions({
-        title: `Exams - ${classData.name}`,
-        // title: `${classData.name} - ${subjectData.name}`,
+        title: `${classSubject.name} - ${classSubject.subjectName}`,
       });
   }, []);
 
-  const renderScene = SceneMap({
-    one: TermOne,
-    two: TermTwo,
-  });
+  useEffect(() => {
+    getExamGrades();
+    getStudents();
+  }, [getExamGrades, getStudents]);
+
+  const getExamGrades = useCallback(async () => {
+    const params = {
+      class_id: classSubject.id,
+      subject_id: classSubject.subjectId,
+      term: index + 1,
+    };
+    const { data } = await gradeAPI.getAll(token, params);
+    const { payload } = data;
+    setExams(payload);
+  }, [index]);
+
+  const getStudents = async () => {
+    try {
+      const params = {
+        class_id: classSubject.id,
+        subject_id: classSubject.subjectId,
+      };
+      const { data } = await studentAPI.getAll(token, params);
+      const { payload } = data;
+      setStudents(payload);
+    } catch (error) {
+      console.log(error);
+      // console.log(JSON.stringify(error));
+    }
+  };
+
+  const renderScene = () => <TermExams exams={exams} students={students} />;
 
   const renderTabBar = (SceneRendererProps) => (
     <View style={{ backgroundColor: colors.secondary }}>
@@ -282,7 +95,9 @@ export default function ClassDetailsScreen({ route, navigation }) {
         initialLayout={{ width: layout.width }}
         renderTabBar={renderTabBar}
       />
-      <AddGradeModal subject={subjectData} />
+      <AddGradeModal
+        subject={{ id: classSubject.subjectId, name: classSubject.subjectName }}
+      />
     </GradeContextProvider>
   );
 }

@@ -1,15 +1,14 @@
 import { useContext } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Text, TouchableRipple, useTheme } from 'react-native-paper';
+import moment from 'moment';
+
 import { GradeContext } from '../contexts/grade.context';
 
 export default function StudentGradeItem({ student, exam }) {
   const { colors } = useTheme();
-  const {
-    setGradeModalVisible,
-    setStudent,
-    setExam,
-  } = useContext(GradeContext);
+  const { setGradeModalVisible, setStudent, setExam } =
+    useContext(GradeContext);
 
   const backgroundColor =
     student.grade !== null ? colors.lightGrey : colors.lightBeige;
@@ -19,7 +18,7 @@ export default function StudentGradeItem({ student, exam }) {
   const openGradeModal = () => {
     setStudent(student);
     setExam(exam);
-    setGradeModalVisible(true)
+    setGradeModalVisible(true);
   };
 
   return (
@@ -29,10 +28,15 @@ export default function StudentGradeItem({ student, exam }) {
       rippleColor={rippleColor}
     >
       <View style={styles.listItem}>
-        <Text>{student.name}</Text>
-        <Text style={[styles.grade, { color: colors.secondary }]}>
-          {student.grade ?? '-'} <Text style={styles.gradeSubtitle}>/10</Text>
-        </Text>
+        <Text>{student.student_name}</Text>
+        <View style={styles.gradeInfoContainer}>
+          <Text style={styles.examDate}>
+            {moment(student.exam_date).format('DD/MM/YYYY')}
+          </Text>
+          <Text style={[styles.grade, { color: colors.secondary }]}>
+            {student.grade ?? '-'} <Text style={styles.gradeSubtitle}>/10</Text>
+          </Text>
+        </View>
       </View>
     </TouchableRipple>
   );
@@ -43,6 +47,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginVertical: 4,
+    marginHorizontal: 12,
     borderRadius: 12,
   },
   listItem: {
@@ -51,6 +56,16 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     padding: 12,
     borderRadius: 12,
+  },
+  gradeInfoContainer: {
+    minWidth: 140,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  examDate: {
+    width: 80,
+    fontStyle: 'italic',
+    color: 'grey',
   },
   grade: {
     fontWeight: 'bold',
