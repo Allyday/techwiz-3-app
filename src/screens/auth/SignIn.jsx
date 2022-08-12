@@ -42,24 +42,25 @@ const SignIn = (props, { navigation }) => {
   };
 
   const signIn = async () => {
-    setWrongPassword(false)
+    setWrongPassword(false);
     const checkEmail = validateEmail();
     if (checkEmail) {
-      const resLogin = await authAPI.login({
-        email: email,
-        password: password,
-      });
-      if (resLogin.data.success) {
-        const { access, user } = resLogin.data.data;
-        await AsyncStorage.setItem("access", access);
-        await AsyncStorage.setItem("user", JSON.stringify(user));
-        await props.navigation.replace('Root', {
-          screen: 'Home',
-          role: user.role,
-        });
-      } else {
-        setWrongPassword(true)
-        console.log("sai mật khẩu rồi mày ơi");
+      try {
+        const resLogin = await authAPI.login({ email, password });
+        if (resLogin.data.success) {
+          const { access, user } = resLogin.data.data;
+          await AsyncStorage.setItem('access', access);
+          await AsyncStorage.setItem('user', JSON.stringify(user));
+          await props.navigation.replace('Root', {
+            screen: 'Home',
+            role: user.role,
+          });
+        } else {
+          throw new Error('Wrong password');
+        }
+      } catch (error) {
+        setWrongPassword(true);
+        console.log('sai mật khẩu rồi mày ơi');
       }
     }
   };
