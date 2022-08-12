@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import { useContext, useMemo } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Text, TouchableRipple, useTheme } from 'react-native-paper';
 import moment from 'moment';
@@ -10,10 +10,14 @@ export default function StudentGradeItem({ student, exam }) {
   const { setGradeModalVisible, setStudent, setExam } =
     useContext(GradeContext);
 
-  const backgroundColor =
-    student.grade !== null ? colors.lightGrey : colors.lightBeige;
-  const rippleColor =
-    student.grade !== null ? colors.darkGrey : colors.darkBeige;
+  const studentHasGrade = useMemo(
+    () => student.grade !== null && student.grade !== undefined,
+    [student.grade]
+  );
+  const backgroundColor = studentHasGrade
+    ? colors.lightGrey
+    : colors.lightBeige;
+  const rippleColor = studentHasGrade ? colors.darkGrey : colors.darkBeige;
 
   const openGradeModal = () => {
     setStudent(student);
@@ -28,7 +32,7 @@ export default function StudentGradeItem({ student, exam }) {
       rippleColor={rippleColor}
     >
       <View style={styles.listItem}>
-        <Text>{student.student_name}</Text>
+        <Text>{student.name}</Text>
         <View style={styles.gradeInfoContainer}>
           <Text style={styles.examDate}>
             {moment(student.exam_date).format('DD/MM/YYYY')}

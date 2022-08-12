@@ -1,7 +1,10 @@
 import _ from 'lodash';
+import { useEffect, useState } from 'react';
 import { ScrollView } from 'react-native';
 import { List } from 'react-native-paper';
 
+import { gradeAPI } from '../../../apis';
+import { useToken } from '../../../hooks/useToken';
 import StudentGradeItem from './StudentGradeItem';
 
 const examNameMap = {
@@ -10,9 +13,32 @@ const examNameMap = {
   FINAL: 'Final',
 };
 
-export default function TermExams({ exams, students }) {
+export default function TermExams({ classSubject, students, term }) {
+  const [exams, setExams] = useState([]);
+  const [token] = useToken();
+
+  useEffect(() => {
+    getExamGrades();
+  }, [getExamGrades]);
+
+  const getExamGrades = async () => {
+    const params = {
+      class_id: classSubject.id,
+      subject_id: classSubject.subjectId,
+      term,
+    };
+    const { data } = await gradeAPI.getAll(token, params);
+    const { payload } = data;
+    setExams(payload);
+  };
+
   const renderExams = (exam) => {
-    const studentsWithGrades = _.unionBy(exam.grades, students, 'id');
+    const mergedStudents = _.merge(
+      _.keyBy(exam.grades, 'id'),
+      _.keyBy(students, 'id')
+    );
+    const studentsWithGrades = _.sortBy(_.values(mergedStudents), 'name');
+
     exam.studentCount = studentsWithGrades.length;
     exam.studentHasGradeCount = exam.grades.length;
     exam.name = examNameMap[exam.exam_name];

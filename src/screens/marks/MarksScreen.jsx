@@ -34,7 +34,6 @@ export default function MarksScreen({ navigation }) {
       setLoading(true);
       const { data } = await subjectAPI.getClassSubject(token);
       const { payload } = data;
-      console.log({ payload });
 
       /* unique subjects list */
       const subjectsData = _.uniqBy(

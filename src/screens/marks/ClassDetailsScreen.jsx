@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useLayoutEffect, useState } from 'react';
+import { useEffect, useLayoutEffect, useState } from 'react';
 import {
   StyleSheet,
   View,
@@ -10,7 +10,7 @@ import { TabView, TabBar } from 'react-native-tab-view';
 
 import AddGradeModal from './components/AddGradeModal';
 import { GradeContextProvider } from './contexts/grade.context';
-import { gradeAPI, studentAPI } from '../../apis';
+import { studentAPI } from '../../apis';
 import { useToken } from '../../hooks/useToken';
 import TermExams from './components/TermExams';
 
@@ -19,10 +19,8 @@ export default function ClassDetailsScreen({ route, navigation }) {
   const { classSubject } = route.params;
   const [token] = useToken();
   const [students, setStudents] = useState([]);
-  const [exams, setExams] = useState([]);
   /* start tab view configs */
   const layout = useWindowDimensions();
-  // const { TermOne, TermTwo } = useTermExams({ data: allExams, students });
   const [index, setIndex] = useState(0);
   const [routes] = useState([
     { key: 'one', title: 'Term 1' },
@@ -39,20 +37,8 @@ export default function ClassDetailsScreen({ route, navigation }) {
   }, []);
 
   useEffect(() => {
-    getExamGrades();
     getStudents();
-  }, [getExamGrades, getStudents]);
-
-  const getExamGrades = useCallback(async () => {
-    const params = {
-      class_id: classSubject.id,
-      subject_id: classSubject.subjectId,
-      term: index + 1,
-    };
-    const { data } = await gradeAPI.getAll(token, params);
-    const { payload } = data;
-    setExams(payload);
-  }, [index]);
+  }, [getStudents]);
 
   const getStudents = async () => {
     try {
@@ -62,14 +48,20 @@ export default function ClassDetailsScreen({ route, navigation }) {
       };
       const { data } = await studentAPI.getAll(token, params);
       const { payload } = data;
-      setStudents(payload);
+      setStudents(payload.list_user);
     } catch (error) {
       console.log(error);
       // console.log(JSON.stringify(error));
     }
   };
 
-  const renderScene = () => <TermExams exams={exams} students={students} />;
+  const renderScene = ({ route }) => (
+    <TermExams
+      classSubject={classSubject}
+      students={students}
+      term={route.key === 'one' ? 1 : 2}
+    />
+  );
 
   const renderTabBar = (SceneRendererProps) => (
     <View style={{ backgroundColor: colors.secondary }}>
