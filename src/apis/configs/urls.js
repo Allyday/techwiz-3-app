@@ -16,4 +16,6 @@ export default {
   getSubject: "grade/get-subject",
   /* studyResource */
   studyResource: "studyresource",
+  /* getProfileUser */
+  getProfileUser: "user/",
 };

@@ -1,36 +1,37 @@
-import React from "react";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { Colors, useTheme } from "react-native-paper";
-import { FontAwesome5 } from "@expo/vector-icons";
+import React from 'react';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { Colors, useTheme } from 'react-native-paper';
+import { FontAwesome5 } from '@expo/vector-icons';
 
-import HomeScreen from "../screens/home/HomeScreen";
-import Resources from "../screens/Resources/Resources";
-import HelplinesScreen from "../screens/helplines/HelplinesScreen";
-import MarksScreen from "../screens/marks/MarksScreen";
-import ClassDetailsScreen from "../screens/marks/ClassDetailsScreen";
-import DrawerUser from "./Drawer";
-import RevisionScreen from "../screens/revision/RevisionScreen";
-import SettingsScreen from "../screens/settings/SettingsScreen";
-import FeedbackScreen from "../screens/settings/FeedbackScreen";
+import HomeScreen from '../screens/home/HomeScreen';
+import Resources from '../screens/Resources/Resources';
+import HelplinesScreen from '../screens/helplines/HelplinesScreen';
+import MarksScreen from '../screens/marks/MarksScreen';
+import ClassDetailsScreen from '../screens/marks/ClassDetailsScreen';
+import DrawerUser from './Drawer';
+import RevisionScreen from '../screens/revision/RevisionScreen';
+import SettingsScreen from '../screens/settings/SettingsScreen';
+import FeedbackScreen from '../screens/settings/FeedbackScreen';
+import ProfileScreen from '../screens/settings/ProfileScreen';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 
 const tabBarConfig = {
-  ReportCard: { icon: "flag", label: "Report Card" },
-  Resources: { icon: "book", label: "Resources" },
-  Revision: { icon: "calendar-alt", label: "Revision" },
-  Helplines: { icon: "phone", label: "Helplines" },
-  Marks: { icon: "list-alt", label: "Marks" },
-  Progress: { icon: "chalkboard-teacher", label: "Progress" },
+  ReportCard: { icon: 'flag', label: 'Report Card' },
+  Resources: { icon: 'book', label: 'Resources' },
+  Revision: { icon: 'calendar-alt', label: 'Revision' },
+  Helplines: { icon: 'phone', label: 'Helplines' },
+  Marks: { icon: 'list-alt', label: 'Marks' },
+  Progress: { icon: 'chalkboard-teacher', label: 'Progress' },
   Settings: { icon: 'cog', label: 'Settings' },
 };
 
 const ROLES = {
-  STUDENT: "STUDENT",
-  TEACHER: "TEACHER",
-  PARENT: "PARENT",
+  STUDENT: 'STUDENT',
+  TEACHER: 'TEACHER',
+  PARENT: 'PARENT',
 };
 
 export default function RootStack({ route }) {
@@ -50,10 +51,10 @@ export default function RootStack({ route }) {
       backgroundColor: colors.secondary,
       borderBottomStartRadius: 30,
     },
-    headerTintColor: "white",
-    drawerPosition: "left",
+    headerTintColor: 'white',
+    drawerPosition: 'left',
     drawerStyle: {
-      width: "90%",
+      width: '90%',
     },
   });
 
@@ -102,7 +103,7 @@ const MarkStack = () => {
       backgroundColor: colors.secondary,
       borderBottomStartRadius: 30, // doesnt work??
     },
-    headerTintColor: "white",
+    headerTintColor: 'white',
   });
 
   return (
@@ -110,12 +111,12 @@ const MarkStack = () => {
       <Stack.Screen
         name="MarksScreen"
         component={MarksScreen}
-        options={{ title: "Marks" }}
+        options={{ title: 'Marks' }}
       />
       <Stack.Screen
         name="ClassDetails"
         component={ClassDetailsScreen}
-        options={{ title: "Class Details" }}
+        options={{ title: 'Class Details' }}
       />
     </Stack.Navigator>
   );
@@ -129,7 +130,7 @@ const SettingsStack = () => {
       backgroundColor: colors.secondary,
       borderBottomStartRadius: 30, // doesnt work??
     },
-    headerTintColor: "white",
+    headerTintColor: 'white',
   });
 
   return (
@@ -137,12 +138,10 @@ const SettingsStack = () => {
       <Stack.Screen
         name="SettingsScreen"
         component={SettingsScreen}
-        options={{ title: "Settings" }}
+        options={{ title: 'Settings' }}
       />
-      <Stack.Screen
-        name="Feedback"
-        component={FeedbackScreen}
-      />
+      <Stack.Screen name="Profile" component={ProfileScreen} />
+      <Stack.Screen name="Feedback" component={FeedbackScreen} />
     </Stack.Navigator>
   );
 };

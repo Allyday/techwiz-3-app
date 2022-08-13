@@ -21,6 +21,10 @@ export default function SettingsScreen({ navigation }) {
         title="Feedback"
         onPress={() => navigation.navigate('Feedback')}
       />
+      <Button
+        title="Profile"
+        onPress={() => navigation.navigate('Profile')}
+      />
     </View>
   );
 }
