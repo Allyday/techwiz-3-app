@@ -1,17 +1,16 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import {
-  FlatList,
-  ScrollView,
   StyleSheet,
-  View,
   Linking,
   Alert,
   Platform,
   TouchableOpacity,
 } from "react-native";
-import { Chip, List, Title, useTheme } from "react-native-paper";
+import { List } from "react-native-paper";
 import { AntDesign } from "@expo/vector-icons";
 import { FontAwesome5 } from "@expo/vector-icons";
+
+import StyledScreen from "../../components/wrappers/StyledScreen";
 const DataHelpline = [
   {
     title: "title test",
@@ -94,7 +93,6 @@ const DataHelpline = [
 ];
 
 export default function HelplinesScreen({ navigation }) {
-  const [expanded, setExpanded] = React.useState(true);
   const callNumber = (phone) => {
     console.log("callNumber ----> ", phone);
     let phoneNumber = phone;
@@ -113,9 +111,8 @@ export default function HelplinesScreen({ navigation }) {
       })
       .catch((err) => console.log(err));
   };
-  const handlePress = () => setExpanded(!expanded);
   return (
-    <ScrollView style={styles.container}>
+    <StyledScreen scrollable style={styles.container}>
       <List.Accordion
         style={{ backgroundColor: "#fff" }}
         title="Teacher"
@@ -158,7 +155,7 @@ export default function HelplinesScreen({ navigation }) {
       </List.Accordion>
       <List.Accordion
         style={{ backgroundColor: "#fff" }}
-        title="Admin"
+        title="Staff"
         titleStyle={{
           color: "#473f97",
         }}
@@ -198,13 +195,12 @@ export default function HelplinesScreen({ navigation }) {
             )
         )}
       </List.Accordion>
-    </ScrollView>
+    </StyledScreen>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "#fff",
     paddingTop: 18,
     borderTopRightRadius: 30,
   },

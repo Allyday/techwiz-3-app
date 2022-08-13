@@ -1,94 +1,97 @@
-import { useEffect, useState } from "react";
-import { FlatList, StyleSheet, View } from "react-native";
-import { Chip, List, Title, useTheme } from "react-native-paper";
-import { Feather } from "@expo/vector-icons";
+import { useEffect, useState } from 'react';
+import { FlatList, StyleSheet, View } from 'react-native';
+import { Chip, List, Title, useTheme } from 'react-native-paper';
+import { Feather } from '@expo/vector-icons';
+
+import StyledScreen from '../../components/wrappers/StyledScreen';
+
 const subjects = [
-  { id: "all", name: "All" },
-  { id: "Maths 6", name: "Maths 6" },
-  { id: "Maths 7", name: "Maths 7" },
-  { id: "Maths 8", name: "Maths 8" },
-  { id: "Maths 9", name: "Maths 9" },
+  { id: 'all', name: 'All' },
+  { id: 'Maths 6', name: 'Maths 6' },
+  { id: 'Maths 7', name: 'Maths 7' },
+  { id: 'Maths 8', name: 'Maths 8' },
+  { id: 'Maths 9', name: 'Maths 9' },
 ];
 
 const classesList = {
   "Maths 6": [
     {
-      name_subject: "Maths 6",
-      name_teacher: "Nguyễn Tiến Dương",
+      name_subject: 'Maths 6',
+      name_teacher: 'Nguyễn Tiến Dương',
       time_table: {
-        day_of_week: "Mon - Tue - Sat",
-        time_start: "18.00",
-        time_end: "20.00",
+        day_of_week: 'Mon - Tue - Sat',
+        time_start: '18.00',
+        time_end: '20.00',
       },
     },
 
     {
-      name_subject: "Maths 6",
-      name_teacher: "Nguyễn Tiến Dương",
+      name_subject: 'Maths 6',
+      name_teacher: 'Nguyễn Tiến Dương',
       time_table: {
-        day_of_week: "Mon - Tue - Sat",
-        time_start: "18.00",
-        time_end: "20.00",
+        day_of_week: 'Mon - Tue - Sat',
+        time_start: '18.00',
+        time_end: '20.00',
       },
     },
   ],
-  "Maths 7": [
+  'Maths 7': [
     {
-      name_subject: "Maths 7",
-      name_teacher: "Nguyễn Tiến Dương",
+      name_subject: 'Maths 7',
+      name_teacher: 'Nguyễn Tiến Dương',
       time_table: {
-        day_of_week: "Mon - Tue - Sat",
-        time_start: "18.00",
-        time_end: "20.00",
+        day_of_week: 'Mon - Tue - Sat',
+        time_start: '18.00',
+        time_end: '20.00',
       },
     },
     {
-      name_subject: "Maths 7",
-      name_teacher: "Nguyễn Tiến Dương",
+      name_subject: 'Maths 7',
+      name_teacher: 'Nguyễn Tiến Dương',
       time_table: {
-        day_of_week: "Mon - Tue - Sat",
-        time_start: "18.00",
-        time_end: "20.00",
-      },
-    },
-  ],
-  "Maths 8": [
-    {
-      name_subject: "Maths 8",
-      name_teacher: "Nguyễn Tiến Dương",
-      time_table: {
-        day_of_week: "Mon - Tue - Sat",
-        time_start: "18.00",
-        time_end: "20.00",
-      },
-    },
-    {
-      name_subject: "Maths 8",
-      name_teacher: "Nguyễn Tiến Dương",
-      time_table: {
-        day_of_week: "Mon - Tue - Sat",
-        time_start: "18.00",
-        time_end: "20.00",
+        day_of_week: 'Mon - Tue - Sat',
+        time_start: '18.00',
+        time_end: '20.00',
       },
     },
   ],
-  "Maths 9": [
+  'Maths 8': [
     {
-      name_subject: "Maths 9",
-      name_teacher: "Nguyễn Tiến Dương",
+      name_subject: 'Maths 8',
+      name_teacher: 'Nguyễn Tiến Dương',
       time_table: {
-        day_of_week: "Mon - Tue - Sat",
-        time_start: "18.00",
-        time_end: "20.00",
+        day_of_week: 'Mon - Tue - Sat',
+        time_start: '18.00',
+        time_end: '20.00',
       },
     },
     {
-      name_subject: "Maths 9",
-      name_teacher: "Nguyễn Tiến Dương",
+      name_subject: 'Maths 8',
+      name_teacher: 'Nguyễn Tiến Dương',
       time_table: {
-        day_of_week: "Mon - Tue - Sat",
-        time_start: "18.00",
-        time_end: "20.00",
+        day_of_week: 'Mon - Tue - Sat',
+        time_start: '18.00',
+        time_end: '20.00',
+      },
+    },
+  ],
+  'Maths 9': [
+    {
+      name_subject: 'Maths 9',
+      name_teacher: 'Nguyễn Tiến Dương',
+      time_table: {
+        day_of_week: 'Mon - Tue - Sat',
+        time_start: '18.00',
+        time_end: '20.00',
+      },
+    },
+    {
+      name_subject: 'Maths 9',
+      name_teacher: 'Nguyễn Tiến Dương',
+      time_table: {
+        day_of_week: 'Mon - Tue - Sat',
+        time_start: '18.00',
+        time_end: '20.00',
       },
     },
   ],
@@ -100,7 +103,7 @@ export default function RevisionScreen({ navigation }) {
   const [classes, setClasses] = useState([]);
 
   useEffect(() => {
-    if (subject.id === "all") {
+    if (subject.id === 'all') {
       const allClasses = [];
       for (let key in classesList) {
         allClasses.push(...classesList[key]);
@@ -133,7 +136,7 @@ export default function RevisionScreen({ navigation }) {
         title={item.name_teacher}
         description={`${item.time_table.time_start} - ${item.time_table.time_end}\n${item.time_table.day_of_week}`}
         onPress={() =>
-          navigation.navigate("ClassDetails", {
+          navigation.navigate('ClassDetails', {
             classData: item,
             subjectData: subject,
           })
@@ -152,7 +155,7 @@ export default function RevisionScreen({ navigation }) {
   };
 
   return (
-    <View style={styles.container}>
+    <StyledScreen style={styles.container}>
       <View style={styles.horizontalFlatlistContainer}>
         <FlatList
           data={subjects}
@@ -167,20 +170,20 @@ export default function RevisionScreen({ navigation }) {
         data={classes}
         renderItem={renderClassItem}
       />
-    </View>
+    </StyledScreen>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: "#fff",
     paddingTop: 18,
     paddingHorizontal: 24,
   },
   horizontalFlatlistContainer: {
     height: 40,
     marginHorizontal: -24,
+    borderTopEndRadius: 9,
+    overflow: 'hidden',
   },
   horizontalFlatlist: {
     flexGrow: 1,
@@ -192,7 +195,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 24,
-    fontWeight: "bold",
+    fontWeight: 'bold',
     marginVertical: 12,
   },
   flatlist: {

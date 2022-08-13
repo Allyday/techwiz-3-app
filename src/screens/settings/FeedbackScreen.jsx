@@ -1,17 +1,17 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text } from 'react-native';
+
+import StyledScreen from '../../components/wrappers/StyledScreen';
 
 export default function FeedbackScreen() {
   return (
-    <View style={styles.container}>
+    <StyledScreen style={styles.container}>
       <Text>FeedbackScreen</Text>
-    </View>
+    </StyledScreen>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
   },

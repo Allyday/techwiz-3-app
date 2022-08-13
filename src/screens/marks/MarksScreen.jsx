@@ -5,6 +5,7 @@ import _ from 'lodash';
 
 import { subjectAPI } from '../../apis';
 import { useToken } from '../../hooks/useToken';
+import StyledScreen from '../../components/wrappers/StyledScreen';
 
 export default function MarksScreen({ navigation }) {
   const { colors } = useTheme();
@@ -88,7 +89,7 @@ export default function MarksScreen({ navigation }) {
   };
 
   return (
-    <View style={styles.container}>
+    <StyledScreen style={styles.container}>
       <View style={styles.horizontalFlatlistContainer}>
         <FlatList
           data={subjects}
@@ -103,20 +104,20 @@ export default function MarksScreen({ navigation }) {
         data={classes}
         renderItem={renderClassItem}
       />
-    </View>
+    </StyledScreen>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: '#fff',
     paddingTop: 18,
     paddingHorizontal: 24,
   },
   horizontalFlatlistContainer: {
     height: 40,
     marginHorizontal: -24,
+    borderTopEndRadius: 9,
+    overflow: 'hidden',
   },
   horizontalFlatlist: {
     flexGrow: 1,

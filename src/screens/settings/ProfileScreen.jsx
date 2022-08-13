@@ -6,6 +6,7 @@ import { DatePickerModal } from 'react-native-paper-dates';
 
 import { userAPI } from '../../apis';
 import { useToken } from '../../hooks/useToken';
+import StyledScreen from '../../components/wrappers/StyledScreen';
 const SCREEN_WIDTH = Dimensions.get('window').width;
 
 export default function ProfileScreen() {
@@ -78,7 +79,7 @@ export default function ProfileScreen() {
     );
 
   return (
-    <View style={styles.container}>
+    <StyledScreen style={styles.container}>
       <View style={styles.wrapperImage}>
         <Image
           style={styles.tinyLogo}
@@ -136,14 +137,12 @@ export default function ProfileScreen() {
         date={new Date(profileUser.date_of_birth)}
         onConfirm={onConfirm}
       />
-    </View>
+    </StyledScreen>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: '#fff',
     padding: 20,
   },
   wrapperColumn: {
