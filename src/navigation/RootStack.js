@@ -14,7 +14,10 @@ import RevisionScreen from '../screens/revision/RevisionScreen';
 import SettingsScreen from '../screens/settings/SettingsScreen';
 import FeedbackScreen from '../screens/settings/FeedbackScreen';
 import ProfileScreen from '../screens/settings/ProfileScreen';
-import ReportCardScreen from "../screens/report-card/ReportCardScreen";
+import ReportCardScreen from '../screens/report-card/ReportCardScreen';
+
+import useRegisterNotifications from '../hooks/useRegisterNotifications';
+import useNotificationListeners from '../hooks/useNotificationListeners';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -38,6 +41,8 @@ const ROLES = {
 export default function RootStack({ route }) {
   const { colors } = useTheme();
   const { role } = route.params;
+  useRegisterNotifications();
+  useNotificationListeners();
 
   const screenOptions = ({ route }) => ({
     title: tabBarConfig[route.name].label,

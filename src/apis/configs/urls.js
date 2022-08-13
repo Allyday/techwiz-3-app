@@ -19,4 +19,7 @@ export default {
   studyResource: "studyresource",
   /* getProfileUser */
   getProfileUser: "user/",
+
+  /* system */
+  notification: 'notification/',
 };
