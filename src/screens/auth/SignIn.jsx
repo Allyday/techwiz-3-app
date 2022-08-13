@@ -11,7 +11,7 @@ const SCREEN_WIDTH = Dimensions.get("window").width;
 
 const SignIn = (props, { navigation }) => {
   const { colors } = useTheme();
-  const [email, setEmail] = useState("teacher1@gmail.com");
+  const [email, setEmail] = useState("student1@gmail.com");
   const [password, setPassword] = useState("admin");
 
   const styles = StyleSheet.create({

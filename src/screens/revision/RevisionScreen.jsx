@@ -4,14 +4,8 @@ import { Chip, List, Title, useTheme } from 'react-native-paper';
 import { Feather } from '@expo/vector-icons';
 
 import StyledScreen from '../../components/wrappers/StyledScreen';
-
-const subjects = [
-  { id: 'all', name: 'All' },
-  { id: 'Maths 6', name: 'Maths 6' },
-  { id: 'Maths 7', name: 'Maths 7' },
-  { id: 'Maths 8', name: 'Maths 8' },
-  { id: 'Maths 9', name: 'Maths 9' },
-];
+import { revisionAPI, subjectAPI } from '../../apis';
+import { useToken } from '../../hooks/useToken';
 
 const classesList = {
   "Maths 6": [
@@ -99,8 +93,17 @@ const classesList = {
 
 export default function RevisionScreen({ navigation }) {
   const { colors } = useTheme();
+  const [subjects, setSubjects] = useState([{ id: 'all', name: 'All' }]);
   const [subject, setSubject] = useState(subjects[0]);
   const [classes, setClasses] = useState([]);
+  const [isLoading, setLoading] = useState(true);
+  const [token] = useToken();
+
+  useEffect(() => {
+    Promise.all([getSubject(), getRevisionClasses()]).finally(() =>
+      setLoading(false)
+    );
+  }, []);
 
   useEffect(() => {
     if (subject.id === 'all') {
@@ -111,6 +114,30 @@ export default function RevisionScreen({ navigation }) {
       setClasses(allClasses);
     } else setClasses(classesList[subject.id]);
   }, [subject]);
+
+  const getSubject = async () => {
+    const { data } = await subjectAPI.getSubject(token);
+    setSubjects([{ id: 'all', name: 'All' }, ...data.payload]);
+  };
+
+  const getRevisionClasses = async () => {
+    const { data } = await revisionAPI.getAll(token);
+
+    const res = []
+    for (let lesson of data.revision_class) {
+      const {name_teacher, name_subject,time_table } = lesson;
+      const currentClass = res.find(
+        (cls) => cls.name_subject === lesson.name_subject
+      );
+      if (!currentClass) {
+          res.push({name_teacher,name_subject, lessons: [time_table]})
+      } else {
+currentClass.lessons.push(time_table)
+      }
+    }
+    console.log({res})
+    setClasses(data.revision_class);
+  };
 
   const renderSubjectItem = ({ item }) => {
     const selected = subject.id === item.id;
@@ -153,6 +180,34 @@ export default function RevisionScreen({ navigation }) {
       />
     );
   };
+
+
+  /**
+   * let res = []
+   * for (buoihoc of array) {
+   * 
+   * if (!res.some(class => class.subject_id === buoihoc.id))
+   * res.push({
+   *       "name_subject": "Geography 6",
+      "name_teacher": "Duong Tung",
+      "lessons": [
+        Object {
+        "day_of_week": "Sunday ",
+        "id": 10,
+        "time_end": "20:30:00",
+        "time_start": "19:30:00",
+      }
+      ],
+
+   * 
+   * }) else {
+   * const currentClass = res.find(class => class.subject_id === buoihoc.id)
+   * currentClass.lessons.push({})
+   * }
+   * }
+   * 
+   * })
+   */
 
   return (
     <StyledScreen style={styles.container}>
