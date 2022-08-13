@@ -1,11 +1,13 @@
-import { useEffect, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
-import { Text, useTheme } from 'react-native-paper';
-import _ from 'lodash';
+import { useEffect, useState } from "react";
+import { StyleSheet, View, Dimensions } from "react-native";
+import { Text, useTheme } from "react-native-paper";
+import _ from "lodash";
+import ContentLoader from "react-native-easy-content-loader";
 
-import { gradeAPI } from '../../../apis';
-import { useToken } from '../../../hooks/useToken';
-
+import { gradeAPI } from "../../../apis";
+import { useToken } from "../../../hooks/useToken";
+const SCREEN_HEIGHT = Dimensions.get("window").height;
+const SCREEN_WIDTH = Dimensions.get("window").width;
 const examGradeWeight = {
   ASSIGNMENT: 0.2,
   MIDDLE: 0.3,
@@ -39,7 +41,7 @@ export default function Grades({ term }) {
     try {
       const { data } = await gradeAPI.getByStudent(token, { term });
       const { payload } = data;
-      const grades = _.sortBy(payload, 'subject_name');
+      const grades = _.sortBy(payload, "subject_name");
       const [gradesWithAverage, GPA] = calculateAverageAndGPA(grades);
       setSubjectWithGrade(gradesWithAverage);
       setGPA(GPA);
@@ -47,7 +49,9 @@ export default function Grades({ term }) {
       console.log(error);
       // console.log(JSON.stringify(error));
     } finally {
-      setLoading(false);
+      setTimeout(() => {
+        setLoading(false);
+      }, 1000);
     }
   };
 
@@ -81,66 +85,86 @@ export default function Grades({ term }) {
 
   return (
     <View style={styles.container}>
-      <View style={[styles.card, { backgroundColor: colors.lightGrey }]}>
-        <View style={styles.row}>
-          <View style={styles.subjectCol}>
-            <Text>Subject</Text>
-          </View>
-          <View style={styles.col}>
-            <Text style={styles.grade}>Asm.</Text>
-          </View>
-          <View style={styles.col}>
-            <Text style={styles.grade}>Mid.</Text>
-          </View>
-          <View style={styles.col}>
-            <Text style={styles.grade}>Fin.</Text>
-          </View>
-          <View style={styles.col}>
-            <Text style={styles.grade}>Avg.</Text>
-          </View>
+      {isLoading ? (
+        <View
+          style={{
+            backgroundColor: "#fff",
+            marginTop: 20,
+          }}
+        >
+          <ContentLoader
+            tHeight={8}
+            pRows={16}
+            pWidth={[SCREEN_WIDTH - 68]}
+            tWidth={SCREEN_WIDTH - 68}
+          />
         </View>
+      ) : (
+        <>
+          <View style={[styles.card, { backgroundColor: colors.lightGrey }]}>
+            <View style={styles.row}>
+              <View style={styles.subjectCol}>
+                <Text>Subject</Text>
+              </View>
+              <View style={styles.col}>
+                <Text style={styles.grade}>Asm.</Text>
+              </View>
+              <View style={styles.col}>
+                <Text style={styles.grade}>Mid.</Text>
+              </View>
+              <View style={styles.col}>
+                <Text style={styles.grade}>Fin.</Text>
+              </View>
+              <View style={styles.col}>
+                <Text style={styles.grade}>Avg.</Text>
+              </View>
+            </View>
 
-        {subjectWithGrades.map((subject, index) => (
-          <View
-            key={subject.subject_id}
-            style={[
-              styles.row,
-              {
-                backgroundColor:
-                  index % 2 == 0 ? colors.veryLightGrey : 'transparent',
-              },
-            ]}
-          >
-            <View style={styles.subjectCol}>
-              <Text style={[styles.boldText, { color: colors.secondary }]}>
-                {subject.subject_name}
-              </Text>
-            </View>
+            {subjectWithGrades.map((subject, index) => (
+              <View
+                key={subject.subject_id}
+                style={[
+                  styles.row,
+                  {
+                    backgroundColor:
+                      index % 2 == 0 ? colors.veryLightGrey : "transparent",
+                  },
+                ]}
+              >
+                <View style={styles.subjectCol}>
+                  <Text style={[styles.boldText, { color: colors.secondary }]}>
+                    {subject.subject_name}
+                  </Text>
+                </View>
+                <View style={styles.col}>
+                  <Text style={styles.grade}>{subject.ASSIGNMENT ?? "-"}</Text>
+                </View>
+                <View style={styles.col}>
+                  <Text style={styles.grade}>{subject.MIDDLE ?? "-"}</Text>
+                </View>
+                <View style={styles.col}>
+                  <Text style={styles.grade}>{subject.FINAL ?? "-"}</Text>
+                </View>
+                <View style={styles.col}>
+                  <Text style={[styles.grade, styles.boldText]}>
+                    {subject.AVERAGE ? subject.AVERAGE.toFixed(1) : "-"}
+                  </Text>
+                </View>
+              </View>
+            ))}
+          </View>
+          <View style={styles.gpaContainer}>
+            <Text style={[styles.gpa, { color: colors.primary }]}>GPA</Text>
             <View style={styles.col}>
-              <Text style={styles.grade}>{subject.ASSIGNMENT ?? '-'}</Text>
-            </View>
-            <View style={styles.col}>
-              <Text style={styles.grade}>{subject.MIDDLE ?? '-'}</Text>
-            </View>
-            <View style={styles.col}>
-              <Text style={styles.grade}>{subject.FINAL ?? '-'}</Text>
-            </View>
-            <View style={styles.col}>
-              <Text style={[styles.grade, styles.boldText]}>
-                {subject.AVERAGE ? subject.AVERAGE.toFixed(1) : '-'}
+              <Text
+                style={[styles.grade, styles.gpa, { color: colors.primary }]}
+              >
+                {gpa.toFixed(1)}
               </Text>
             </View>
           </View>
-        ))}
-      </View>
-      <View style={styles.gpaContainer}>
-        <Text style={[styles.gpa, { color: colors.primary }]}>GPA</Text>
-        <View style={styles.col}>
-          <Text style={[styles.grade, styles.gpa, { color: colors.primary }]}>
-            {gpa.toFixed(1)}
-          </Text>
-        </View>
-      </View>
+        </>
+      )}
     </View>
   );
 }
@@ -155,20 +179,20 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
   },
   row: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     paddingVertical: 8,
     paddingHorizontal: 16,
   },
-  subjectCol: { width: '40%' },
-  boldText: { fontWeight: 'bold' },
-  col: { width: '15%' },
-  grade: { textAlign: 'center' },
+  subjectCol: { width: "40%" },
+  boldText: { fontWeight: "bold" },
+  col: { width: "15%" },
+  grade: { textAlign: "center" },
   gpaContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
     marginTop: 8,
     paddingHorizontal: 16,
   },
-  gpa: { fontWeight: 'bold', fontSize: 18 },
+  gpa: { fontWeight: "bold", fontSize: 18 },
 });

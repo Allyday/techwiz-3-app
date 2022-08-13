@@ -1,16 +1,18 @@
-import { useEffect, useState } from 'react';
-import { FlatList, StyleSheet, View } from 'react-native';
-import { Chip, List, Title, useTheme } from 'react-native-paper';
-import _ from 'lodash';
+import { useEffect, useState } from "react";
+import { FlatList, StyleSheet, View, Dimensions } from "react-native";
+import { Chip, List, Title, useTheme } from "react-native-paper";
+import _ from "lodash";
+import ContentLoader from "react-native-easy-content-loader";
 
-import { subjectAPI } from '../../apis';
-import { useToken } from '../../hooks/useToken';
-import StyledScreen from '../../components/wrappers/StyledScreen';
-
+import { subjectAPI } from "../../apis";
+import { useToken } from "../../hooks/useToken";
+import StyledScreen from "../../components/wrappers/StyledScreen";
+const SCREEN_HEIGHT = Dimensions.get("window").height;
+const SCREEN_WIDTH = Dimensions.get("window").width;
 export default function MarksScreen({ navigation }) {
   const { colors } = useTheme();
   const [token] = useToken();
-  const [subjects, setSubjects] = useState([{ id: 'all', name: 'All' }]);
+  const [subjects, setSubjects] = useState([{ id: "all", name: "All" }]);
   const [subject, setSubject] = useState(subjects[0]);
   const [classesList, setClassesList] = useState([]);
   const [classes, setClasses] = useState([]);
@@ -21,7 +23,7 @@ export default function MarksScreen({ navigation }) {
   }, []);
 
   useEffect(() => {
-    if (subject.id === 'all') setClasses(classesList);
+    if (subject.id === "all") setClasses(classesList);
     else {
       const classesOfCurrentSubject = classesList.filter(
         (cls) => cls.subjectId === subject.id
@@ -39,9 +41,9 @@ export default function MarksScreen({ navigation }) {
       /* unique subjects list */
       const subjectsData = _.uniqBy(
         payload.map((obj) => obj.subject),
-        'id'
+        "id"
       );
-      setSubjects([{ id: 'all', name: 'All' }, ...subjectsData]);
+      setSubjects([{ id: "all", name: "All" }, ...subjectsData]);
 
       /* flatten classes list */
       const classesData = payload.map((obj) => ({
@@ -80,7 +82,7 @@ export default function MarksScreen({ navigation }) {
         title={item.name}
         rippleColor={colors.darkBlue}
         onPress={() =>
-          navigation.navigate('ClassDetails', { classSubject: item })
+          navigation.navigate("ClassDetails", { classSubject: item })
         }
         style={{ ...styles.classItem, backgroundColor: colors.lightBlue }}
         right={(props) => <List.Icon {...props} icon="chevron-right" />}
@@ -90,20 +92,146 @@ export default function MarksScreen({ navigation }) {
 
   return (
     <StyledScreen style={styles.container}>
-      <View style={styles.horizontalFlatlistContainer}>
-        <FlatList
-          data={subjects}
-          renderItem={renderSubjectItem}
-          horizontal
-          contentContainerStyle={styles.horizontalFlatlist}
-        />
-      </View>
+      {isLoading ? (
+        <View style={{ flexDirection: "row" }}>
+          <ContentLoader
+            tHeight={40}
+            tWidth={70}
+            pRows={0}
+            titleStyles={{ borderRadius: 15 }}
+            containerStyles={{ width: 80 }}
+          />
+          <ContentLoader
+            tHeight={40}
+            tWidth={70}
+            pRows={0}
+            titleStyles={{ borderRadius: 15 }}
+            containerStyles={{ width: 80 }}
+          />
+          <ContentLoader
+            tHeight={40}
+            tWidth={70}
+            pRows={0}
+            titleStyles={{ borderRadius: 15 }}
+            containerStyles={{ width: 80 }}
+          />
+          <ContentLoader
+            tHeight={40}
+            tWidth={70}
+            pRows={0}
+            titleStyles={{ borderRadius: 15 }}
+            containerStyles={{ width: 80 }}
+          />
+        </View>
+      ) : (
+        <View style={styles.horizontalFlatlistContainer}>
+          <FlatList
+            data={subjects}
+            renderItem={renderSubjectItem}
+            horizontal
+            contentContainerStyle={styles.horizontalFlatlist}
+          />
+        </View>
+      )}
+
       <Title style={styles.title}>Classes</Title>
-      <FlatList
-        contentContainerStyle={styles.flatlist}
-        data={classes}
-        renderItem={renderClassItem}
-      />
+      {isLoading ? (
+        <>
+          <View
+            style={{
+              backgroundColor: "#fff",
+            }}
+          >
+            <ContentLoader
+              tHeight={70}
+              tWidth={SCREEN_WIDTH - 68}
+              pRows={0}
+              titleStyles={{ borderRadius: 10 }}
+            />
+          </View>
+          <View
+            style={{
+              backgroundColor: "#fff",
+            }}
+          >
+            <ContentLoader
+              tHeight={70}
+              tWidth={SCREEN_WIDTH - 68}
+              pRows={0}
+              titleStyles={{ borderRadius: 10 }}
+            />
+          </View>
+          <View
+            style={{
+              backgroundColor: "#fff",
+            }}
+          >
+            <ContentLoader
+              tHeight={70}
+              tWidth={SCREEN_WIDTH - 68}
+              pRows={0}
+              titleStyles={{ borderRadius: 10 }}
+            />
+          </View>
+          <View
+            style={{
+              backgroundColor: "#fff",
+            }}
+          >
+            <ContentLoader
+              tHeight={70}
+              tWidth={SCREEN_WIDTH - 68}
+              pRows={0}
+              titleStyles={{ borderRadius: 10 }}
+            />
+          </View>
+          <View
+            style={{
+              backgroundColor: "#fff",
+              marginTop: 20,
+            }}
+          >
+            <ContentLoader
+              tHeight={70}
+              tWidth={SCREEN_WIDTH - 68}
+              pRows={0}
+              titleStyles={{ borderRadius: 10 }}
+            />
+          </View>
+          <View
+            style={{
+              backgroundColor: "#fff",
+              marginTop: 20,
+            }}
+          >
+            <ContentLoader
+              tHeight={70}
+              tWidth={SCREEN_WIDTH - 68}
+              pRows={0}
+              titleStyles={{ borderRadius: 10 }}
+            />
+          </View>
+          <View
+            style={{
+              backgroundColor: "#fff",
+              marginTop: 20,
+            }}
+          >
+            <ContentLoader
+              tHeight={70}
+              tWidth={SCREEN_WIDTH - 68}
+              pRows={0}
+              titleStyles={{ borderRadius: 10 }}
+            />
+          </View>
+        </>
+      ) : (
+        <FlatList
+          contentContainerStyle={styles.flatlist}
+          data={classes}
+          renderItem={renderClassItem}
+        />
+      )}
     </StyledScreen>
   );
 }
@@ -117,7 +245,7 @@ const styles = StyleSheet.create({
     height: 40,
     marginHorizontal: -24,
     borderTopEndRadius: 9,
-    overflow: 'hidden',
+    overflow: "hidden",
   },
   horizontalFlatlist: {
     flexGrow: 1,
@@ -129,7 +257,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 24,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginVertical: 12,
   },
   flatlist: {
