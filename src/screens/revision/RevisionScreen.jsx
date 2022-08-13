@@ -59,38 +59,34 @@ export default function RevisionScreen() {
     const { data } = await revisionAPI.getAll(token);
     const revisionClasses = formatLessonsIntoClasses(data.revision_class);
     setSubjects(revisionClasses);
-    console.log({ revisionClasses });
   };
 
-  const confirmSendEmail = async (item) => {
-    try {
-      const savedUser = await AsyncStorage.getItem('user');
-      const user = JSON.parse(savedUser);
-      Alert.alert(
-        'Confirm send',
-        `Send the ${item.name_subject} revision class schedule to "${user.email}"?`,
-        [
-          {
-            text: 'Cancel',
-            style: 'cancel',
-          },
-          {
-            text: 'Send',
-            onPress: () => sendEmail(item),
-          },
-        ],
+  const confirmSendEmail = async ({ item, email }) => {
+    Alert.alert(
+      'Confirm send',
+      `Send the ${item.name_subject} revision class schedule to "${email}"?`,
+      [
         {
-          cancelable: true,
-        }
-      );
-    } catch (error) {
-      console.error(error);
-    }
+          text: 'Cancel',
+          style: 'cancel',
+        },
+        {
+          text: 'Send',
+          onPress: () => sendEmail(item),
+        },
+      ],
+      {
+        cancelable: true,
+      }
+    );
   };
 
   const sendEmail = async (item) => {};
 
-  const renderSubjectItem = (item) => {
+  const renderSubjectItem = async (item) => {
+    const savedUser = await AsyncStorage.getItem('user');
+    const user = JSON.parse(savedUser);
+
     return (
       <List.Accordion id={item.id_subject} title={item.name_subject}>
         <View style={styles.accordionContent}>
@@ -118,12 +114,14 @@ export default function RevisionScreen() {
               </View>
             </View>
           ))}
-          <IconButton
-            onPress={() => confirmSendEmail(item)}
-            icon="inbox-arrow-down"
-            color={colors.secondary}
-            style={styles.sendEmailBtn}
-          />
+          {user.role === 'STUDENT' && (
+            <IconButton
+              onPress={() => confirmSendEmail({ item, email })}
+              icon="inbox-arrow-down"
+              color={colors.secondary}
+              style={styles.sendEmailBtn}
+            />
+          )}
         </View>
       </List.Accordion>
     );
