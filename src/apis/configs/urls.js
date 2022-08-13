@@ -7,10 +7,11 @@ export default {
 
   /* grade */
   grade: 'grade/index',
-  
+  gradeFamily: 'grade/family',
+
   /* student */
   student: 'student/list',
-  
+
   /* subject */
   getClassSubject: "grade/get-class-subject",
   getSubject: "grade/get-subject",

@@ -14,6 +14,7 @@ import RevisionScreen from '../screens/revision/RevisionScreen';
 import SettingsScreen from '../screens/settings/SettingsScreen';
 import FeedbackScreen from '../screens/settings/FeedbackScreen';
 import ProfileScreen from '../screens/settings/ProfileScreen';
+import ReportCardScreen from "../screens/report-card/ReportCardScreen";
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -74,7 +75,7 @@ export default function RootStack({ route }) {
         </>
       )}
       {[ROLES.STUDENT, ROLES.PARENT].includes(role) && (
-        <Tab.Screen name="ReportCard" component={HomeScreen} />
+        <Tab.Screen name="ReportCard" component={ReportCardScreen} />
       )}
       {[ROLES.STUDENT, ROLES.TEACHER].includes(role) && (
         <>

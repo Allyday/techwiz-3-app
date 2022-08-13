@@ -8,6 +8,7 @@ const theme = {
     ...DefaultTheme.colors,
     primary: '#fd3667',
     secondary: '#473f97',
+    veryLightGrey: '#f4f5f6',
     lightBeige: '#fff1ec',
     lightPink: '#ffd4d4',
     lightGreen: '#d4ffea',

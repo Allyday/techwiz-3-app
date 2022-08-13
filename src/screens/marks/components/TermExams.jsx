@@ -27,7 +27,7 @@ export default function TermExams({ classSubject, students, term }) {
       subject_id: classSubject.subjectId,
       term,
     };
-    const { data } = await gradeAPI.getAll(token, params);
+    const { data } = await gradeAPI.getByClassSubject(token, params);
     const { payload } = data;
     setExams(payload);
   };
