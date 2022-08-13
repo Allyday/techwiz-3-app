@@ -6,7 +6,7 @@ export default {
   verifyOTP: "verifyOTP",
 
   /* grade */
-  grade: 'grade',
+  grade: 'grade/index',
   
   /* student */
   student: 'student/list',

@@ -39,6 +39,7 @@ export default function TermExams({ classSubject, students, term }) {
     );
     const studentsWithGrades = _.sortBy(_.values(mergedStudents), 'name');
 
+    exam.studentGrades = studentsWithGrades;
     exam.studentCount = studentsWithGrades.length;
     exam.studentHasGradeCount = exam.grades.length;
     exam.name = examNameMap[exam.exam_name];
@@ -54,7 +55,7 @@ export default function TermExams({ classSubject, students, term }) {
         title={exam.name}
         description={`${exam.studentHasGradeCount} / ${exam.studentCount} completed`}
       >
-        {studentsWithGrades.map(renderStudentGrade)}
+        {exam.studentGrades.map(renderStudentGrade)}
       </List.Accordion>
     );
   };

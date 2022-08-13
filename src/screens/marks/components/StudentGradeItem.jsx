@@ -35,7 +35,9 @@ export default function StudentGradeItem({ student, exam }) {
         <Text>{student.name}</Text>
         <View style={styles.gradeInfoContainer}>
           <Text style={styles.examDate}>
-            {moment(student.exam_date).format('DD/MM/YYYY')}
+            {student.exam_date
+              ? moment(student.exam_date).format('DD/MM/YYYY')
+              : ''}
           </Text>
           <Text style={[styles.grade, { color: colors.secondary }]}>
             {student.grade ?? '-'} <Text style={styles.gradeSubtitle}>/10</Text>
