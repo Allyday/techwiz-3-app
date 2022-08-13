@@ -4,7 +4,7 @@ import { Avatar, Text, Title, useTheme } from "react-native-paper";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import moment from "moment";
 import ContentLoader from "react-native-easy-content-loader";
-const SCREEN_HEIGHT = Dimensions.get("window").height;
+
 const SCREEN_WIDTH = Dimensions.get("window").width;
 export default function StudentInfo() {
   const { colors } = useTheme();
@@ -19,9 +19,7 @@ export default function StudentInfo() {
     setLoading(true);
     const savedStudent = await AsyncStorage.getItem("user");
     setStudent(JSON.parse(savedStudent));
-    setTimeout(() => {
-      setLoading(false);
-    }, 1000);
+    setLoading(false);
   };
 
   return (

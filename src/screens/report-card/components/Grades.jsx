@@ -6,7 +6,7 @@ import ContentLoader from "react-native-easy-content-loader";
 
 import { gradeAPI } from "../../../apis";
 import { useToken } from "../../../hooks/useToken";
-const SCREEN_HEIGHT = Dimensions.get("window").height;
+
 const SCREEN_WIDTH = Dimensions.get("window").width;
 const examGradeWeight = {
   ASSIGNMENT: 0.2,
@@ -49,9 +49,7 @@ export default function Grades({ term }) {
       console.log(error);
       // console.log(JSON.stringify(error));
     } finally {
-      setTimeout(() => {
-        setLoading(false);
-      }, 1000);
+      setLoading(false);
     }
   };
 
