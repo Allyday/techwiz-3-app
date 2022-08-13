@@ -1,11 +1,13 @@
 import { useLayoutEffect } from 'react';
-import { Image, StyleSheet } from 'react-native';
+import { View, Image, StyleSheet } from 'react-native';
+import { useTheme } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { useToken } from '../../hooks/useToken';
 
 export default function SplashScreen({ navigation }) {
   const [token] = useToken();
+  const { colors } = useTheme();
 
   useLayoutEffect(() => {
     checkIsSignedIn();
@@ -23,10 +25,9 @@ export default function SplashScreen({ navigation }) {
   };
 
   return (
-      <Image
-        style={styles.logo}
-        source={require('../../assets/splash.png')}
-      />
+    <View style={{ flex: 1, backgroundColor: colors.secondary }}>
+      <Image style={styles.logo} source={require('../../assets/splash.png')} />
+    </View>
   );
 }
 
