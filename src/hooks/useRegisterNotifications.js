@@ -23,7 +23,8 @@ const registerPushNotifications = async () => {
     console.log(token);
     return { token, permissionStatus };
   } else {
-    alert('Must use physical device for Push Notifications');
+    console.warn('Must use physical device for Push Notifications');
+    // alert('Must use physical device for Push Notifications');
   }
 };
 
