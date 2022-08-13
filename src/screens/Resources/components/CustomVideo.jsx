@@ -59,7 +59,9 @@ export default function CustomVideo({ source, videoStyle, autoPlay = false }) {
         ref={videoPlayer}
         style={videoStyle}
         source={source}
-        // posterSource={posterSource}
+        posterSource={{
+          uri: "https://www.kickassfacts.com/wp-content/uploads/2018/07/loading-game-life.jpg",
+        }}
         usePoster={true}
         resizeMode="stretch"
         // orientation={'portrait'}

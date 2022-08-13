@@ -5,12 +5,15 @@ import {
   Alert,
   Platform,
   TouchableOpacity,
+  View,
 } from "react-native";
 import { List } from "react-native-paper";
 import { AntDesign } from "@expo/vector-icons";
 import { FontAwesome5 } from "@expo/vector-icons";
+import { useToken } from "../../hooks/useToken";
 
 import StyledScreen from "../../components/wrappers/StyledScreen";
+import helplinesAPI from "../../apis/helplinesAPI";
 const DataHelpline = [
   {
     title: "title test",
@@ -93,6 +96,24 @@ const DataHelpline = [
 ];
 
 export default function HelplinesScreen({ navigation }) {
+  const [dsHelpline, setHelpline] = React.useState([]);
+  const [isLoading, setIsLoading] = React.useState(false);
+  const [token] = useToken();
+
+  React.useEffect(() => {
+    const getData = async () => {
+      const resHelpline = await helplinesAPI.getAll(token);
+      if (resHelpline.data.data.length > 0) {
+        const { data } = resHelpline.data;
+        setHelpline(data);
+        setIsLoading(true);
+      } else {
+        console.log("sai mật khẩu rồi mày ơi");
+      }
+    };
+    getData();
+  }, []);
+
   const callNumber = (phone) => {
     console.log("callNumber ----> ", phone);
     let phoneNumber = phone;
@@ -114,7 +135,7 @@ export default function HelplinesScreen({ navigation }) {
   return (
     <StyledScreen scrollable style={styles.container}>
       <List.Accordion
-        style={{ backgroundColor: "#fff" }}
+        style={{ backgroundColor: "#fff", borderTopRightRadius: 30 }}
         title="Teacher"
         titleStyle={{
           color: "#473f97",
@@ -128,80 +149,84 @@ export default function HelplinesScreen({ navigation }) {
           />
         )}
       >
-        {DataHelpline.map(
-          (v, k) =>
-            v.type == "teacher" && (
-              <List.Item
-                style={{
-                  marginLeft: 28,
-                  backgroundColor: "#d4f5ff",
-                  marginRight: 28,
-                  borderRadius: 12,
-                  marginBottom: 10,
-                }}
-                title={v.name}
-                description={v.title + " | " + v.phone}
-                right={() => (
-                  <AntDesign
-                    style={{ marginTop: 12, marginRight: 8 }}
-                    name="phone"
-                    size={24}
-                    color="#473f97"
-                  />
-                )}
-              />
-            )
-        )}
-      </List.Accordion>
-      <List.Accordion
-        style={{ backgroundColor: "#fff" }}
-        title="Staff"
-        titleStyle={{
-          color: "#473f97",
-        }}
-        left={() => (
-          <FontAwesome5
-            style={{ marginHorizontal: 12 }}
-            name="user-tie"
-            size={24}
-            color="#473f97"
-          />
-        )}
-      >
-        {DataHelpline.map(
-          (v, k) =>
-            v.type == "admin" && (
-              <List.Item
-                style={{
-                  marginLeft: 28,
-                  backgroundColor: "#ffd4d4",
-                  marginRight: 28,
-                  borderRadius: 12,
-                  marginBottom: 10,
-                }}
-                title={v.name}
-                description={v.title + " | " + v.phone}
-                right={() => (
-                  <TouchableOpacity onPress={() => callNumber(v.phone)}>
+        {isLoading &&
+          dsHelpline.map(
+            (v, k) =>
+              v.type == "TEACHER" && (
+                <List.Item
+                  style={{
+                    marginLeft: 28,
+                    backgroundColor: "#d4f5ff",
+                    marginRight: 28,
+                    borderRadius: 12,
+                    marginBottom: 10,
+                  }}
+                  title={v.name}
+                  description={v.title + " | " + v.phone}
+                  right={() => (
                     <AntDesign
                       style={{ marginTop: 12, marginRight: 8 }}
                       name="phone"
                       size={24}
                       color="#473f97"
                     />
-                  </TouchableOpacity>
-                )}
-              />
-            )
-        )}
+                  )}
+                />
+              )
+          )}
       </List.Accordion>
+      <View style={{ marginBottom: 30, borderTopRightRadius: 30 }}>
+        <List.Accordion
+          style={{ backgroundColor: "#fff" }}
+          title="Staff"
+          titleStyle={{
+            color: "#473f97",
+          }}
+          left={() => (
+            <FontAwesome5
+              style={{ marginHorizontal: 12 }}
+              name="user-tie"
+              size={24}
+              color="#473f97"
+            />
+          )}
+        >
+          {isLoading &&
+            dsHelpline.map(
+              (v, k) =>
+                v.type == "STAFF" && (
+                  <List.Item
+                    style={{
+                      marginLeft: 28,
+                      backgroundColor: "#ffd4d4",
+                      marginRight: 28,
+                      borderRadius: 12,
+                      marginBottom: 10,
+                    }}
+                    title={v.name}
+                    description={v.title + " | " + v.phone}
+                    right={() => (
+                      <TouchableOpacity onPress={() => callNumber(v.phone)}>
+                        <AntDesign
+                          style={{ marginTop: 12, marginRight: 8 }}
+                          name="phone"
+                          size={24}
+                          color="#473f97"
+                        />
+                      </TouchableOpacity>
+                    )}
+                  />
+                )
+            )}
+        </List.Accordion>
+      </View>
     </StyledScreen>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    paddingTop: 18,
+    paddingTop: 24,
     borderTopRightRadius: 30,
   },
   horizontalFlatlistContainer: {

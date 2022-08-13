@@ -6,11 +6,11 @@ export default {
   verifyOTP: "verifyOTP",
 
   /* grade */
-  grade: 'grade/index',
-  gradeFamily: 'grade/family',
+  grade: "grade/index",
+  gradeFamily: "grade/family",
 
   /* student */
-  student: 'student/list',
+  student: "student/list",
 
   /* subject */
   getClassSubject: "grade/get-class-subject",
@@ -19,7 +19,9 @@ export default {
   studyResource: "studyresource",
   /* getProfileUser */
   getProfileUser: "user/",
+  /* helplines */
+  helplines: "helplines/",
 
   /* system */
-  notification: 'notification/',
+  notification: "notification/",
 };

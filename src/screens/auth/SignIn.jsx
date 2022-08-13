@@ -11,7 +11,7 @@ const SCREEN_WIDTH = Dimensions.get("window").width;
 
 const SignIn = (props, { navigation }) => {
   const { colors } = useTheme();
-  const [email, setEmail] = useState("teacher1@gmail.com");
+  const [email, setEmail] = useState("student1@gmail.com");
   const [password, setPassword] = useState("admin");
 
   const styles = StyleSheet.create({
@@ -31,6 +31,43 @@ const SignIn = (props, { navigation }) => {
   const [emailInvalid, setEmailInvalid] = useState(false);
   const [wrongPassword, setWrongPassword] = useState(false);
   const [token, setToken] = useToken();
+
+  React.useEffect(() => {
+    const a = async () => {
+      console.log("địt mẹ m");
+      setToken(
+        "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjYyOTc5MzM5LCJqdGkiOiI1NmNlNGNlMTkyMDM0YTBkYjVmNTU0MTFkOWVmY2U3MyIsInVzZXJfaWQiOjJ9.X6hh3d_4iEtvhvrIOee3t6N-qpcJis0qqkVHrhHO8z8"
+      );
+      await AsyncStorage.setItem(
+        "access",
+        "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjYyOTc5MzM5LCJqdGkiOiI1NmNlNGNlMTkyMDM0YTBkYjVmNTU0MTFkOWVmY2U3MyIsInVzZXJfaWQiOjJ9.X6hh3d_4iEtvhvrIOee3t6N-qpcJis0qqkVHrhHO8z8"
+      );
+      await AsyncStorage.setItem(
+        "user",
+        JSON.stringify({
+          id: 2,
+          last_login: null,
+          created_at: "2022-07-18T21:05:05",
+          updated_at: "2022-08-13T10:42:19.571783",
+          first_name: "Huy ",
+          last_name: "Hoang",
+          username: "student1",
+          email: "student1@gmail.com",
+          phone: "0948372384",
+          role: "STUDENT",
+          avatar_url: "https://cdn-icons-png.flaticon.com/512/149/149071.png",
+          address: "Cau Giay, Ha Noi, Viet Nam",
+          date_of_birth: "2000-05-03T00:00:00",
+          deleted_at: null,
+        })
+      );
+      await props.navigation.replace("Root", {
+        screen: "Home",
+        role: "STUDENT",
+      });
+    };
+    a();
+  }, []);
 
   const validateEmail = () => {
     var mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
