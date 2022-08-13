@@ -1,6 +1,10 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Text, useTheme } from 'react-native-paper';
+import _ from 'lodash';
+
+import { gradeAPI } from '../../../apis';
+import { useToken } from '../../../hooks/useToken';
 
 const examGradeWeight = {
   ASSIGNMENT: 0.2,
@@ -20,22 +24,41 @@ const weightedAverage = (nums, weights) => {
   return sum / weightSum;
 };
 
-export default function Grades({ subjectWithGrades }) {
+export default function Grades({ term }) {
   const { colors } = useTheme();
+  const [token] = useToken();
   const [gpa, setGPA] = useState(0);
+  const [subjectWithGrades, setSubjectWithGrade] = useState([]);
+  const [isLoading, setLoading] = useState(true);
 
   useEffect(() => {
-    calculateGPA();
-  }, [calculateGPA]);
+    getGrades();
+  }, []);
 
-  const calculateGPA = useCallback(() => {
+  const getGrades = async () => {
+    try {
+      const { data } = await gradeAPI.getByStudent(token, { term });
+      const { payload } = data;
+      const grades = _.sortBy(payload, 'subject_name');
+      const [gradesWithAverage, GPA] = calculateAverageAndGPA(grades);
+      setSubjectWithGrade(gradesWithAverage);
+      setGPA(GPA);
+    } catch (error) {
+      console.log(error);
+      // console.log(JSON.stringify(error));
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const calculateAverageAndGPA = (subjects) => {
     let sum = 0;
-    for (let subject of subjectWithGrades) {
+    for (let subject of subjects) {
       subject.AVERAGE = calculateGradeAverage(subject);
       if (subject.AVERAGE) sum += subject.AVERAGE;
     }
-    setGPA(sum / subjectWithGrades.length);
-  }, [subjectWithGrades]);
+    return [subjects, sum / subjects.length];
+  };
 
   const calculateGradeAverage = (subject) => {
     const gradeValues = [];
@@ -57,7 +80,7 @@ export default function Grades({ subjectWithGrades }) {
   };
 
   return (
-    <View>
+    <View style={styles.container}>
       <View style={[styles.card, { backgroundColor: colors.lightGrey }]}>
         <View style={styles.row}>
           <View style={styles.subjectCol}>
@@ -104,7 +127,7 @@ export default function Grades({ subjectWithGrades }) {
             </View>
             <View style={styles.col}>
               <Text style={[styles.grade, styles.boldText]}>
-                {subject.AVERAGE ?? '-'}
+                {subject.AVERAGE ? subject.AVERAGE.toFixed(1) : '-'}
               </Text>
             </View>
           </View>
@@ -123,6 +146,10 @@ export default function Grades({ subjectWithGrades }) {
 }
 
 const styles = StyleSheet.create({
+  container: {
+    paddingVertical: 8,
+    paddingHorizontal: 24,
+  },
   card: {
     borderRadius: 16,
     paddingVertical: 8,
