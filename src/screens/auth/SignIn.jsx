@@ -49,6 +49,7 @@ const SignIn = (props, { navigation }) => {
     if (checkEmail) {
       try {
         const resLogin = await authAPI.login({ email, password });
+        console.log(resLogin);
         if (resLogin.data.success) {
           const { access, user } = resLogin.data.data;
           setToken(access);

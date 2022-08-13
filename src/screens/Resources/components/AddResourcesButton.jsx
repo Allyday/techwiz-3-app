@@ -77,7 +77,7 @@ export default function AddResourcesButton() {
           },
           token
         );
-        if (resAddResourcesAPI.data.success) {
+        if (resAddResourcesAPI.data.data) {
           setIsLoadingButton(false);
           setModalVisible(false);
         } else {
