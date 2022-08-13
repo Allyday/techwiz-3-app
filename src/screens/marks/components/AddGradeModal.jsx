@@ -68,7 +68,7 @@ export default function AddGradeModal({ subject }) {
       description: 'placeholder',
       type_exam: exam.exam_name,
       term: exam.term,
-      exam_date: moment().format('YYYY-DD-MM'),
+      exam_date: moment().format('YYYY-MM-DD'),
       subject_id: subject.id,
       student_id: student.id,
     };
