@@ -28,4 +28,6 @@ export default {
 
   /* system */
   notification: "notification/",
+  /* send emails */
+  sendReportCard: 'send-report-card',
 };
