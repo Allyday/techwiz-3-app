@@ -1,12 +1,12 @@
 import _ from "lodash";
 import { useEffect, useState } from "react";
-import { ScrollView } from "react-native";
+import { ScrollView, View } from "react-native";
 import { List } from "react-native-paper";
+import ContentLoader from "react-native-easy-content-loader";
 
 import { gradeAPI } from "../../../apis";
 import { useToken } from "../../../hooks/useToken";
 import StudentGradeItem from "./StudentGradeItem";
-import ContentLoader from "react-native-easy-content-loader";
 
 export const examNameMap = {
   ASSIGNMENT: "Assignment",
@@ -68,18 +68,52 @@ export default function TermExams({ classSubject, students, term }) {
       {isLoading ? (
         <View
           style={{
-            paddingRight: 16,
-            backgroundColor: "#fff",
-            marginTop: 10,
+            alignItems: 'center',
             paddingVertical: 16,
           }}
         >
-          <ContentLoader
-            tHeight={72}
-            tWidth={SCREEN_WIDTH - 48}
-            pRows={0}
-            titleStyles={{ borderRadius: 12 }}
-          />
+          <View style={{height: 70}}>
+            <ContentLoader
+              tHeight={18}
+              tWidth={100}
+              pRows={0}
+              titleStyles={{ borderRadius: 12 }}
+            />
+            <ContentLoader
+              tHeight={10}
+              tWidth={130}
+              pRows={0}
+              titleStyles={{ borderRadius: 12 }}
+            />
+          </View>
+          <View style={{height: 70}}>
+            <ContentLoader
+              tHeight={18}
+              tWidth={80}
+              pRows={0}
+              titleStyles={{ borderRadius: 12 }}
+            />
+            <ContentLoader
+              tHeight={10}
+              tWidth={130}
+              pRows={0}
+              titleStyles={{ borderRadius: 12 }}
+            />
+          </View>
+          <View style={{height: 70}}>
+            <ContentLoader
+              tHeight={18}
+              tWidth={50}
+              pRows={0}
+              titleStyles={{ borderRadius: 12 }}
+            />
+            <ContentLoader
+              tHeight={10}
+              tWidth={130}
+              pRows={0}
+              titleStyles={{ borderRadius: 12 }}
+            />
+          </View>
         </View>
       ) : (
         <List.AccordionGroup>{exams.map(renderExams)}</List.AccordionGroup>
