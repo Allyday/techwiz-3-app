@@ -23,6 +23,7 @@ export default function AddGradeModal({ subject }) {
   const { colors } = useTheme();
   const {
     exam,
+    setExam,
     isGradeModalVisible,
     setGradeModalVisible,
     student,
@@ -77,8 +78,16 @@ export default function AddGradeModal({ subject }) {
       setIsLoading(true);
       const { data } = await gradeAPI.add(token, payload);
       // update list ui
-      student.grade = data.payload.mark;
-      student.exam_date = data.payload.exam_date;
+      if (!student.grade)
+        setExam({
+          ...exam,
+          studentHasGradeCount: exam.studentHasGradeCount + 1,
+        });
+      setStudent({
+        ...student,
+        grade: payload.mark,
+        exam_date: payload.exam_date,
+      });
       ToastAndroid.show('Grade updated successfully!', ToastAndroid.SHORT);
     } catch (error) {
       console.log(JSON.stringify(error));

@@ -1,14 +1,44 @@
-import { useContext, useMemo } from 'react';
+import { useContext, useEffect, useMemo } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Text, TouchableRipple, useTheme } from 'react-native-paper';
 import moment from 'moment';
+import _ from 'lodash';
 
 import { GradeContext } from '../contexts/grade.context';
 
-export default function StudentGradeItem({ student, exam }) {
+export default function StudentGradeItem({
+  student,
+  exam,
+  studentHasGradeCount,
+  setStudentHasGradeCount,
+  studentGrades,
+  setStudentGrades,
+}) {
   const { colors } = useTheme();
-  const { setGradeModalVisible, setStudent, setExam } =
-    useContext(GradeContext);
+  const {
+    setGradeModalVisible,
+    setStudent,
+    setExam,
+    exam: examContext,
+    student: studentContext,
+  } = useContext(GradeContext);
+
+  /* update list.accordion subtitle */
+  useEffect(() => {
+    if (
+      examContext.studentHasGradeCount &&
+      examContext.studentHasGradeCount !== studentHasGradeCount
+    )
+      setStudentHasGradeCount(examContext.studentHasGradeCount);
+  }, [examContext.studentHasGradeCount]);
+
+  /* update list.accordion subtitle */
+  useEffect(() => {
+    const remainingStudents = studentGrades.filter(
+      (std) => std.id !== studentContext.id
+    );
+    setStudentGrades(_.sortBy([...remainingStudents, studentContext], 'name'));
+  }, [studentContext]);
 
   const studentHasGrade = useMemo(
     () => student.grade !== null && student.grade !== undefined,
