@@ -15,8 +15,10 @@ const theme = {
     lightBlue: '#d4f5ff',
     lightGrey: '#e8eaec',
     darkBeige: '#ffded3',
+    darkGreen: '#76ffbc',
     darkBlue: '#76dfff',
     darkGrey: '#ced2d6',
+    veryDarkGrey: '#a0a7af',
   },
 };
 

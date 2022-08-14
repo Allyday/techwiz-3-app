@@ -1,11 +1,19 @@
 import { useLayoutEffect, useState } from 'react';
 import { Alert, StyleSheet, View } from 'react-native';
-import { Button, List, Text, Title, useTheme } from 'react-native-paper';
+import {
+  Button,
+  List,
+  Text,
+  Title,
+  TouchableRipple,
+  useTheme,
+} from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import StyledScreen from '../../components/wrappers/StyledScreen';
 import { revisionAPI, systemAPI } from '../../apis';
 import { useToken } from '../../hooks/useToken';
+import UpdateScheduleModal from './components/UpdateScheduleModal';
 
 const formatLessonsIntoClasses = (lessons) => {
   const classes = [];
@@ -50,6 +58,9 @@ export default function RevisionScreen({ navigation }) {
   const [subjects, setSubjects] = useState([]);
   const [user, setUser] = useState({});
   const [isLoading, setLoading] = useState(true);
+  const [currentSubject, setCurrentSubject] = useState({ lessons: [] });
+  const [currentLesson, setCurrentLesson] = useState({});
+  const [isScheduleModalVisible, setScheduleModalVisible] = useState(false);
   const [token] = useToken();
 
   /* set header button */
@@ -109,33 +120,50 @@ export default function RevisionScreen({ navigation }) {
     await systemAPI.sendInfoRevision(token);
   };
 
+  const openScheduleModal = ({ subject, lesson }) => {
+    setCurrentSubject(subject);
+    setCurrentLesson(lesson);
+    setScheduleModalVisible(true);
+  };
+
   const renderSubjectItem = (item) => {
     return (
       <List.Accordion id={item.id_subject} title={item.name_subject}>
         <View style={styles.accordionContent}>
-          <Title style={styles.title}>Teacher </Title>
+          <View style={styles.sectionTitleContainer}>
+            <Title style={styles.title}>Teacher</Title>
+          </View>
           <Text>{item.name_teacher}</Text>
-          <Title style={styles.title}>Weekly Schedule</Title>
+          <View style={styles.sectionTitleContainer}>
+            <Title style={styles.title}>Weekly Schedule</Title>
+            {user.role === 'TEACHER' && <Text>(Tap on lesson to edit)</Text>}
+          </View>
           {item.lessons.map((lesson) => (
-            <View
+            <TouchableRipple
               key={`${item.id_subject}${lesson.id}`}
+              {...(user.role === 'TEACHER' && {
+                onPress: () => openScheduleModal({ subject: item, lesson }),
+              })}
+              rippleColor={colors.darkGreen}
               style={[
-                styles.lessonItem,
+                styles.lessonItemContainer,
                 { backgroundColor: colors.lightGreen },
               ]}
             >
-              <Title style={styles.lessonInfoContainer}>
-                {lesson.day_of_week}
-              </Title>
-              <View style={styles.verticalDivider} />
-              <View style={[styles.lessonInfoContainer, { flex: 3 }]}>
-                <Text style={styles.lessonTimes}>
-                  {formatTimeString(lesson.time_start)} -{' '}
-                  {formatTimeString(lesson.time_end)}
-                </Text>
-                <Text>{getDurationString(lesson)}</Text>
+              <View style={styles.lessonItem}>
+                <Title style={styles.lessonInfoContainer}>
+                  {lesson.day_of_week}
+                </Title>
+                <View style={styles.verticalDivider} />
+                <View style={[styles.lessonInfoContainer, { flex: 3 }]}>
+                  <Text style={styles.lessonTimes}>
+                    {formatTimeString(lesson.time_start)} -{' '}
+                    {formatTimeString(lesson.time_end)}
+                  </Text>
+                  <Text>{getDurationString(lesson)}</Text>
+                </View>
               </View>
-            </View>
+            </TouchableRipple>
           ))}
         </View>
       </List.Accordion>
@@ -147,6 +175,12 @@ export default function RevisionScreen({ navigation }) {
       <List.AccordionGroup>
         {subjects.map(renderSubjectItem)}
       </List.AccordionGroup>
+      <UpdateScheduleModal
+        subject={currentSubject}
+        lesson={currentLesson}
+        isVisible={isScheduleModalVisible}
+        setVisible={setScheduleModalVisible}
+      />
     </StyledScreen>
   );
 }
@@ -164,18 +198,26 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 20,
     fontWeight: 'bold',
-    marginTop: 16,
-    marginBottom: 8,
   },
   flatlist: {
     flexGrow: 1,
     paddingBottom: 12,
   },
+  sectionTitleContainer: {
+    marginTop: 16,
+    marginBottom: 8,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  lessonItemContainer: {
+    borderRadius: 12,
+    marginVertical: 8,
+    overflow: 'hidden',
+  },
   lessonItem: {
     flexDirection: 'row',
     paddingHorizontal: 16,
-    borderRadius: 12,
-    marginVertical: 8,
   },
   lessonInfoContainer: {
     flex: 2,
