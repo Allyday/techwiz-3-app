@@ -126,13 +126,7 @@ const Verify = (props, { navigation }) => {
               keyboardType="numeric"
             />
           </View>
-          {/* <Button
-            onPress={() => props.setStatusLogin(0)}
-            labelStyle={{ fontSize: 15 }}
-            style={{ alignItems: "flex-start", marginLeft: -15 }}
-          >
-            Send Again
-          </Button> */}
+          {/* UPDATE SAU */}
           <HelperText type="error" visible={valid}>
             Sai OTP
           </HelperText>

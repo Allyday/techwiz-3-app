@@ -124,6 +124,51 @@ export default function Resources({ navigation }) {
           {value.item.link}
         </Text>
       </View>
+    ) : value.item.type == "WEB" ? (
+      <List.Item
+        title={() => (
+          <Text numberOfLines={1} style={{ fontSize: 16, fontWeight: "800" }}>
+            {value.item.name}
+          </Text>
+        )}
+        description={() => <Text numberOfLines={1}>{value.item.link}</Text>}
+        left={() => (
+          <TouchableOpacity
+            style={{
+              width: 50,
+              height: 60,
+              justifyContent: "center",
+              alignItems: "center",
+              backgroundColor: "#fff",
+              borderRadius: 5,
+              borderColor: "#cccbd9",
+              borderWidth: 1,
+            }}
+          >
+            <FontAwesome5
+              name={
+                value.item.type == "WEB"
+                  ? "display"
+                  : value.item.type == "MP4"
+                  ? "file-video"
+                  : value.item.type == "IMAGE"
+                  ? "file-image"
+                  : "file-word"
+              }
+              size={24}
+              color={colors.secondary}
+            />
+          </TouchableOpacity>
+        )}
+        style={{
+          padding: 16,
+          marginVertical: 6,
+          backgroundColor: colors.lightPink,
+          borderRadius: 12,
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      />
     ) : (
       <List.Item
         title={() => (
@@ -376,22 +421,136 @@ export default function Resources({ navigation }) {
           renderTabBar={renderTabBar}
         />
       ) : (
-        <View
-          style={{
-            paddingRight: 16,
-            backgroundColor: "#fff",
-            marginTop: 10,
-            paddingVertical: 16,
-          }}
-        >
-          <ContentLoader
-            active
-            avatar
-            aSize={60}
-            pRows={1}
-            pWidth={[100]}
-            aShape={"square"}
-          />
+        <View style={{ margin: 15 }}>
+          <View
+            style={{
+              flexDirection: "row",
+              marginLeft: -12,
+              marginRight: -24,
+              marginBottom: -11,
+            }}
+          >
+            <ContentLoader
+              tHeight={40}
+              tWidth={65}
+              pRows={0}
+              titleStyles={{ borderRadius: 16 }}
+              containerStyles={{ width: 75 }}
+            />
+            <ContentLoader
+              tHeight={40}
+              tWidth={70}
+              pRows={0}
+              titleStyles={{ borderRadius: 16 }}
+              containerStyles={{ width: 80 }}
+            />
+            <ContentLoader
+              tHeight={40}
+              tWidth={70}
+              pRows={0}
+              titleStyles={{ borderRadius: 16 }}
+              containerStyles={{ width: 80 }}
+            />
+            <ContentLoader
+              tHeight={40}
+              tWidth={70}
+              pRows={0}
+              titleStyles={{ borderRadius: 16 }}
+              containerStyles={{ width: 80 }}
+            />
+            <ContentLoader
+              tHeight={40}
+              tWidth={70}
+              pRows={0}
+              titleStyles={{ borderRadius: 16 }}
+              containerStyles={{ width: 80 }}
+            />
+          </View>
+          <View
+            style={{
+              paddingRight: 16,
+              backgroundColor: "#fff",
+              marginTop: 10,
+              paddingVertical: 16,
+            }}
+          >
+            <ContentLoader
+              active
+              avatar
+              aSize={60}
+              pRows={1}
+              pWidth={[100]}
+              aShape={"square"}
+            />
+          </View>
+          <View
+            style={{
+              paddingRight: 16,
+              backgroundColor: "#fff",
+              marginTop: 10,
+              paddingVertical: 16,
+            }}
+          >
+            <ContentLoader
+              active
+              avatar
+              aSize={60}
+              pRows={1}
+              pWidth={[100]}
+              aShape={"square"}
+            />
+          </View>
+          <View
+            style={{
+              paddingRight: 16,
+              backgroundColor: "#fff",
+              marginTop: 10,
+              paddingVertical: 16,
+            }}
+          >
+            <ContentLoader
+              active
+              avatar
+              aSize={60}
+              pRows={1}
+              pWidth={[100]}
+              aShape={"square"}
+            />
+          </View>
+          <View
+            style={{
+              paddingRight: 16,
+              backgroundColor: "#fff",
+              marginTop: 10,
+              paddingVertical: 16,
+            }}
+          >
+            <ContentLoader
+              active
+              avatar
+              aSize={60}
+              pRows={1}
+              pWidth={[100]}
+              aShape={"square"}
+            />
+          </View>
+          <View
+            style={{
+              paddingRight: 16,
+              backgroundColor: "#fff",
+              marginTop: 10,
+              paddingVertical: 16,
+            }}
+          >
+            <ContentLoader
+              active
+              avatar
+              aSize={60}
+              pRows={1}
+              pWidth={[100]}
+              aShape={"square"}
+            />
+          </View>
         </View>
       )}
       {role == "TEACHER" && <AddResourcesButton />}
