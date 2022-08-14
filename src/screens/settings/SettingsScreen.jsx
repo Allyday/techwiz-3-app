@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useState } from 'react';
+import { useLayoutEffect, useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   StyleSheet,
@@ -25,22 +25,22 @@ export default function SettingsScreen({ navigation }) {
   const tabs = [
     {
       id: 1,
-      title: 'Edit Profile',
-      leftIcon: 'account-cog-outline',
+      title: 'Edit profile',
+      leftIcon: 'account-edit-outline',
       rightIcon: 'chevron-right',
       handelPress: () => navigation.navigate('Profile'),
     },
     {
       id: 2,
-      title: 'FeedBack',
-      leftIcon: 'message-alert',
+      title: 'Send feedback',
+      leftIcon: 'message-alert-outline',
       rightIcon: 'chevron-right',
       handelPress: () => navigation.navigate('Feedback'),
     },
     {
       id: 3,
-      title: 'Get Support',
-      leftIcon: 'account-question-outline',
+      title: 'Get support',
+      leftIcon: 'help-circle-outline',
       rightIcon: 'chevron-right',
       handelPress: () => {
         showAlert('hello');
@@ -49,7 +49,6 @@ export default function SettingsScreen({ navigation }) {
   ];
 
   useLayoutEffect(() => {
-    console.log('aba');
     getUserData();
   }, []);
 
@@ -116,8 +115,10 @@ export default function SettingsScreen({ navigation }) {
         key={item.id}
         title={item.title}
         onPress={item.handelPress}
-        style={{ ...styles.classItem }}
-        left={(props) => <List.Icon {...props} icon={item.leftIcon} />}
+        style={styles.classItem}
+        left={(props) => (
+          <List.Icon {...props} icon={item.leftIcon} color={colors.primary} />
+        )}
         right={(props) => <List.Icon {...props} icon={item.rightIcon} />}
       />
     );
@@ -137,7 +138,7 @@ export default function SettingsScreen({ navigation }) {
             <ContentLoader
               active
               avatar
-              aSize={40}
+              aSize={60}
               pRows={1}
               pWidth={[100]}
               aShape={'circle'}
@@ -147,9 +148,9 @@ export default function SettingsScreen({ navigation }) {
       ) : (
         <StyledScreen style={styles.container}>
           <View>
-            <View style={[styles.row, { marginBottom: 16 }]}>
+            <View style={[styles.row, { marginBottom: 16, marginTop: 12 }]}>
               <Avatar.Image
-                size={40}
+                size={60}
                 source={{ uri: user.avatar_url }}
                 style={styles.avatar}
               />
@@ -164,6 +165,15 @@ export default function SettingsScreen({ navigation }) {
               <FlatList
                 data={tabs}
                 renderItem={renderClassItem}
+                ItemSeparatorComponent={() => (
+                  <View
+                    style={{
+                      width: '100%',
+                      height: 1,
+                      backgroundColor: colors.lightGrey,
+                    }}
+                  />
+                )}
                 contentContainerStyle={styles.horizontalFlatlist}
               />
             </View>
@@ -206,8 +216,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     borderRadius: 10,
     marginBottom: 5,
-    borderBottomColor: 'gray',
-    borderBottomWidth: 1,
   },
   btnLogOut: {
     marginTop: 10,
