@@ -1,5 +1,5 @@
-import { useLayoutEffect, useState } from 'react';
-import { Alert, StyleSheet, ToastAndroid, View } from 'react-native';
+import { useLayoutEffect, useState } from "react";
+import { Alert, StyleSheet, ToastAndroid, View } from "react-native";
 import {
   Button,
   List,
@@ -7,13 +7,14 @@ import {
   Title,
   TouchableRipple,
   useTheme,
-} from 'react-native-paper';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+} from "react-native-paper";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-import StyledScreen from '../../components/wrappers/StyledScreen';
-import { revisionAPI, systemAPI } from '../../apis';
-import { useToken } from '../../hooks/useToken';
-import UpdateScheduleModal from './components/UpdateScheduleModal';
+import StyledScreen from "../../components/wrappers/StyledScreen";
+import { revisionAPI, systemAPI } from "../../apis";
+import { useToken } from "../../hooks/useToken";
+import UpdateScheduleModal from "./components/UpdateScheduleModal";
+import ContentLoader from "react-native-easy-content-loader";
 
 const formatLessonsIntoClasses = (lessons) => {
   const classes = [];
@@ -40,7 +41,7 @@ const formatLessonsIntoClasses = (lessons) => {
  * @returns HH.mm
  */
 const formatTimeString = (timeString) =>
-  timeString?.split(':').slice(0, 2).join('.');
+  timeString?.split(":").slice(0, 2).join(".");
 
 const getDurationString = ({ time_start, time_end }) => {
   const hourDiff = time_end?.slice(0, 2) - time_start?.slice(0, 2);
@@ -48,8 +49,8 @@ const getDurationString = ({ time_start, time_end }) => {
   const durationInMinutes = hourDiff * 60 + minuteDiff;
   const hour = Math.floor(durationInMinutes / 60);
   const minute = durationInMinutes % 60;
-  const hourString = hour ? hour + ' hr ' : '';
-  const minuteString = minute ? minute + ' min' : '';
+  const hourString = hour ? hour + " hr " : "";
+  const minuteString = minute ? minute + " min" : "";
   return hourString + minuteString;
 };
 
@@ -69,7 +70,7 @@ export default function RevisionScreen({ navigation }) {
       setLoading(false)
     );
 
-    if (user.role === 'STUDENT')
+    if (user.role === "STUDENT")
       navigation.setOptions({
         headerRight: () => (
           <Button
@@ -93,21 +94,21 @@ export default function RevisionScreen({ navigation }) {
   };
 
   const getUserData = async () => {
-    const savedUser = await AsyncStorage.getItem('user');
+    const savedUser = await AsyncStorage.getItem("user");
     setUser(JSON.parse(savedUser));
   };
 
   const confirmSendEmail = () => {
     Alert.alert(
-      'Confirm send',
+      "Confirm send",
       `Send revision class schedules to "${user.email}"?`,
       [
         {
-          text: 'Cancel',
-          style: 'cancel',
+          text: "Cancel",
+          style: "cancel",
         },
         {
-          text: 'Send',
+          text: "Send",
           onPress: () => sendEmail(),
         },
       ],
@@ -119,7 +120,7 @@ export default function RevisionScreen({ navigation }) {
 
   const sendEmail = async () => {
     await systemAPI.sendInfoRevision(token);
-    ToastAndroid.show('Email sent!', ToastAndroid.SHORT);
+    ToastAndroid.show("Email sent!", ToastAndroid.SHORT);
   };
 
   const openScheduleModal = ({ subject, lesson }) => {
@@ -130,49 +131,66 @@ export default function RevisionScreen({ navigation }) {
 
   const renderSubjectItem = (item) => {
     return (
-      <List.Accordion
-        key={item.id_subject}
-        id={item.id_subject}
-        title={item.name_subject}
-      >
-        <View style={styles.accordionContent}>
-          <View style={styles.sectionTitleContainer}>
-            <Title style={styles.title}>Teacher</Title>
+      <>
+        {isLoading ? (
+          <View
+            style={{
+              paddingRight: 16,
+              backgroundColor: "#fff",
+              marginTop: 10,
+              paddingVertical: 16,
+            }}
+          >
+            <ContentLoader active pRows={0} pWidth={[100]} />
           </View>
-          <Text>{item.name_teacher}</Text>
-          <View style={styles.sectionTitleContainer}>
-            <Title style={styles.title}>Weekly Schedule</Title>
-            {user.role === 'TEACHER' && <Text>(Tap on lesson to edit)</Text>}
-          </View>
-          {item.lessons.map((lesson) => (
-            <TouchableRipple
-              key={`${item.id_subject}${lesson.id}`}
-              {...(user.role === 'TEACHER' && {
-                onPress: () => openScheduleModal({ subject: item, lesson }),
-              })}
-              rippleColor={colors.darkGreen}
-              style={[
-                styles.lessonItemContainer,
-                { backgroundColor: colors.lightGreen },
-              ]}
-            >
-              <View style={styles.lessonItem}>
-                <Title style={styles.lessonInfoContainer}>
-                  {lesson.day_of_week}
-                </Title>
-                <View style={styles.verticalDivider} />
-                <View style={[styles.lessonInfoContainer, { flex: 3 }]}>
-                  <Text style={styles.lessonTimes}>
-                    {formatTimeString(lesson.time_start)} -{' '}
-                    {formatTimeString(lesson.time_end)}
-                  </Text>
-                  <Text>{getDurationString(lesson)}</Text>
-                </View>
+        ) : (
+          <List.Accordion
+            key={item.id_subject}
+            id={item.id_subject}
+            title={item.name_subject}
+          >
+            <View style={styles.accordionContent}>
+              <View style={styles.sectionTitleContainer}>
+                <Title style={styles.title}>Teacher</Title>
               </View>
-            </TouchableRipple>
-          ))}
-        </View>
-      </List.Accordion>
+              <Text>{item.name_teacher}</Text>
+              <View style={styles.sectionTitleContainer}>
+                <Title style={styles.title}>Weekly Schedule</Title>
+                {user.role === "TEACHER" && (
+                  <Text>(Tap on lesson to edit)</Text>
+                )}
+              </View>
+              {item.lessons.map((lesson) => (
+                <TouchableRipple
+                  key={`${item.id_subject}${lesson.id}`}
+                  {...(user.role === "TEACHER" && {
+                    onPress: () => openScheduleModal({ subject: item, lesson }),
+                  })}
+                  rippleColor={colors.darkGreen}
+                  style={[
+                    styles.lessonItemContainer,
+                    { backgroundColor: colors.lightGreen },
+                  ]}
+                >
+                  <View style={styles.lessonItem}>
+                    <Title style={styles.lessonInfoContainer}>
+                      {lesson.day_of_week}
+                    </Title>
+                    <View style={styles.verticalDivider} />
+                    <View style={[styles.lessonInfoContainer, { flex: 3 }]}>
+                      <Text style={styles.lessonTimes}>
+                        {formatTimeString(lesson.time_start)} -{" "}
+                        {formatTimeString(lesson.time_end)}
+                      </Text>
+                      <Text>{getDurationString(lesson)}</Text>
+                    </View>
+                  </View>
+                </TouchableRipple>
+              ))}
+            </View>
+          </List.Accordion>
+        )}
+      </>
     );
   };
 
@@ -197,13 +215,13 @@ const styles = StyleSheet.create({
     paddingBottom: 12,
   },
   sendEmailBtn: {
-    position: 'absolute',
+    position: "absolute",
     right: 24,
     top: 16,
   },
   title: {
     fontSize: 20,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   flatlist: {
     flexGrow: 1,
@@ -212,28 +230,28 @@ const styles = StyleSheet.create({
   sectionTitleContainer: {
     marginTop: 16,
     marginBottom: 8,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
   },
   lessonItemContainer: {
     borderRadius: 12,
     marginVertical: 8,
-    overflow: 'hidden',
+    overflow: "hidden",
   },
   lessonItem: {
-    flexDirection: 'row',
+    flexDirection: "row",
     paddingHorizontal: 16,
   },
   lessonInfoContainer: {
     flex: 2,
     paddingVertical: 16,
   },
-  lessonTimes: { fontWeight: '600', fontSize: 18, marginBottom: 8 },
+  lessonTimes: { fontWeight: "600", fontSize: 18, marginBottom: 8 },
   verticalDivider: {
     width: 2,
-    backgroundColor: 'white',
-    height: '100%',
+    backgroundColor: "white",
+    height: "100%",
     marginHorizontal: 16,
   },
 });
