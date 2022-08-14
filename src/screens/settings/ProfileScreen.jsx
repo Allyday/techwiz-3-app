@@ -1,13 +1,13 @@
-import { useEffect, useState, useCallback } from 'react';
-import { StyleSheet, View, Dimensions, Image, Alert } from 'react-native';
-import moment from 'moment';
-import { TextInput, Button } from 'react-native-paper';
-import { DatePickerModal } from 'react-native-paper-dates';
+import { useEffect, useState, useCallback } from "react";
+import { StyleSheet, View, Dimensions, Image, Alert } from "react-native";
+import moment from "moment";
+import { TextInput, Button } from "react-native-paper";
+import { DatePickerModal } from "react-native-paper-dates";
 
-import { userAPI } from '../../apis';
-import { useToken } from '../../hooks/useToken';
-import StyledScreen from '../../components/wrappers/StyledScreen';
-const SCREEN_WIDTH = Dimensions.get('window').width;
+import { userAPI } from "../../apis";
+import { useToken } from "../../hooks/useToken";
+import StyledScreen from "../../components/wrappers/StyledScreen";
+const SCREEN_WIDTH = Dimensions.get("window").width;
 
 export default function ProfileScreen() {
   const [token] = useToken();
@@ -15,11 +15,11 @@ export default function ProfileScreen() {
   const [open, setOpen] = useState(false);
 
   const fixedData = [
-    { name: 'email', disabled: true },
-    { name: 'first_name', disabled: false },
-    { name: 'last_name', disabled: false },
-    { name: 'address', disabled: false },
-    { name: 'phone', disabled: false },
+    { name: "email", disabled: true },
+    { name: "first_name", disabled: false },
+    { name: "last_name", disabled: false },
+    { name: "address", disabled: false },
+    { name: "phone", disabled: false },
   ];
 
   useEffect(() => {
@@ -40,7 +40,7 @@ export default function ProfileScreen() {
       const { data } = await userAPI.updateProfileUser(profileUser, token);
       const { payload } = data;
       setProfileUser(payload);
-      showAlert('Update successfully');
+      showAlert("Update successfully");
     } catch (error) {
       console.log(JSON.stringify(error));
     }
@@ -57,7 +57,7 @@ export default function ProfileScreen() {
   const onConfirm = useCallback(
     (params) => {
       setOpen(false);
-      changeProfile(params.date, 'date_of_birth');
+      changeProfile(params.date, "date_of_birth");
     },
     [setOpen]
   );
@@ -65,11 +65,11 @@ export default function ProfileScreen() {
   const showAlert = (message) =>
     Alert.alert(
       message,
-      '',
+      "",
       [
         {
-          text: 'Cancel',
-          style: 'cancel',
+          text: "Cancel",
+          style: "cancel",
         },
       ],
       {
@@ -79,7 +79,13 @@ export default function ProfileScreen() {
     );
 
   return (
-    <StyledScreen style={styles.container}>
+    <StyledScreen
+      style={styles.container}
+      contentContainerStyle={{
+        alignItems: "center",
+      }}
+      scrollable
+    >
       <View style={styles.wrapperImage}>
         <Image
           style={styles.tinyLogo}
@@ -108,7 +114,7 @@ export default function ProfileScreen() {
         error={false}
         style={styles.textInput}
         label="BirthDay"
-        value={moment(profileUser.date_of_birth).format('DD/MM/YYYY')}
+        value={moment(profileUser.date_of_birth).format("DD/MM/YYYY")}
         autoCapitalize="none"
       />
       <View style={styles.wrapperButton}>
@@ -116,7 +122,20 @@ export default function ProfileScreen() {
           onPress={() => {
             putProfile();
           }}
-          style={styles.btnStyle}
+          mode="contained"
+          uppercase={false}
+          // style={{ borderRadius: 50, overflow: "hidden" }}
+          // contentStyle={{
+          //   borderRadius: 50,
+          //   width: 300,
+          //   height: 50,
+          // }}
+          style={{
+            borderRadius: 50,
+            paddingVertical: 5,
+            marginHorizontal: 20,
+            marginBottom: 20,
+          }}
         >
           Update
         </Button>
@@ -124,7 +143,14 @@ export default function ProfileScreen() {
           onPress={() => {
             getProfile();
           }}
-          style={styles.btnStyle}
+          mode="contained"
+          uppercase={false}
+          style={{
+            borderRadius: 50,
+            paddingVertical: 5,
+            marginHorizontal: 20,
+            marginBottom: 20,
+          }}
         >
           Cancel
         </Button>
@@ -146,26 +172,25 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   wrapperColumn: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'start',
+    display: "flex",
+    alignItems: "center",
   },
   textInput: {
     width: SCREEN_WIDTH - 80,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
   },
   wrapperImage: {
     marginBottom: 15,
   },
   wrapperButton: {
     marginTop: 40,
-    width: '100%',
+    width: "100%",
+    marginBottom: 20,
   },
   btnStyle: {
     marginBottom: 20,
     borderWidth: 1,
-    borderColor: 'red',
+    borderColor: "red",
   },
   tinyLogo: {
     width: 50,
