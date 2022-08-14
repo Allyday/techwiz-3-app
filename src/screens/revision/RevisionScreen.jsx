@@ -48,11 +48,14 @@ const getDurationString = ({ time_start, time_end }) => {
 export default function RevisionScreen() {
   const { colors } = useTheme();
   const [subjects, setSubjects] = useState([]);
+  const [user, setUser] = useState({});
   const [isLoading, setLoading] = useState(true);
   const [token] = useToken();
 
   useEffect(() => {
-    Promise.all([getRevisionClasses()]).finally(() => setLoading(false));
+    Promise.all([getRevisionClasses(), getUserData()]).finally(() =>
+      setLoading(false)
+    );
   }, []);
 
   const getRevisionClasses = async () => {
@@ -61,10 +64,15 @@ export default function RevisionScreen() {
     setSubjects(revisionClasses);
   };
 
-  const confirmSendEmail = async ({ item, email }) => {
+  const getUserData = async () => {
+    const savedUser = await AsyncStorage.getItem('user');
+    setUser(JSON.parse(savedUser));
+  };
+
+  const confirmSendEmail = async (item) => {
     Alert.alert(
       'Confirm send',
-      `Send the ${item.name_subject} revision class schedule to "${email}"?`,
+      `Send the ${item.name_subject} revision class schedule to "${user.email}"?`,
       [
         {
           text: 'Cancel',
@@ -83,10 +91,7 @@ export default function RevisionScreen() {
 
   const sendEmail = async (item) => {};
 
-  const renderSubjectItem = async (item) => {
-    const savedUser = await AsyncStorage.getItem('user');
-    const user = JSON.parse(savedUser);
-
+  const renderSubjectItem = (item) => {
     return (
       <List.Accordion id={item.id_subject} title={item.name_subject}>
         <View style={styles.accordionContent}>
@@ -116,7 +121,7 @@ export default function RevisionScreen() {
           ))}
           {user.role === 'STUDENT' && (
             <IconButton
-              onPress={() => confirmSendEmail({ item, email })}
+              onPress={() => confirmSendEmail(item)}
               icon="inbox-arrow-down"
               color={colors.secondary}
               style={styles.sendEmailBtn}
