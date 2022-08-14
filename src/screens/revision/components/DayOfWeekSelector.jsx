@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { useTheme, TouchableRipple, Text } from 'react-native-paper';
 
-const daysOfWeek = [
+export const daysOfWeek = [
   'Monday',
   'Tuesday',
   'Wednesday',

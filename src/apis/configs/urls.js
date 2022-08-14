@@ -22,6 +22,7 @@ export default {
 
   /* revision */
   revision: "revision/",
+  revisionTimeTable: "revision/time-table/",
 
   /* getProfileUser */
   getProfileUser: "user/",
