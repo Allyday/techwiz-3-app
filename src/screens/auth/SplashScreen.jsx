@@ -18,12 +18,35 @@ export default function SplashScreen({ navigation }) {
     const savedUser = await AsyncStorage.getItem('user');
     if (savedToken) setToken(savedToken);
     const user = JSON.parse(savedUser);
-    if (savedToken && user)
-      navigation.replace('Root', {
-        screen: 'Home',
-        role: user.role,
-      });
-    else navigation.replace('Login');
+    if (savedToken && user) {
+      const savedInfoChild = await AsyncStorage.getItem('info_child');
+      const info_child = JSON.parse(savedInfoChild);
+
+      if (user.role === 'PARENT' && info_child) {
+        if (info_child.length === 1)
+          navigation.replace('Root', {
+            screen: 'ReportCard',
+            role: user.role,
+            params: {
+              screen: 'ReportCardScreen',
+              params: { student: info_child[0] },
+            },
+          });
+        else
+          navigation.replace('Root', {
+            screen: 'ReportCard',
+            role: user.role,
+            params: {
+              screen: 'ParentHomeScreen',
+              params: { children: info_child },
+            },
+          });
+      } else
+        navigation.replace('Root', {
+          screen: 'Home',
+          role: user.role,
+        });
+    } else navigation.replace('Login');
   };
 
   return (

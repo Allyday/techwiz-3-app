@@ -10,14 +10,15 @@ import { useToken } from '../../../hooks/useToken';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 
-export default function StudentInfo() {
+export default function StudentInfo({ studentData }) {
   const { colors } = useTheme();
   const [token] = useToken();
   const [student, setStudent] = useState({});
-  const [isLoading, setLoading] = useState(true);
+  const [isLoading, setLoading] = useState(false);
 
   useEffect(() => {
-    getStudentData();
+    if (!studentData) getStudentData(); // role === 'STUDENT'
+    else setStudent(studentData); // role === 'PARENT'
   }, []);
 
   const getStudentData = async () => {
@@ -30,9 +31,12 @@ export default function StudentInfo() {
   const confirmSendEmail = async () => {
     const savedUser = await AsyncStorage.getItem('user');
     const user = JSON.parse(savedUser);
+    const studentName =
+      student.full_name ?? `${student.first_name} ${student.last_name}`;
+
     Alert.alert(
       'Confirm send',
-      `Send ${student.first_name} ${student.last_name}'s card to "${user.email}"?`,
+      `Send ${studentName}'s report card to "${user.email}"?`,
       [
         {
           text: 'Cancel',
@@ -64,7 +68,7 @@ export default function StudentInfo() {
           <View
             style={{
               paddingLeft: 16,
-              backgroundColor: "#fff",
+              backgroundColor: '#fff',
               marginTop: 10,
             }}
           >
@@ -74,7 +78,7 @@ export default function StudentInfo() {
               aSize={40}
               pRows={1}
               pWidth={[100]}
-              aShape={"circle"}
+              aShape={'circle'}
             />
           </View>
           {/* <View
@@ -103,7 +107,8 @@ export default function StudentInfo() {
             />
             <View>
               <Title>
-                {student.first_name} {student.last_name}
+                {student.full_name ??
+                  `${student.first_name} ${student.last_name}`}
               </Title>
               <Text>Class {student.class_name}</Text>
             </View>

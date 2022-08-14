@@ -18,16 +18,17 @@ import ReportCardScreen from '../screens/report-card/ReportCardScreen';
 
 import useRegisterNotifications from '../hooks/useRegisterNotifications';
 import useNotificationListeners from '../hooks/useNotificationListeners';
+import ParentHomeScreen from '../screens/report-card/ParentHomeScreen';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 
 const tabBarConfig = {
-  ReportCard: { icon: 'flag', label: 'Report Card' },
+  ReportCard: { icon: 'list-alt', label: 'Report Card' },
   Resources: { icon: 'book', label: 'Resources' },
   Revision: { icon: 'calendar-alt', label: 'Revision' },
   Helplines: { icon: 'phone', label: 'Helplines' },
-  Marks: { icon: 'list-alt', label: 'Marks' },
+  Marks: { icon: 'home', label: 'Home' },
   Progress: { icon: 'chalkboard-teacher', label: 'Progress' },
   Settings: { icon: 'cog', label: 'Settings' },
 };
@@ -70,17 +71,21 @@ export default function RootStack({ route }) {
       drawerContent={(props) => <DrawerUser {...props} />}
     >
       {role === ROLES.TEACHER && (
-        <>
-          <Tab.Screen
-            name="Marks"
-            component={MarkStack}
-            options={{ headerShown: false }}
-          />
-          <Tab.Screen name="Progress" component={HomeScreen} />
-        </>
+        <Tab.Screen
+          name="Marks"
+          component={MarkStack}
+          options={{ headerShown: false }}
+        />
       )}
-      {[ROLES.STUDENT, ROLES.PARENT].includes(role) && (
+      {[ROLES.STUDENT].includes(role) && (
         <Tab.Screen name="ReportCard" component={ReportCardScreen} />
+      )}
+      {[ROLES.PARENT].includes(role) && (
+        <Tab.Screen
+          name="ReportCard"
+          component={ParentHomeStack}
+          options={{ headerShown: false }}
+        />
       )}
       {[ROLES.STUDENT, ROLES.TEACHER].includes(role) && (
         <>
@@ -117,12 +122,39 @@ const MarkStack = () => {
       <Stack.Screen
         name="MarksScreen"
         component={MarksScreen}
-        options={{ title: 'Marks' }}
+        options={{ title: 'Home' }}
       />
       <Stack.Screen
         name="ClassDetails"
         component={ClassDetailsScreen}
         options={{ title: 'Class Details' }}
+      />
+    </Stack.Navigator>
+  );
+};
+
+const ParentHomeStack = () => {
+  const { colors } = useTheme();
+
+  const screenOptions = ({ route }) => ({
+    headerStyle: {
+      backgroundColor: colors.secondary,
+      borderBottomStartRadius: 30, // doesnt work??
+    },
+    headerTintColor: 'white',
+  });
+
+  return (
+    <Stack.Navigator screenOptions={screenOptions}>
+      <Stack.Screen
+        name="ParentHomeScreen"
+        component={ParentHomeScreen}
+        options={{ title: 'Home' }}
+      />
+      <Stack.Screen
+        name="ReportCardScreen"
+        component={ReportCardScreen}
+        options={{ title: 'Report Card' }}
       />
     </Stack.Navigator>
   );

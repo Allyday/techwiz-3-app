@@ -26,7 +26,7 @@ const weightedAverage = (nums, weights) => {
   return sum / weightSum;
 };
 
-export default function Grades({ term }) {
+export default function Grades({ term, student }) {
   const { colors } = useTheme();
   const [token] = useToken();
   const [gpa, setGPA] = useState(0);
@@ -39,7 +39,10 @@ export default function Grades({ term }) {
 
   const getGrades = async () => {
     try {
-      const { data } = await gradeAPI.getByStudent(token, { term });
+      const { data } = await gradeAPI.getByStudent(token, {
+        term,
+        student_id: student.student_id,
+      });
       const { payload } = data;
       const grades = _.sortBy(payload, "subject_name");
       const [gradesWithAverage, GPA] = calculateAverageAndGPA(grades);

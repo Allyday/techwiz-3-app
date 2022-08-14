@@ -9,9 +9,9 @@ import { useToken } from "../../hooks/useToken";
 const SCREEN_HEIGHT = Dimensions.get("window").height;
 const SCREEN_WIDTH = Dimensions.get("window").width;
 
-const SignIn = (props, { navigation }) => {
+const SignIn = ({ setStatusLogin, navigation }) => {
   const { colors } = useTheme();
-  const [email, setEmail] = useState("student1@gmail.com");
+  const [email, setEmail] = useState("student1@yopmail.com");
   const [password, setPassword] = useState("admin");
 
   const styles = StyleSheet.create({
@@ -50,20 +50,40 @@ const SignIn = (props, { navigation }) => {
       try {
         const resLogin = await authAPI.login({ email, password });
         if (resLogin.data.success) {
-          const { access, user } = resLogin.data.data;
+          const { access, user, info_child } = resLogin.data.data;
           setToken(access);
           await AsyncStorage.setItem("access", access);
           await AsyncStorage.setItem("user", JSON.stringify(user));
-          await props.navigation.replace("Root", {
-            screen: "Home",
-            role: user.role,
-          });
+
+          if (user.role === 'PARENT') {
+            if (info_child) await AsyncStorage.setItem('info_child', JSON.stringify(info_child));
+            /* navigate straight to report card if only have 1 child */
+            if (info_child.length === 1)
+              navigation.replace('Root', {
+                screen: 'ReportCard',
+                role: user.role,
+                params: {
+                  screen: 'ReportCardScreen',
+                  params: { student: info_child[0] },
+                },
+              });
+            else
+              navigation.replace('Root', {
+                screen: 'ReportCard',
+                role: user.role,
+                params: { children: info_child },
+              });
+          } else
+            navigation.replace('Root', {
+              screen: 'Home',
+              role: user.role,
+            });
         } else {
           throw new Error("Wrong password");
         }
       } catch (error) {
         setWrongPassword(true);
-        console.log("sai mật khẩu rồi mày ơi");
+        console.log(JSON.stringify(error));
       }
     }
   };
@@ -99,7 +119,7 @@ const SignIn = (props, { navigation }) => {
           mode="contained"
           uppercase={false}
           onPress={signIn}
-          //   onPress={() => props.navigation.replace("Root", { screen: "Home" })}
+          //   onPress={() => navigation.replace("Root", { screen: "Home" })}
           style={{ borderRadius: 50, overflow: "hidden" }}
           contentStyle={{
             borderRadius: 50,
@@ -112,7 +132,7 @@ const SignIn = (props, { navigation }) => {
           Sign In
         </Button>
         <Button
-          onPress={() => props.setStatusLogin(1)}
+          onPress={() => setStatusLogin(1)}
           labelStyle={{ fontSize: 15 }}
           uppercase={false}
         >
