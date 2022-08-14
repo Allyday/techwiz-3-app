@@ -31,4 +31,7 @@ export default {
   /* send emails */
   sendReportCard: 'send-report-card',
   sendInfoRevision: 'send-info-revision',
+
+  /* send feedback */
+  sendFeedback: 'feedback',
 };

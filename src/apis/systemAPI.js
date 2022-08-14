@@ -10,4 +10,7 @@ export default {
   sendInfoRevision: async (token) => {
     return requests.post(urls.sendInfoRevision, {}, token);
   },
+  sendFeedback: async (token, data) => {
+    return requests.post(urls.sendFeedback, data, token);
+  },
 };
