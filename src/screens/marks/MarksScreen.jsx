@@ -101,7 +101,13 @@ export default function MarksScreen({ navigation }) {
     };
     return (
       <TouchableRipple
-        onPress={() => navigation.navigate('ClassDetails', { classSubject })}
+        onPress={() =>
+          navigation.navigate('ClassDetails', {
+            classSubject,
+            term,
+            examType: item.exam,
+          })
+        }
         rippleColor={colors.darkGreen}
         style={{
           backgroundColor: colors.lightGreen,
