@@ -1,13 +1,38 @@
 import { StyleSheet, Text, View, Dimensions, SafeAreaView } from "react-native";
 import { SimpleLineIcons } from "@expo/vector-icons";
-import { useTheme, Button, TextInput } from "react-native-paper";
+import { useTheme, Button, TextInput, HelperText } from "react-native-paper";
 import React, { useState } from "react";
 const SCREEN_HEIGHT = Dimensions.get("window").height;
 const SCREEN_WIDTH = Dimensions.get("window").width;
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { authAPI } from "../../apis";
 
 const Forgot = (props, { navigation }) => {
   const { colors } = useTheme();
   const [text, setText] = useState("");
+  const [passNew, setPassNew] = useState("");
+  const [valid, setValid] = React.useState(false);
+
+  const layMatKhau = async () => {
+    const getPin = await AsyncStorage.getItem("getPin");
+
+    if (text == passNew) {
+      setValid(false);
+      const resVerifyOTP = await authAPI.verifyOTP({
+        pin: JSON.parse(getPin).pin,
+        token: JSON.parse(getPin).payload.token,
+        new_password: passNew,
+        email: JSON.parse(getPin).email,
+      });
+      if (resVerifyOTP.data) {
+        props.setStatusLogin(0);
+      } else {
+        console.log(resVerifyOTP.data);
+      }
+    } else {
+      setValid(true);
+    }
+  };
 
   const styles = StyleSheet.create({
     viewInput: {
@@ -35,18 +60,23 @@ const Forgot = (props, { navigation }) => {
         <TextInput
           style={styles.textInput}
           label="Create New Password"
-          value={text}
-          onChangeText={(text) => setText(text)}
+          value={passNew}
+          secureTextEntry={true}
+          onChangeText={(text) => setPassNew(text)}
         />
+        <HelperText type="error" visible={valid}>
+          Mật khẩu không hợp lệ
+        </HelperText>
         <TextInput
           style={styles.textInput}
           label="Confim New Password"
           value={text}
+          secureTextEntry={true}
           onChangeText={(text) => setText(text)}
         />
         <Button
           mode="contained"
-          onPress={() => console.log("Pressed")}
+          onPress={() => layMatKhau()}
           style={{
             borderRadius: 50,
             width: 300,

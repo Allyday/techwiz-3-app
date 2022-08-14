@@ -1,14 +1,57 @@
 import { StyleSheet, Text, View, Dimensions, SafeAreaView } from "react-native";
 import { SimpleLineIcons } from "@expo/vector-icons";
-import { useTheme, Button, TextInput } from "react-native-paper";
+import { useTheme, Button, TextInput, HelperText } from "react-native-paper";
 import React, { useState } from "react";
+import { authAPI } from "../../apis";
 const SCREEN_HEIGHT = Dimensions.get("window").height;
 const SCREEN_WIDTH = Dimensions.get("window").width;
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Verify = (props, { navigation }) => {
   const { colors } = useTheme();
   const [text, setText] = useState("");
-  const [number, onChangeNumber] = React.useState(null);
+  const [number1, onChangeNumber1] = React.useState(null);
+  const [number2, onChangeNumber2] = React.useState(null);
+
+  const [number3, onChangeNumber3] = React.useState(null);
+
+  const [number4, onChangeNumber4] = React.useState(null);
+
+  const [number5, onChangeNumber5] = React.useState(null);
+
+  const [number6, onChangeNumber6] = React.useState(null);
+  const [passNew, setPassNew] = React.useState("adminadmin");
+  const [valid, setValid] = React.useState(false);
+
+  const verify = async () => {
+    const getPin = await AsyncStorage.getItem("getPin");
+    if (
+      `${number1}${number2}${number3}${number4}${number5}${number6}` ==
+      JSON.parse(getPin).pin
+    ) {
+      props.setStatusLogin(3);
+      setValid(false);
+      // const resVerifyOTP = await authAPI.verifyOTP({
+      //   pin: `${number1}${number2}${number3}${number4}${number5}${number6}`,
+      //   token: JSON.parse(getPin).payload.token,
+      //   new_password: passNew,
+      //   email: JSON.parse(getPin).email,
+      // });
+      // console.log(resVerifyOTP.data);
+    } else {
+      setValid(true);
+      console.log("sai otp r");
+    }
+
+    // if (resVerifyOTP.data.result == "success") {
+    //   resGetPin.data.email = email;
+    //   await AsyncStorage.setItem("getPin", JSON.stringify(resGetPin.data));
+    //   await props.setStatusLogin(2);
+    // } else {
+    //   throw new Error("Wrong password");
+    // }
+  };
+
   const styles = StyleSheet.create({
     viewInput: {
       backgroundColor: "#fff",
@@ -43,59 +86,62 @@ const Verify = (props, { navigation }) => {
             <TextInput
               underlineColor="transparent"
               style={styles.textInput}
-              onChangeText={onChangeNumber}
-              value={number}
+              onChangeText={onChangeNumber1}
+              value={number1}
               keyboardType="numeric"
             />
             <TextInput
               underlineColor="transparent"
               style={styles.textInput}
-              onChangeText={onChangeNumber}
-              value={number}
+              onChangeText={onChangeNumber2}
+              value={number2}
               keyboardType="numeric"
             />
             <TextInput
               underlineColor="transparent"
               style={styles.textInput}
-              onChangeText={onChangeNumber}
-              value={number}
+              onChangeText={onChangeNumber3}
+              value={number3}
               keyboardType="numeric"
             />
             <TextInput
               underlineColor="transparent"
               style={styles.textInput}
-              onChangeText={onChangeNumber}
-              value={number}
+              onChangeText={onChangeNumber4}
+              value={number4}
               keyboardType="numeric"
             />
             <TextInput
               underlineColor="transparent"
               style={styles.textInput}
-              onChangeText={onChangeNumber}
-              value={number}
+              onChangeText={onChangeNumber5}
+              value={number5}
               keyboardType="numeric"
             />
             <TextInput
               underlineColor="transparent"
               style={styles.textInput}
-              onChangeText={onChangeNumber}
-              value={number}
+              onChangeText={onChangeNumber6}
+              value={number6}
               keyboardType="numeric"
             />
           </View>
-          <Button
+          {/* <Button
             onPress={() => props.setStatusLogin(0)}
             labelStyle={{ fontSize: 15 }}
             style={{ alignItems: "flex-start", marginLeft: -15 }}
           >
             Send Again
-          </Button>
+          </Button> */}
+          <HelperText type="error" visible={valid}>
+            Sai OTP
+          </HelperText>
         </View>
 
         <View>
           <Button
             mode="contained"
-            onPress={() => console.log("Pressed")}
+            onPress={() => verify()}
             style={{
               borderRadius: 50,
               width: 300,

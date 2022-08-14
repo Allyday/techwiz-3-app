@@ -28,9 +28,9 @@ const SignIn = ({ setStatusLogin, navigation }) => {
       backgroundColor: "#fff",
     },
   });
-  const [emailInvalid, setEmailInvalid] = useState(false);
   const [wrongPassword, setWrongPassword] = useState(false);
   const [token, setToken] = useToken();
+  const [emailInvalid, setEmailInvalid] = useState(false);
 
   const validateEmail = () => {
     var mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
@@ -55,27 +55,31 @@ const SignIn = ({ setStatusLogin, navigation }) => {
           await AsyncStorage.setItem("access", access);
           await AsyncStorage.setItem("user", JSON.stringify(user));
 
-          if (user.role === 'PARENT') {
-            if (info_child) await AsyncStorage.setItem('info_child', JSON.stringify(info_child));
+          if (user.role === "PARENT") {
+            if (info_child)
+              await AsyncStorage.setItem(
+                "info_child",
+                JSON.stringify(info_child)
+              );
             /* navigate straight to report card if only have 1 child */
             if (info_child.length === 1)
-              navigation.replace('Root', {
-                screen: 'ReportCard',
+              navigation.replace("Root", {
+                screen: "ReportCard",
                 role: user.role,
                 params: {
-                  screen: 'ReportCardScreen',
+                  screen: "ReportCardScreen",
                   params: { student: info_child[0] },
                 },
               });
             else
-              navigation.replace('Root', {
-                screen: 'ReportCard',
+              navigation.replace("Root", {
+                screen: "ReportCard",
                 role: user.role,
                 params: { children: info_child },
               });
           } else
-            navigation.replace('Root', {
-              screen: 'Home',
+            navigation.replace("Root", {
+              screen: "Home",
               role: user.role,
             });
         } else {

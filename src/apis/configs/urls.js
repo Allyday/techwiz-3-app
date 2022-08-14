@@ -1,9 +1,11 @@
 export default {
   /* auth */
   login: "auth/login",
+  getPin: "auth/get-pin",
+
   checkMobile: "check-mobile",
   requestOTP: "requestOTP",
-  verifyOTP: "verifyOTP",
+  verifyOTP: "user/forgot-password",
 
   /* grade */
   grade: "grade/index",
@@ -19,7 +21,7 @@ export default {
   studyResource: "studyresource",
 
   /* revision */
-  revision: 'revision/',
+  revision: "revision/",
 
   /* getProfileUser */
   getProfileUser: "user/",
@@ -29,9 +31,9 @@ export default {
   /* system */
   notification: "notification/",
   /* send emails */
-  sendReportCard: 'send-report-card',
-  sendInfoRevision: 'send-info-revision',
+  sendReportCard: "send-report-card",
+  sendInfoRevision: "send-info-revision",
 
   /* send feedback */
-  sendFeedback: 'feedback',
+  sendFeedback: "feedback",
 };
