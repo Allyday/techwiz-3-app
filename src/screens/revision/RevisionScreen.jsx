@@ -40,11 +40,11 @@ const formatLessonsIntoClasses = (lessons) => {
  * @returns HH.mm
  */
 const formatTimeString = (timeString) =>
-  timeString.split(':').slice(0, 2).join('.');
+  timeString?.split(':').slice(0, 2).join('.');
 
 const getDurationString = ({ time_start, time_end }) => {
-  const hourDiff = time_end.slice(0, 2) - time_start.slice(0, 2);
-  const minuteDiff = time_end.slice(3, 5) - time_start.slice(3, 5);
+  const hourDiff = time_end?.slice(0, 2) - time_start?.slice(0, 2);
+  const minuteDiff = time_end?.slice(3, 5) - time_start?.slice(3, 5);
   const durationInMinutes = hourDiff * 60 + minuteDiff;
   const hour = Math.floor(durationInMinutes / 60);
   const minute = durationInMinutes % 60;
