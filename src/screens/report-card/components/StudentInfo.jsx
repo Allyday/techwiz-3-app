@@ -1,9 +1,15 @@
-import { useState, useEffect } from "react";
-import { View, StyleSheet, Dimensions, Alert } from "react-native";
-import { Avatar, Text, Button, Title, useTheme } from "react-native-paper";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import moment from "moment";
-import ContentLoader from "react-native-easy-content-loader";
+import { useState, useEffect } from 'react';
+import {
+  View,
+  StyleSheet,
+  Dimensions,
+  Alert,
+  ToastAndroid,
+} from 'react-native';
+import { Avatar, Text, Button, Title, useTheme } from 'react-native-paper';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import moment from 'moment';
+import ContentLoader from 'react-native-easy-content-loader';
 
 import { systemAPI } from '../../../apis';
 import { useToken } from '../../../hooks/useToken';
@@ -23,7 +29,7 @@ export default function StudentInfo({ studentData }) {
 
   const getStudentData = async () => {
     setLoading(true);
-    const savedStudent = await AsyncStorage.getItem("user");
+    const savedStudent = await AsyncStorage.getItem('user');
     setStudent(JSON.parse(savedStudent));
     setLoading(false);
   };
@@ -56,6 +62,7 @@ export default function StudentInfo({ studentData }) {
   const sendEmail = async () => {
     try {
       await systemAPI.sendReportCard(token, { student_id: student.id });
+      ToastAndroid.show('Email sent!', ToastAndroid.SHORT);
     } catch (error) {
       console.log(JSON.stringify(error));
     }
@@ -152,8 +159,8 @@ export default function StudentInfo({ studentData }) {
 
 const styles = StyleSheet.create({
   container: { paddingHorizontal: 24 },
-  row: { flexDirection: "row", alignItems: "center" },
+  row: { flexDirection: 'row', alignItems: 'center' },
   avatar: { marginRight: 16 },
-  infoContainer: { borderBottomWidth: 1, borderBottomColor: "#e8eaec" },
-  infoTitle: { fontWeight: "600", width: "50%", paddingVertical: 8 },
+  infoContainer: { borderBottomWidth: 1, borderBottomColor: '#e8eaec' },
+  infoTitle: { fontWeight: '600', width: '50%', paddingVertical: 8 },
 });

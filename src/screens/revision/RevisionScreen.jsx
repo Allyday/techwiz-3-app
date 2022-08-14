@@ -1,5 +1,5 @@
 import { useLayoutEffect, useState } from 'react';
-import { Alert, StyleSheet, View } from 'react-native';
+import { Alert, StyleSheet, ToastAndroid, View } from 'react-native';
 import {
   Button,
   List,
@@ -87,6 +87,7 @@ export default function RevisionScreen({ navigation }) {
 
   const getRevisionClasses = async () => {
     const { data } = await revisionAPI.getAll(token);
+    console.log(data.revision_class);
     const revisionClasses = formatLessonsIntoClasses(data.revision_class);
     setSubjects(revisionClasses);
   };
@@ -118,6 +119,7 @@ export default function RevisionScreen({ navigation }) {
 
   const sendEmail = async () => {
     await systemAPI.sendInfoRevision(token);
+    ToastAndroid.show('Email sent!', ToastAndroid.SHORT);
   };
 
   const openScheduleModal = ({ subject, lesson }) => {

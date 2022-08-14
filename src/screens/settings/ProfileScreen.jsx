@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback } from 'react';
-import { StyleSheet, View, Dimensions, Image, Alert } from 'react-native';
+import { StyleSheet, View, Dimensions, Image,  ToastAndroid } from 'react-native';
 import moment from 'moment';
 import { TextInput, Button } from 'react-native-paper';
 import { DatePickerModal } from 'react-native-paper-dates';
@@ -52,7 +52,7 @@ export default function ProfileScreen({ navigation }) {
       savedStudent.date_of_birth = payload.date_of_birth;
       await AsyncStorage.setItem('user', JSON.stringify(savedStudent));
 
-      showAlert('Update successfully');
+      ToastAndroid.show('Profile updated successfully!', ToastAndroid.SHORT);
     } catch (error) {
       console.log(JSON.stringify(error));
     }
@@ -73,22 +73,6 @@ export default function ProfileScreen({ navigation }) {
     },
     [setOpen]
   );
-
-  const showAlert = (message) =>
-    Alert.alert(
-      message,
-      '',
-      [
-        {
-          text: 'Cancel',
-          style: 'cancel',
-        },
-      ],
-      {
-        cancelable: true,
-        onDismiss: () => {},
-      }
-    );
 
   return (
     <StyledScreen
@@ -131,9 +115,7 @@ export default function ProfileScreen({ navigation }) {
       />
       <View style={styles.wrapperButton}>
         <Button
-          onPress={() => {
-            putProfile();
-          }}
+          onPress={putProfile}
           mode="contained"
           uppercase={false}
           style={{

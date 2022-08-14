@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import { useEffect, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, ToastAndroid, View } from 'react-native';
 import {
   useTheme,
   Portal,
@@ -90,7 +90,7 @@ export default function UpdateScheduleModal({
       subject.lessons = _.sortBy(subject.lessons, [
         (lsn) => daysOfWeek.indexOf(lsn.day_of_week),
       ]);
-      console.log({ data });
+      ToastAndroid.show('Schedule updated successfully!', ToastAndroid.SHORT);
     } catch (error) {
       console.log(JSON.stringify(error));
       throw error;

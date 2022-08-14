@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import * as Notifications from 'expo-notifications';
+import { Alert } from 'react-native';
 
 export default function useNotificationListeners() {
   useEffect(() => {
@@ -22,6 +23,7 @@ export default function useNotificationListeners() {
    */
   const handleNotification = (notification) => {
     const { title, body, data } = notification.request.content;
+    Alert.alert(title, body);
   };
 
   /**

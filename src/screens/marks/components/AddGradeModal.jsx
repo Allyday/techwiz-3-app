@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState, useMemo } from 'react';
-import { StyleSheet, View, TextInput } from 'react-native';
+import { StyleSheet, View, TextInput, ToastAndroid } from 'react-native';
 import {
   useTheme,
   Portal,
@@ -76,8 +76,10 @@ export default function AddGradeModal({ subject }) {
     try {
       setIsLoading(true);
       const { data } = await gradeAPI.add(token, payload);
+      // update list ui
       student.grade = data.payload.mark;
       student.exam_date = data.payload.exam_date;
+      ToastAndroid.show('Grade updated successfully!', ToastAndroid.SHORT);
     } catch (error) {
       console.log(JSON.stringify(error));
       throw error;
