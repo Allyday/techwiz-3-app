@@ -51,7 +51,6 @@ export default function MarksScreen({ navigation }) {
 
   const getSubjects = async () => {
     try {
-      setLoading(true);
       const { data } = await subjectAPI.getClassSubject(token);
       const { payload } = data;
 
@@ -82,11 +81,12 @@ export default function MarksScreen({ navigation }) {
 
   const getDashboardData = async () => {
     try {
-      setLoading(true);
       const { data } = await gradeAPI.getDashboardTeacher(token);
       const { payload } = data;
-      setRecentExams(payload.recentExams);
-      /* unique subjects list */
+      /* only need 1 different key => different exam */
+      const uniqueExam = (grade) =>
+        [grade.subject.id, grade.class.id, grade.term, grade.exam].join();
+      setRecentExams(_.uniqBy(payload.recentExams, uniqueExam));
     } catch (error) {
       console.log(error.response);
     }
