@@ -31,7 +31,7 @@ export default function MarksScreen({ navigation }) {
   const [subject, setSubject] = useState(subjects[0]);
   const [classesList, setClassesList] = useState([]);
   const [classes, setClasses] = useState([]);
-  const [isLoading, setLoading] = useState(false);
+  const [isLoading, setLoading] = useState(true);
 
   useEffect(() => {
     Promise.all([getDashboardData(), getSubjects()]).finally(() =>
