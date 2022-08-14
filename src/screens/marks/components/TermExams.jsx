@@ -7,7 +7,7 @@ import { gradeAPI } from '../../../apis';
 import { useToken } from '../../../hooks/useToken';
 import StudentGradeItem from './StudentGradeItem';
 
-const examNameMap = {
+export const examNameMap = {
   ASSIGNMENT: 'Assignment',
   MIDDLE: 'Midterm',
   FINAL: 'Final',

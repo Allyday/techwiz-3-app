@@ -4,6 +4,9 @@ export default {
   getByStudent: async (token, payload) => {
     return requests.get(urls.gradeFamily, token, payload);
   },
+  getDashboardTeacher: async (token) => {
+    return requests.get(urls.dashboardTeacher, token);
+  },
   getByClassSubject: async (token, payload) => {
     return requests.get(urls.grade, token, payload);
   },

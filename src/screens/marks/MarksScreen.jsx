@@ -1,29 +1,45 @@
-import { useEffect, useState } from "react";
-import { FlatList, StyleSheet, View, Dimensions } from "react-native";
-import { Chip, List, Title, useTheme } from "react-native-paper";
-import _ from "lodash";
-import ContentLoader from "react-native-easy-content-loader";
+import { useEffect, useState } from 'react';
+import { FlatList, StyleSheet, View, Dimensions } from 'react-native';
+import {
+  Chip,
+  List,
+  Text,
+  Title,
+  TouchableRipple,
+  useTheme,
+  Caption,
+} from 'react-native-paper';
+import _ from 'lodash';
+import ContentLoader from 'react-native-easy-content-loader';
 
-import { subjectAPI } from "../../apis";
-import { useToken } from "../../hooks/useToken";
-import StyledScreen from "../../components/wrappers/StyledScreen";
-const SCREEN_HEIGHT = Dimensions.get("window").height;
-const SCREEN_WIDTH = Dimensions.get("window").width;
+import { gradeAPI, subjectAPI } from '../../apis';
+import { useToken } from '../../hooks/useToken';
+import StyledScreen from '../../components/wrappers/StyledScreen';
+import { examNameMap } from './components/TermExams';
+import moment from 'moment';
+
+const SCREEN_WIDTH = Dimensions.get('window').width;
+
 export default function MarksScreen({ navigation }) {
   const { colors } = useTheme();
   const [token] = useToken();
-  const [subjects, setSubjects] = useState([{ id: "all", name: "All" }]);
+  /* START dashboard */
+  const [recentExams, setRecentExams] = useState([]);
+  /* END dashboard */
+  const [subjects, setSubjects] = useState([{ id: 'all', name: 'All' }]);
   const [subject, setSubject] = useState(subjects[0]);
   const [classesList, setClassesList] = useState([]);
   const [classes, setClasses] = useState([]);
   const [isLoading, setLoading] = useState(false);
 
   useEffect(() => {
-    getSubjects();
+    Promise.all([getDashboardData(), getSubjects()]).finally(() =>
+      setLoading(false)
+    );
   }, []);
 
   useEffect(() => {
-    if (subject.id === "all") setClasses(classesList);
+    if (subject.id === 'all') setClasses(classesList);
     else {
       const classesOfCurrentSubject = classesList.filter(
         (cls) => cls.subjectId === subject.id
@@ -41,9 +57,9 @@ export default function MarksScreen({ navigation }) {
       /* unique subjects list */
       const subjectsData = _.uniqBy(
         payload.map((obj) => obj.subject),
-        "id"
+        'id'
       );
-      setSubjects([{ id: "all", name: "All" }, ...subjectsData]);
+      setSubjects([{ id: 'all', name: 'All' }, ...subjectsData]);
 
       /* flatten classes list */
       const classesData = payload.map((obj) => ({
@@ -55,7 +71,55 @@ export default function MarksScreen({ navigation }) {
     } catch (error) {
       console.log(error);
     }
-    setLoading(false);
+  };
+
+  const getDashboardData = async () => {
+    try {
+      setLoading(true);
+      const { data } = await gradeAPI.getDashboardTeacher(token);
+      const { payload } = data;
+      console.log({ payload });
+      setRecentExams(payload.recentExams);
+      /* unique subjects list */
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const renderRecentExamItem = ({ item }) => {
+    const classSubject = {
+      subjectName: item.subject.name,
+      subjectId: item.subject.id,
+      ...item.class,
+    };
+    return (
+      <TouchableRipple
+        onPress={() => navigation.navigate('ClassDetails', { classSubject })}
+        rippleColor={colors.darkGreen}
+        style={{
+          backgroundColor: colors.lightGreen,
+          marginRight: 12,
+          borderRadius: 12,
+        }}
+      >
+        <View style={{ padding: 12, width: 300 }}>
+          <Title>{item.subject.name}</Title>
+          <Text>
+            Class {item.class.name}'s {examNameMap[item.exam]}
+          </Text>
+          <View
+            style={{ flexDirection: 'row', justifyContent: 'space-between' }}
+          >
+            <Caption>
+              {item.has_grade_student}/{item.total_student} completed
+            </Caption>
+            <Caption>
+              on {moment(item.last_update).format('D MMM - HH:mm')}
+            </Caption>
+          </View>
+        </View>
+      </TouchableRipple>
+    );
   };
 
   const renderSubjectItem = ({ item }) => {
@@ -82,7 +146,7 @@ export default function MarksScreen({ navigation }) {
         title={item.name}
         rippleColor={colors.darkBlue}
         onPress={() =>
-          navigation.navigate("ClassDetails", { classSubject: item })
+          navigation.navigate('ClassDetails', { classSubject: item })
         }
         style={{ ...styles.classItem, backgroundColor: colors.lightBlue }}
         right={(props) => <List.Icon {...props} icon="chevron-right" />}
@@ -90,10 +154,71 @@ export default function MarksScreen({ navigation }) {
     );
   };
 
+  const RecentExamsSection = () => {
+    if (!recentExams.length) return null;
+    return (
+      <>
+        <Title style={[styles.title, { marginVertical: 0 }]}>
+          Recent exams
+        </Title>
+        <Caption style={{ marginBottom: 4 }}>
+          Continue where you left off
+        </Caption>
+        {isLoading ? (
+          <View
+            style={{ flexDirection: 'row', marginLeft: -12, marginRight: -24 }}
+          >
+            <ContentLoader
+              tHeight={100}
+              tWidth={300}
+              pRows={0}
+              titleStyles={{ borderRadius: 12 }}
+              containerStyles={{ width: 312 }}
+            />
+            <ContentLoader
+              tHeight={100}
+              tWidth={300}
+              pRows={0}
+              titleStyles={{ borderRadius: 12 }}
+              containerStyles={{ width: 312 }}
+            />
+            <ContentLoader
+              tHeight={100}
+              tWidth={300}
+              pRows={0}
+              titleStyles={{ borderRadius: 12 }}
+              containerStyles={{ width: 312 }}
+            />
+          </View>
+        ) : (
+          <View style={[styles.horizontalFlatlistContainer, { height: 100 }]}>
+            <FlatList
+              data={recentExams}
+              renderItem={renderRecentExamItem}
+              horizontal
+              contentContainerStyle={styles.horizontalFlatlist}
+            />
+          </View>
+        )}
+        <Title style={styles.title}>Or select a class to add grades</Title>
+      </>
+    );
+  };
+
   return (
     <StyledScreen style={styles.container}>
+      <RecentExamsSection />
       {isLoading ? (
-        <View style={{ flexDirection: "row" }}>
+        <View
+          style={{ flexDirection: 'row', marginLeft: -12, marginRight: -24 }}
+        >
+          <ContentLoader
+            tHeight={40}
+            tWidth={70}
+            pRows={0}
+            titleStyles={{ borderRadius: 15 }}
+            containerStyles={{ width: 80 }}
+          />
           <ContentLoader
             tHeight={40}
             tWidth={70}
@@ -134,12 +259,14 @@ export default function MarksScreen({ navigation }) {
         </View>
       )}
 
-      <Title style={styles.title}>Classes</Title>
+      <Title style={[styles.title, { fontSize: 18, fontWeight: '500' }]}>
+        Classes
+      </Title>
       {isLoading ? (
         <>
           <View
             style={{
-              backgroundColor: "#fff",
+              backgroundColor: '#fff',
             }}
           >
             <ContentLoader
@@ -151,7 +278,7 @@ export default function MarksScreen({ navigation }) {
           </View>
           <View
             style={{
-              backgroundColor: "#fff",
+              backgroundColor: '#fff',
             }}
           >
             <ContentLoader
@@ -163,7 +290,7 @@ export default function MarksScreen({ navigation }) {
           </View>
           <View
             style={{
-              backgroundColor: "#fff",
+              backgroundColor: '#fff',
             }}
           >
             <ContentLoader
@@ -175,7 +302,7 @@ export default function MarksScreen({ navigation }) {
           </View>
           <View
             style={{
-              backgroundColor: "#fff",
+              backgroundColor: '#fff',
             }}
           >
             <ContentLoader
@@ -187,7 +314,7 @@ export default function MarksScreen({ navigation }) {
           </View>
           <View
             style={{
-              backgroundColor: "#fff",
+              backgroundColor: '#fff',
               marginTop: 20,
             }}
           >
@@ -200,7 +327,7 @@ export default function MarksScreen({ navigation }) {
           </View>
           <View
             style={{
-              backgroundColor: "#fff",
+              backgroundColor: '#fff',
               marginTop: 20,
             }}
           >
@@ -213,7 +340,7 @@ export default function MarksScreen({ navigation }) {
           </View>
           <View
             style={{
-              backgroundColor: "#fff",
+              backgroundColor: '#fff',
               marginTop: 20,
             }}
           >
@@ -245,7 +372,7 @@ const styles = StyleSheet.create({
     height: 40,
     marginHorizontal: -24,
     borderTopEndRadius: 9,
-    overflow: "hidden",
+    overflow: 'hidden',
   },
   horizontalFlatlist: {
     flexGrow: 1,
@@ -256,8 +383,7 @@ const styles = StyleSheet.create({
     height: 40,
   },
   title: {
-    fontSize: 24,
-    fontWeight: "bold",
+    fontWeight: 'bold',
     marginVertical: 12,
   },
   flatlist: {

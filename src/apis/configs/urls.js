@@ -10,6 +10,7 @@ export default {
   /* grade */
   grade: "grade/index",
   gradeFamily: "grade/family",
+  dashboardTeacher: "grade/get-input-grade",
 
   /* student */
   student: "student/list",
