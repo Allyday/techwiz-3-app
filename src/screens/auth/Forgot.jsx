@@ -1,5 +1,4 @@
-import { StyleSheet, Text, View, Dimensions, SafeAreaView } from "react-native";
-import { SimpleLineIcons } from "@expo/vector-icons";
+import { StyleSheet, View, Dimensions } from "react-native";
 import { useTheme, Button, TextInput, HelperText } from "react-native-paper";
 import React, { useState } from "react";
 const SCREEN_HEIGHT = Dimensions.get("window").height;
@@ -7,7 +6,7 @@ const SCREEN_WIDTH = Dimensions.get("window").width;
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { authAPI } from "../../apis";
 
-const Forgot = (props, { navigation }) => {
+const Forgot = ({ setStatusLogin }) => {
   const { colors } = useTheme();
   const [text, setText] = useState("");
   const [passNew, setPassNew] = useState("");
@@ -25,7 +24,7 @@ const Forgot = (props, { navigation }) => {
         email: JSON.parse(getPin).email,
       });
       if (resVerifyOTP.data) {
-        props.setStatusLogin(0);
+        setStatusLogin(0);
       } else {
         console.log(resVerifyOTP.data);
       }
@@ -62,21 +61,21 @@ const Forgot = (props, { navigation }) => {
           label="Create New Password"
           value={passNew}
           secureTextEntry={true}
-          onChangeText={(text) => setPassNew(text)}
+          onChangeText={setPassNew}
         />
-        <HelperText type="error" visible={valid}>
-          Mật khẩu không hợp lệ
-        </HelperText>
         <TextInput
           style={styles.textInput}
           label="Confim New Password"
           value={text}
           secureTextEntry={true}
-          onChangeText={(text) => setText(text)}
+          onChangeText={setText}
         />
+        <HelperText type="error" visible={valid}>
+          Password does not match.
+        </HelperText>
         <Button
           mode="contained"
-          onPress={() => layMatKhau()}
+          onPress={layMatKhau}
           style={{
             borderRadius: 50,
             width: 300,
@@ -88,7 +87,7 @@ const Forgot = (props, { navigation }) => {
           Submit
         </Button>
         <Button
-          onPress={() => props.setStatusLogin(1)}
+          onPress={() => setStatusLogin(1)}
           labelStyle={{ fontSize: 15 }}
         >
           Cancel

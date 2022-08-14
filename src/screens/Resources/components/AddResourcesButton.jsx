@@ -11,6 +11,7 @@ import {
   Button,
   Menu,
 } from 'react-native-paper';
+
 import { resourceAPI, subjectAPI } from '../../../apis';
 import { useToken } from '../../../hooks/useToken';
 
@@ -25,7 +26,7 @@ export default function AddResourcesButton() {
   const [isLoadingButton, setIsLoadingButton] = useState(false);
   const [idSub, setIdSub] = useState({
     id: 0,
-    name: 'Chọn môn học',
+    name: 'Select a subject',
   });
   const [linkInvalid, setLinkInvalid] = useState(false);
   const validateLink = () => {
@@ -139,7 +140,7 @@ export default function AddResourcesButton() {
             autoCapitalize="none"
           />
           <HelperText type="error" visible={linkInvalid}>
-            Link không hợp lệ
+            Invalid link
           </HelperText>
           <View>
             <Text>Type: {type}</Text>
