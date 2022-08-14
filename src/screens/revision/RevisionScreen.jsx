@@ -128,7 +128,11 @@ export default function RevisionScreen({ navigation }) {
 
   const renderSubjectItem = (item) => {
     return (
-      <List.Accordion id={item.id_subject} title={item.name_subject}>
+      <List.Accordion
+        key={item.id_subject}
+        id={item.id_subject}
+        title={item.name_subject}
+      >
         <View style={styles.accordionContent}>
           <View style={styles.sectionTitleContainer}>
             <Title style={styles.title}>Teacher</Title>

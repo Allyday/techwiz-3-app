@@ -19,6 +19,7 @@ import { useToken } from "../../hooks/useToken";
 import AddResourcesButton from "./components/AddResourcesButton";
 import CustomVideo from "./components/CustomVideo";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import StyledScreen from "../../components/wrappers/StyledScreen";
 
 export default function Resources({ navigation }) {
   const [routes, setRoutes] = React.useState([]);
@@ -364,7 +365,7 @@ export default function Resources({ navigation }) {
   };
 
   return (
-    <>
+    <StyledScreen>
       {isLoadingRenderScene ? (
         <TabView
           lazy
@@ -394,7 +395,7 @@ export default function Resources({ navigation }) {
         </View>
       )}
       {role == "TEACHER" && <AddResourcesButton />}
-    </>
+    </StyledScreen>
   );
 }
 

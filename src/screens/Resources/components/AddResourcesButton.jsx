@@ -165,6 +165,7 @@ export default function AddResourcesButton() {
             {isLoading &&
               subject.map((sub) => (
                 <Menu.Item
+                  key={sub.name}
                   onPress={() => (setIdSub(sub), setVisible(false))}
                   title={sub.name}
                 />

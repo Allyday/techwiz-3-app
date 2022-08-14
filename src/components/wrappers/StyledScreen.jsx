@@ -13,7 +13,9 @@ export default function StyledScreen({ children, scrollable, ...props }) {
           {
             backgroundColor: 'white',
             flex: 1,
+            borderTopStartRadius: 30,
             borderTopEndRadius: 30,
+
             overflow: 'hidden',
           },
           props.style,

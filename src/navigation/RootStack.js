@@ -56,7 +56,7 @@ export default function RootStack({ route }) {
     tabBarInactiveTintColor: Colors.grey500,
     headerStyle: {
       backgroundColor: colors.secondary,
-      borderBottomStartRadius: 30,
+      // borderBottomStartRadius: 30,
     },
     headerTintColor: 'white',
     drawerPosition: 'left',
