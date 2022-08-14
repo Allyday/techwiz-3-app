@@ -16,7 +16,7 @@ import TermExams from './components/TermExams';
 
 export default function ClassDetailsScreen({ route, navigation }) {
   const { colors } = useTheme();
-  const { classSubject, term, examType } = route.params;
+  const { classSubject, term } = route.params;
   const [token] = useToken();
   const [students, setStudents] = useState([]);
   /* start tab view configs */
@@ -60,7 +60,6 @@ export default function ClassDetailsScreen({ route, navigation }) {
       classSubject={classSubject}
       students={students}
       term={route.key === 'one' ? 1 : 2}
-      activeExam={examType}
     />
   );
 

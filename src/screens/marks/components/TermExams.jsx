@@ -13,12 +13,7 @@ export const examNameMap = {
   FINAL: 'Final',
 };
 
-export default function TermExams({
-  classSubject,
-  students,
-  term,
-  activeExam,
-}) {
+export default function TermExams({ classSubject, students, term }) {
   const [exams, setExams] = useState([]);
   const [token] = useToken();
 
@@ -67,9 +62,7 @@ export default function TermExams({
 
   return (
     <ScrollView>
-      <List.AccordionGroup expandedId={examNameMap[activeExam]}>
-        {exams.map(renderExams)}
-      </List.AccordionGroup>
+      <List.AccordionGroup>{exams.map(renderExams)}</List.AccordionGroup>
     </ScrollView>
   );
 }

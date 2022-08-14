@@ -105,7 +105,6 @@ export default function MarksScreen({ navigation }) {
           navigation.navigate('ClassDetails', {
             classSubject,
             term,
-            examType: item.exam,
           })
         }
         rippleColor={colors.darkGreen}
