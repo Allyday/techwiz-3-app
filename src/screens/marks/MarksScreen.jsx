@@ -25,6 +25,7 @@ export default function MarksScreen({ navigation }) {
   const [token] = useToken();
   /* START dashboard */
   const [recentExams, setRecentExams] = useState([]);
+  const [studentCount, setStudentCount] = useState(0);
   /* END dashboard */
   const [subjects, setSubjects] = useState([{ id: 'all', name: 'All' }]);
   const [subject, setSubject] = useState(subjects[0]);
@@ -67,9 +68,15 @@ export default function MarksScreen({ navigation }) {
         subjectName: obj.subject.name,
         subjectId: obj.subject.id,
       }));
+      /* get student count */
+      const totalStudentCount = payload.reduce(
+        (prev, obj) => prev + obj.total_student,
+        0
+      );
+      setStudentCount(totalStudentCount);
       setClassesList(classesData);
     } catch (error) {
-      console.log(error);
+      console.log(error.response);
     }
   };
 
@@ -78,15 +85,15 @@ export default function MarksScreen({ navigation }) {
       setLoading(true);
       const { data } = await gradeAPI.getDashboardTeacher(token);
       const { payload } = data;
-      console.log({ payload });
       setRecentExams(payload.recentExams);
       /* unique subjects list */
     } catch (error) {
-      console.log(error);
+      console.log(error.response);
     }
   };
 
   const renderRecentExamItem = ({ item }) => {
+    const term = item.term === 'TERM1' ? 1 : 2;
     const classSubject = {
       subjectName: item.subject.name,
       subjectId: item.subject.id,
@@ -105,7 +112,7 @@ export default function MarksScreen({ navigation }) {
         <View style={{ padding: 12, width: 300 }}>
           <Title>{item.subject.name}</Title>
           <Text>
-            Class {item.class.name}'s {examNameMap[item.exam]}
+            Class {item.class.name}'s Term {term} {examNameMap[item.exam]}
           </Text>
           <View
             style={{ flexDirection: 'row', justifyContent: 'space-between' }}
@@ -139,7 +146,7 @@ export default function MarksScreen({ navigation }) {
     );
   };
 
-  const renderClassItem = ({ item }) => {
+  const renderClassItem = (item) => {
     return (
       <List.Item
         key={item.id}
@@ -154,19 +161,148 @@ export default function MarksScreen({ navigation }) {
     );
   };
 
-  const RecentExamsSection = () => {
-    if (!recentExams.length) return null;
+  const StatisticsSection = () => {
+    const itemWidth = 95;
+    const itemHeight = 80;
+    const loaderContainerStyle = {
+      width: itemWidth,
+      marginBottom: -8,
+      paddingBottom: 0,
+      paddingLeft: 0,
+    };
     return (
       <>
-        <Title style={[styles.title, { marginVertical: 0 }]}>
-          Recent exams
-        </Title>
-        <Caption style={{ marginBottom: 4 }}>
-          Continue where you left off
-        </Caption>
         {isLoading ? (
+          <ContentLoader
+            tHeight={18}
+            tWidth={200}
+            pRows={0}
+            titleStyles={{ borderRadius: 12 }}
+            containerStyles={{
+              marginTop: 9,
+              paddingLeft: 0,
+              paddingBottom: 6,
+            }}
+          />
+        ) : (
+          <Title style={[styles.title, { marginTop: 0 }]}>
+            You are teaching
+          </Title>
+        )}
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'space-around',
+            paddingHorizontal: 12,
+          }}
+        >
+          {isLoading ? (
+            <>
+              <ContentLoader
+                tHeight={itemHeight}
+                tWidth={itemWidth}
+                pRows={0}
+                titleStyles={{ borderRadius: 12 }}
+                containerStyles={loaderContainerStyle}
+              />
+              <ContentLoader
+                tHeight={itemHeight}
+                tWidth={itemWidth}
+                pRows={0}
+                titleStyles={{ borderRadius: 12 }}
+                containerStyles={loaderContainerStyle}
+              />
+              <ContentLoader
+                tHeight={itemHeight}
+                tWidth={itemWidth}
+                pRows={0}
+                titleStyles={{ borderRadius: 12 }}
+                containerStyles={loaderContainerStyle}
+              />
+            </>
+          ) : (
+            <>
+              <View
+                style={[
+                  styles.statisticsItem,
+                  { backgroundColor: colors.veryLightGrey },
+                ]}
+              >
+                <Title
+                  style={[styles.statisticsTitle, { color: colors.primary }]}
+                >
+                  {subjects.length - 1}
+                </Title>
+                <Title style={styles.statisticsSubtitle}>
+                  Subject{subjects.length > 2 ? 's' : ''}
+                </Title>
+              </View>
+              <View
+                style={[
+                  styles.statisticsItem,
+                  { backgroundColor: colors.veryLightGrey },
+                ]}
+              >
+                <Title
+                  style={[styles.statisticsTitle, { color: colors.secondary }]}
+                >
+                  {classes.length}
+                </Title>
+                <Title style={styles.statisticsSubtitle}>
+                  Class{classes.length > 1 ? 'es' : ''}
+                </Title>
+              </View>
+              <View
+                style={[
+                  styles.statisticsItem,
+                  { backgroundColor: colors.veryLightGrey },
+                ]}
+              >
+                <Title
+                  style={[
+                    styles.statisticsTitle,
+                    { color: colors.veryDarkBlue },
+                  ]}
+                >
+                  {studentCount}
+                </Title>
+                <Title style={styles.statisticsSubtitle}>
+                  Student{studentCount > 1 ? 's' : ''}
+                </Title>
+              </View>
+            </>
+          )}
+        </View>
+      </>
+    );
+  };
+
+  const RecentExamsSection = () => {
+    if (isLoading)
+      return (
+        <>
+          <ContentLoader
+            tHeight={18}
+            tWidth={140}
+            pRows={0}
+            titleStyles={{ borderRadius: 12 }}
+            containerStyles={{ marginTop: 20, paddingLeft: 0 }}
+          />
+          <ContentLoader
+            tHeight={10}
+            tWidth={170}
+            pRows={0}
+            titleStyles={{ borderRadius: 12 }}
+            containerStyles={{ paddingLeft: 0, paddingBottom: 0 }}
+          />
+
           <View
-            style={{ flexDirection: 'row', marginLeft: -12, marginRight: -24 }}
+            style={{
+              flexDirection: 'row',
+              marginLeft: -12,
+              marginRight: -24,
+              marginBottom: -10,
+            }}
           >
             <ContentLoader
               tHeight={100}
@@ -190,61 +326,92 @@ export default function MarksScreen({ navigation }) {
               containerStyles={{ width: 312 }}
             />
           </View>
-        ) : (
-          <View style={[styles.horizontalFlatlistContainer, { height: 100 }]}>
-            <FlatList
-              data={recentExams}
-              renderItem={renderRecentExamItem}
-              horizontal
-              contentContainerStyle={styles.horizontalFlatlist}
-            />
-          </View>
-        )}
+          <ContentLoader
+            tHeight={18}
+            tWidth={300}
+            pRows={0}
+            titleStyles={{ borderRadius: 12 }}
+            containerStyles={{
+              marginTop: 20,
+              paddingLeft: 0,
+              paddingBottom: 6,
+            }}
+          />
+        </>
+      );
+
+    if (!recentExams.length)
+      return <Title style={styles.title}>Select a class to add grades</Title>;
+
+    return (
+      <>
+        <Title style={[styles.title, { marginBottom: 0 }]}>Recent exams</Title>
+        <Caption style={{ marginBottom: 4 }}>
+          Continue where you left off
+        </Caption>
+        <View style={[styles.horizontalFlatlistContainer, { height: 100 }]}>
+          <FlatList
+            data={recentExams}
+            renderItem={renderRecentExamItem}
+            horizontal
+            contentContainerStyle={styles.horizontalFlatlist}
+          />
+        </View>
         <Title style={styles.title}>Or select a class to add grades</Title>
       </>
     );
   };
 
   return (
-    <StyledScreen style={styles.container}>
+    <StyledScreen
+      scrollable
+      contentContainerStyle={{ flexGrow: 1, paddingBottom: 20 }}
+      style={styles.container}
+    >
+      <StatisticsSection />
       <RecentExamsSection />
       {isLoading ? (
         <View
-          style={{ flexDirection: 'row', marginLeft: -12, marginRight: -24 }}
+          style={{
+            flexDirection: 'row',
+            marginLeft: -12,
+            marginRight: -24,
+            marginBottom: -11,
+          }}
         >
           <ContentLoader
             tHeight={40}
+            tWidth={65}
+            pRows={0}
+            titleStyles={{ borderRadius: 16 }}
+            containerStyles={{ width: 75 }}
+          />
+          <ContentLoader
+            tHeight={40}
             tWidth={70}
             pRows={0}
-            titleStyles={{ borderRadius: 15 }}
+            titleStyles={{ borderRadius: 16 }}
             containerStyles={{ width: 80 }}
           />
           <ContentLoader
             tHeight={40}
             tWidth={70}
             pRows={0}
-            titleStyles={{ borderRadius: 15 }}
+            titleStyles={{ borderRadius: 16 }}
             containerStyles={{ width: 80 }}
           />
           <ContentLoader
             tHeight={40}
             tWidth={70}
             pRows={0}
-            titleStyles={{ borderRadius: 15 }}
+            titleStyles={{ borderRadius: 16 }}
             containerStyles={{ width: 80 }}
           />
           <ContentLoader
             tHeight={40}
             tWidth={70}
             pRows={0}
-            titleStyles={{ borderRadius: 15 }}
-            containerStyles={{ width: 80 }}
-          />
-          <ContentLoader
-            tHeight={40}
-            tWidth={70}
-            pRows={0}
-            titleStyles={{ borderRadius: 15 }}
+            titleStyles={{ borderRadius: 16 }}
             containerStyles={{ width: 80 }}
           />
         </View>
@@ -259,105 +426,59 @@ export default function MarksScreen({ navigation }) {
         </View>
       )}
 
-      <Title style={[styles.title, { fontSize: 18, fontWeight: '500' }]}>
-        Classes
-      </Title>
       {isLoading ? (
-        <>
-          <View
-            style={{
-              backgroundColor: '#fff',
-            }}
-          >
-            <ContentLoader
-              tHeight={70}
-              tWidth={SCREEN_WIDTH - 68}
-              pRows={0}
-              titleStyles={{ borderRadius: 10 }}
-            />
-          </View>
-          <View
-            style={{
-              backgroundColor: '#fff',
-            }}
-          >
-            <ContentLoader
-              tHeight={70}
-              tWidth={SCREEN_WIDTH - 68}
-              pRows={0}
-              titleStyles={{ borderRadius: 10 }}
-            />
-          </View>
-          <View
-            style={{
-              backgroundColor: '#fff',
-            }}
-          >
-            <ContentLoader
-              tHeight={70}
-              tWidth={SCREEN_WIDTH - 68}
-              pRows={0}
-              titleStyles={{ borderRadius: 10 }}
-            />
-          </View>
-          <View
-            style={{
-              backgroundColor: '#fff',
-            }}
-          >
-            <ContentLoader
-              tHeight={70}
-              tWidth={SCREEN_WIDTH - 68}
-              pRows={0}
-              titleStyles={{ borderRadius: 10 }}
-            />
-          </View>
-          <View
-            style={{
-              backgroundColor: '#fff',
-              marginTop: 20,
-            }}
-          >
-            <ContentLoader
-              tHeight={70}
-              tWidth={SCREEN_WIDTH - 68}
-              pRows={0}
-              titleStyles={{ borderRadius: 10 }}
-            />
-          </View>
-          <View
-            style={{
-              backgroundColor: '#fff',
-              marginTop: 20,
-            }}
-          >
-            <ContentLoader
-              tHeight={70}
-              tWidth={SCREEN_WIDTH - 68}
-              pRows={0}
-              titleStyles={{ borderRadius: 10 }}
-            />
-          </View>
-          <View
-            style={{
-              backgroundColor: '#fff',
-              marginTop: 20,
-            }}
-          >
-            <ContentLoader
-              tHeight={70}
-              tWidth={SCREEN_WIDTH - 68}
-              pRows={0}
-              titleStyles={{ borderRadius: 10 }}
-            />
-          </View>
-        </>
-      ) : (
-        <FlatList
-          contentContainerStyle={styles.flatlist}
-          data={classes}
-          renderItem={renderClassItem}
+        <ContentLoader
+          tHeight={18}
+          tWidth={80}
+          pRows={0}
+          titleStyles={{ borderRadius: 12 }}
+          containerStyles={{
+            marginTop: 20,
+            paddingLeft: 0,
+            paddingBottom: 6,
+          }}
         />
+      ) : (
+        <Title style={[styles.title, { fontSize: 18, fontWeight: '500' }]}>
+          Classes
+        </Title>
+      )}
+      {isLoading ? (
+        <View style={{ marginLeft: -9, paddingTop: 6 }}>
+          <ContentLoader
+            tHeight={72}
+            tWidth={SCREEN_WIDTH - 48}
+            pRows={0}
+            titleStyles={{ borderRadius: 12 }}
+          />
+
+          <ContentLoader
+            tHeight={72}
+            tWidth={SCREEN_WIDTH - 48}
+            pRows={0}
+            titleStyles={{ borderRadius: 12 }}
+          />
+          <ContentLoader
+            tHeight={72}
+            tWidth={SCREEN_WIDTH - 48}
+            pRows={0}
+            titleStyles={{ borderRadius: 12 }}
+          />
+          <ContentLoader
+            tHeight={72}
+            tWidth={SCREEN_WIDTH - 48}
+            pRows={0}
+            titleStyles={{ borderRadius: 12 }}
+          />
+          <ContentLoader
+            tHeight={72}
+            tWidth={SCREEN_WIDTH - 48}
+            pRows={0}
+            titleStyles={{ borderRadius: 12 }}
+          />
+        </View>
+      ) : (
+        classes.map(renderClassItem)
       )}
     </StyledScreen>
   );
@@ -368,6 +489,15 @@ const styles = StyleSheet.create({
     paddingTop: 18,
     paddingHorizontal: 24,
   },
+  statisticsItem: {
+    alignItems: 'center',
+    borderRadius: 12,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    width: 95,
+  },
+  statisticsTitle: { fontSize: 24, fontWeight: 'bold', marginBottom: 0 },
+  statisticsSubtitle: { fontSize: 16, fontWeight: 'normal' },
   horizontalFlatlistContainer: {
     height: 40,
     marginHorizontal: -24,

@@ -18,6 +18,7 @@ const theme = {
     darkGreen: '#76ffbc',
     darkBlue: '#76dfff',
     darkGrey: '#ced2d6',
+    veryDarkBlue: '#00abdf',
     veryDarkGrey: '#a0a7af',
   },
 };
