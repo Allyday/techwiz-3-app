@@ -39,10 +39,13 @@ export default function Grades({ term, student }) {
 
   const getGrades = async () => {
     try {
-      const { data } = await gradeAPI.getByStudent(token, {
-        term,
-        student_id: student.student_id,
-      });
+      const getGradesParams = student 
+        ? {
+            term,
+            student_id: student.student_id,
+          } 
+        : { term };
+      const { data } = await gradeAPI.getByStudent(token, getGradesParams);
       const { payload } = data;
       const grades = _.sortBy(payload, "subject_name");
       const [gradesWithAverage, GPA] = calculateAverageAndGPA(grades);

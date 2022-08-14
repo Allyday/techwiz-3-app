@@ -14,7 +14,7 @@ import Grades from './components/Grades';
 
 export default function ReportCardScreen({ route }) {
   const { colors } = useTheme();
-  const { student } = route.params;
+  const student = route?.params?.student;
   /* start tab view configs */
   const layout = useWindowDimensions();
   const [index, setIndex] = useState(0);
