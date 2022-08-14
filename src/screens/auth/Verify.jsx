@@ -40,7 +40,6 @@ const Verify = (props, { navigation }) => {
       // console.log(resVerifyOTP.data);
     } else {
       setValid(true);
-      console.log("sai otp r");
     }
 
     // if (resVerifyOTP.data.result == "success") {

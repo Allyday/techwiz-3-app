@@ -53,7 +53,6 @@ export default function Grades({ term, student }) {
       setGPA(GPA);
     } catch (error) {
       console.log(error);
-      // console.log(JSON.stringify(error));
     } finally {
       setLoading(false);
     }

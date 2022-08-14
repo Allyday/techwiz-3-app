@@ -2,17 +2,21 @@ import { StyleSheet, View, Dimensions } from "react-native";
 import { useTheme, Button, HelperText, TextInput } from "react-native-paper";
 import React, { useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useDispatch } from 'react-redux';
 
 import authAPI from "../../apis/authAPI";
 import { useToken } from "../../hooks/useToken";
+import { loginUser } from "../../store-redux/actions/user";
 
 const SCREEN_HEIGHT = Dimensions.get("window").height;
 const SCREEN_WIDTH = Dimensions.get("window").width;
 
 const SignIn = ({ setStatusLogin, navigation }) => {
+  const dispatch = useDispatch();
+
   const { colors } = useTheme();
-  const [email, setEmail] = useState("student1@yopmail.com");
-  const [password, setPassword] = useState("admin");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   const styles = StyleSheet.create({
     viewInput: {
@@ -54,6 +58,7 @@ const SignIn = ({ setStatusLogin, navigation }) => {
           setToken(access);
           await AsyncStorage.setItem("access", access);
           await AsyncStorage.setItem("user", JSON.stringify(user));
+          dispatch(loginUser(user))
 
           if (user.role === "PARENT") {
             if (info_child)
@@ -87,7 +92,6 @@ const SignIn = ({ setStatusLogin, navigation }) => {
         }
       } catch (error) {
         setWrongPassword(true);
-        console.log(JSON.stringify(error));
       }
     }
   };

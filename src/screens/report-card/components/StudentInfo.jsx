@@ -9,6 +9,7 @@ import {
 import { Avatar, Text, Button, Title, useTheme } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import moment from 'moment';
+import { useSelector } from 'react-redux';
 import ContentLoader from 'react-native-easy-content-loader';
 
 import { systemAPI } from '../../../apis';
@@ -17,6 +18,7 @@ import { useToken } from '../../../hooks/useToken';
 const SCREEN_WIDTH = Dimensions.get('window').width;
 
 export default function StudentInfo({ studentData }) {
+  const userRedux = useSelector((state) => state.user.user);
   const { colors } = useTheme();
   const [token] = useToken();
   const [student, setStudent] = useState({});
@@ -29,14 +31,16 @@ export default function StudentInfo({ studentData }) {
 
   const getStudentData = async () => {
     setLoading(true);
-    const savedStudent = await AsyncStorage.getItem('user');
-    setStudent(JSON.parse(savedStudent));
+    // const savedStudent = await AsyncStorage.getItem('user');
+    // setStudent(JSON.parse(savedStudent));
+    setStudent(userRedux);
     setLoading(false);
   };
 
   const confirmSendEmail = async () => {
-    const savedUser = await AsyncStorage.getItem('user');
-    const user = JSON.parse(savedUser);
+    // const savedUser = await AsyncStorage.getItem('user');
+    // const user = JSON.parse(savedUser);
+    const user = userRedux;
     const studentName =
       student.full_name ?? `${student.first_name} ${student.last_name}`;
 

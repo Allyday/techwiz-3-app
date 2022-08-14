@@ -32,7 +32,6 @@ const GenerateOTP = (props, { navigation }) => {
 
       if (resGetPin.data.result == "success") {
         resGetPin.data.email = text;
-        console.log(resGetPin.data);
         await AsyncStorage.setItem("getPin", JSON.stringify(resGetPin.data));
         await props.setStatusLogin(2);
       } else {

@@ -1,6 +1,8 @@
 import { DefaultTheme, Provider as PaperProvider } from 'react-native-paper';
 
 import AppRouter from './src/AppRouter';
+import { Provider } from 'react-redux';
+import store from './src/store-redux/store';
 
 const theme = {
   ...DefaultTheme,
@@ -25,8 +27,10 @@ const theme = {
 
 export default function App() {
   return (
-    <PaperProvider theme={theme}>
-      <AppRouter />
-    </PaperProvider>
+    <Provider store={store}>
+      <PaperProvider theme={theme}>
+        <AppRouter />
+      </PaperProvider>
+    </Provider>
   );
 }

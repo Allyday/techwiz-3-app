@@ -9,19 +9,21 @@ import {
   View,
   Clipboard,
 } from 'react-native';
-import { Avatar, Title, List, useTheme, Button } from 'react-native-paper';
-import ContentLoader from 'react-native-easy-content-loader';
+import { Avatar, Button, List, Title, useTheme } from 'react-native-paper';
+import { useDispatch, useSelector } from 'react-redux';
 
 import StyledScreen from '../../components/wrappers/StyledScreen';
 import { useToken } from '../../hooks/useToken';
+import { removeUser } from '../../store-redux/actions/user';
 
 const EMAIL = `giaphiendev@gmail.com`;
 
 export default function SettingsScreen({ navigation }) {
+  const userRedux = useSelector((state) => state.user.user);
+  const dispatch = useDispatch();
+
   const { colors } = useTheme();
   const [token, setToken] = useToken();
-  const [user, setUser] = useState({});
-  const [isLoading, setIsLoading] = useState(false);
   const tabs = [
     {
       id: 1,
@@ -48,21 +50,11 @@ export default function SettingsScreen({ navigation }) {
     },
   ];
 
-  useLayoutEffect(() => {
-    getUserData();
-  }, []);
-
-  const getUserData = async () => {
-    setIsLoading(true);
-    const savedStudent = await AsyncStorage.getItem('user');
-    setUser(JSON.parse(savedStudent));
-    setIsLoading(false);
-  };
-
   const logout = async () => {
     await AsyncStorage.removeItem('access');
     await AsyncStorage.removeItem('user');
     setToken(null);
+    dispatch(removeUser());
     navigation.replace('Login');
   };
 
@@ -126,39 +118,19 @@ export default function SettingsScreen({ navigation }) {
 
   return (
     <>
-      {isLoading ? (
-        <>
-          <View
-            style={{
-              paddingLeft: 16,
-              backgroundColor: '#fff',
-              marginTop: 10,
-            }}
-          >
-            <ContentLoader
-              active
-              avatar
-              aSize={60}
-              pRows={1}
-              pWidth={[100]}
-              aShape={'circle'}
-            />
-          </View>
-        </>
-      ) : (
-        <StyledScreen style={styles.container}>
+      <StyledScreen style={styles.container}>
           <View>
             <View style={[styles.row, { marginBottom: 16, marginTop: 12 }]}>
               <Avatar.Image
                 size={60}
-                source={{ uri: user.avatar_url }}
+                source={{ uri: userRedux.avatar_url }}
                 style={styles.avatar}
               />
               <View>
                 <Title>
-                  {user.first_name} {user.last_name}
+                  {userRedux.first_name} {userRedux.last_name}
                 </Title>
-                <Text>{user.email}</Text>
+                <Text>{userRedux.email}</Text>
               </View>
             </View>
             <View>
@@ -188,7 +160,6 @@ export default function SettingsScreen({ navigation }) {
             </Button>
           </View>
         </StyledScreen>
-      )}
     </>
   );
 }

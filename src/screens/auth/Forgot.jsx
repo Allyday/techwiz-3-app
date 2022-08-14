@@ -25,9 +25,7 @@ const Forgot = ({ setStatusLogin }) => {
       });
       if (resVerifyOTP.data) {
         setStatusLogin(0);
-      } else {
-        console.log(resVerifyOTP.data);
-      }
+      } 
     } else {
       setValid(true);
     }

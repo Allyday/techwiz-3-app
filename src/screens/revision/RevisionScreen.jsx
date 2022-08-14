@@ -8,6 +8,7 @@ import {
   TouchableRipple,
   useTheme,
 } from "react-native-paper";
+import { useSelector } from 'react-redux';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import StyledScreen from "../../components/wrappers/StyledScreen";
@@ -55,6 +56,7 @@ const getDurationString = ({ time_start, time_end }) => {
 };
 
 export default function RevisionScreen({ navigation }) {
+  const userRedux = useSelector((state) => state.user.user);
   const { colors } = useTheme();
   const [subjects, setSubjects] = useState([]);
   const [user, setUser] = useState({});
@@ -88,14 +90,14 @@ export default function RevisionScreen({ navigation }) {
 
   const getRevisionClasses = async () => {
     const { data } = await revisionAPI.getAll(token);
-    console.log(data.revision_class);
     const revisionClasses = formatLessonsIntoClasses(data.revision_class);
     setSubjects(revisionClasses);
   };
 
   const getUserData = async () => {
-    const savedUser = await AsyncStorage.getItem("user");
-    setUser(JSON.parse(savedUser));
+    // const savedUser = await AsyncStorage.getItem("user");
+    // setUser(JSON.parse(savedUser));
+    setUser(userRedux);
   };
 
   const confirmSendEmail = () => {

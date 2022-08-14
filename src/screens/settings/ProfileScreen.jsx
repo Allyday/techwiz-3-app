@@ -1,19 +1,30 @@
-import { useEffect, useState, useCallback } from 'react';
-import { StyleSheet, View, Dimensions, Image,  ToastAndroid } from 'react-native';
 import moment from 'moment';
-import { TextInput, Button } from 'react-native-paper';
+import { useCallback, useEffect, useState } from 'react';
+import {
+  Dimensions,
+  Image,
+  StyleSheet,
+  ToastAndroid,
+  View,
+} from 'react-native';
+import { Button, TextInput } from 'react-native-paper';
 import { DatePickerModal } from 'react-native-paper-dates';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { userAPI } from '../../apis';
-import { useToken } from '../../hooks/useToken';
 import StyledScreen from '../../components/wrappers/StyledScreen';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useToken } from '../../hooks/useToken';
+import { saveUser } from '../../store-redux/actions/user';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 
 export default function ProfileScreen({ navigation }) {
+  const userRedux = useSelector((state) => state.user.user);
+  const dispatch = useDispatch();
+
   const [token] = useToken();
   const [profileUser, setProfileUser] = useState({});
+  const [dateOfBirth, setDateOfBirth] = useState();
   const [open, setOpen] = useState(false);
 
   const fixedData = [
@@ -30,28 +41,21 @@ export default function ProfileScreen({ navigation }) {
 
   const getProfile = async () => {
     try {
-      const { data } = await userAPI.profileUser(token);
-      const { payload } = data;
-      setProfileUser(payload);
+      // const { data } = await userAPI.profileUser(token);
+      // const { payload } = data;
+      setProfileUser(userRedux);
+      setDateOfBirth(userRedux.date_of_birth);
     } catch (error) {
       console.log(error);
     }
   };
   const putProfile = async () => {
     try {
+      profileUser.date_of_birth = moment(dateOfBirth).format('YYYY-MM-DD');
       const { data } = await userAPI.updateProfileUser(profileUser, token);
       const { payload } = data;
       setProfileUser(payload);
-      
-      // update AsyncStorage
-      const savedStudent = JSON.parse(await AsyncStorage.getItem('user'));
-      savedStudent.first_name = payload.first_name;
-      savedStudent.last_name = payload.last_name;
-      savedStudent.address = payload.address;
-      savedStudent.phone = payload.phone;
-      savedStudent.date_of_birth = payload.date_of_birth;
-      await AsyncStorage.setItem('user', JSON.stringify(savedStudent));
-
+      dispatch(saveUser(payload));
       ToastAndroid.show('Profile updated successfully!', ToastAndroid.SHORT);
     } catch (error) {
       console.log(JSON.stringify(error));
@@ -69,7 +73,7 @@ export default function ProfileScreen({ navigation }) {
   const onConfirm = useCallback(
     (params) => {
       setOpen(false);
-      changeProfile(params.date, 'date_of_birth');
+      setDateOfBirth(params.date);
     },
     [setOpen]
   );
@@ -110,7 +114,7 @@ export default function ProfileScreen({ navigation }) {
         error={false}
         style={styles.textInput}
         label="BirthDay"
-        value={moment(profileUser.date_of_birth).format('DD/MM/YYYY')}
+        value={moment(dateOfBirth).format('DD/MM/YYYY')}
         autoCapitalize="none"
       />
       <View style={styles.wrapperButton}>
@@ -147,7 +151,7 @@ export default function ProfileScreen({ navigation }) {
         mode="single"
         visible={open}
         onDismiss={onDismiss}
-        date={new Date(profileUser.date_of_birth)}
+        date={new Date(dateOfBirth)}
         onConfirm={onConfirm}
       />
     </StyledScreen>
