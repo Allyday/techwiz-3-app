@@ -1,10 +1,10 @@
-import { useEffect, useState } from 'react';
+import { useLayoutEffect, useState } from 'react';
 import { Alert, StyleSheet, View } from 'react-native';
-import { IconButton, List, Text, Title, useTheme } from 'react-native-paper';
+import { Button, List, Text, Title, useTheme } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import StyledScreen from '../../components/wrappers/StyledScreen';
-import { revisionAPI } from '../../apis';
+import { revisionAPI, systemAPI } from '../../apis';
 import { useToken } from '../../hooks/useToken';
 
 const formatLessonsIntoClasses = (lessons) => {
@@ -45,18 +45,34 @@ const getDurationString = ({ time_start, time_end }) => {
   return hourString + minuteString;
 };
 
-export default function RevisionScreen() {
+export default function RevisionScreen({ navigation }) {
   const { colors } = useTheme();
   const [subjects, setSubjects] = useState([]);
   const [user, setUser] = useState({});
   const [isLoading, setLoading] = useState(true);
   const [token] = useToken();
 
-  useEffect(() => {
+  /* set header button */
+  useLayoutEffect(() => {
     Promise.all([getRevisionClasses(), getUserData()]).finally(() =>
       setLoading(false)
     );
-  }, []);
+
+    if (user.role === 'STUDENT')
+      navigation.setOptions({
+        headerRight: () => (
+          <Button
+            compact
+            uppercase={false}
+            onPress={confirmSendEmail}
+            style={{ marginRight: 8 }}
+            color="white"
+          >
+            Save to email
+          </Button>
+        ),
+      });
+  }, [navigation]);
 
   const getRevisionClasses = async () => {
     const { data } = await revisionAPI.getAll(token);
@@ -69,10 +85,10 @@ export default function RevisionScreen() {
     setUser(JSON.parse(savedUser));
   };
 
-  const confirmSendEmail = async (item) => {
+  const confirmSendEmail = () => {
     Alert.alert(
       'Confirm send',
-      `Send the ${item.name_subject} revision class schedule to "${user.email}"?`,
+      `Send revision class schedules to "${user.email}"?`,
       [
         {
           text: 'Cancel',
@@ -80,7 +96,7 @@ export default function RevisionScreen() {
         },
         {
           text: 'Send',
-          onPress: () => sendEmail(item),
+          onPress: () => sendEmail(),
         },
       ],
       {
@@ -89,7 +105,9 @@ export default function RevisionScreen() {
     );
   };
 
-  const sendEmail = async (item) => {};
+  const sendEmail = async () => {
+    await systemAPI.sendInfoRevision(token);
+  };
 
   const renderSubjectItem = (item) => {
     return (
@@ -119,14 +137,6 @@ export default function RevisionScreen() {
               </View>
             </View>
           ))}
-          {user.role === 'STUDENT' && (
-            <IconButton
-              onPress={() => confirmSendEmail(item)}
-              icon="inbox-arrow-down"
-              color={colors.secondary}
-              style={styles.sendEmailBtn}
-            />
-          )}
         </View>
       </List.Accordion>
     );

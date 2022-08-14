@@ -30,4 +30,5 @@ export default {
   notification: "notification/",
   /* send emails */
   sendReportCard: 'send-report-card',
+  sendInfoRevision: 'send-info-revision',
 };

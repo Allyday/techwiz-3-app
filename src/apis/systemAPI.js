@@ -7,4 +7,7 @@ export default {
   sendReportCard: async (token, payload) => {
     return requests.post(urls.sendReportCard, payload, token);
   },
+  sendInfoRevision: async (token) => {
+    return requests.post(urls.sendInfoRevision, {}, token);
+  },
 };
