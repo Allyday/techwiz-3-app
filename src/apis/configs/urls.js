@@ -17,6 +17,10 @@ export default {
   getSubject: "grade/get-subject",
   /* studyResource */
   studyResource: "studyresource",
+
+  /* revision */
+  revision: 'revision/',
+
   /* getProfileUser */
   getProfileUser: "user/",
   /* helplines */
@@ -24,4 +28,6 @@ export default {
 
   /* system */
   notification: "notification/",
+  /* send emails */
+  sendReportCard: 'send-report-card',
 };

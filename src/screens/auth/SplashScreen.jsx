@@ -6,7 +6,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useToken } from '../../hooks/useToken';
 
 export default function SplashScreen({ navigation }) {
-  const [token] = useToken();
+  const [token, setToken] = useToken();
   const { colors } = useTheme();
 
   useLayoutEffect(() => {
@@ -14,9 +14,11 @@ export default function SplashScreen({ navigation }) {
   }, []);
 
   const checkIsSignedIn = async () => {
+    const savedToken = await AsyncStorage.getItem('access');
     const savedUser = await AsyncStorage.getItem('user');
+    if (savedToken) setToken(savedToken);
     const user = JSON.parse(savedUser);
-    if (token && user)
+    if (savedToken && user)
       navigation.replace('Root', {
         screen: 'Home',
         role: user.role,

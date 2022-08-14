@@ -1,13 +1,18 @@
 import { useState, useEffect } from "react";
-import { View, StyleSheet, Dimensions } from "react-native";
-import { Avatar, Text, Title, useTheme } from "react-native-paper";
+import { View, StyleSheet, Dimensions, Alert } from "react-native";
+import { Avatar, Text, Button, Title, useTheme } from "react-native-paper";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import moment from "moment";
 import ContentLoader from "react-native-easy-content-loader";
-const SCREEN_HEIGHT = Dimensions.get("window").height;
-const SCREEN_WIDTH = Dimensions.get("window").width;
+
+import { systemAPI } from '../../../apis';
+import { useToken } from '../../../hooks/useToken';
+
+const SCREEN_WIDTH = Dimensions.get('window').width;
+
 export default function StudentInfo() {
   const { colors } = useTheme();
+  const [token] = useToken();
   const [student, setStudent] = useState({});
   const [isLoading, setLoading] = useState(true);
 
@@ -19,9 +24,37 @@ export default function StudentInfo() {
     setLoading(true);
     const savedStudent = await AsyncStorage.getItem("user");
     setStudent(JSON.parse(savedStudent));
-    setTimeout(() => {
-      setLoading(false);
-    }, 1000);
+    setLoading(false);
+  };
+
+  const confirmSendEmail = async () => {
+    const savedUser = await AsyncStorage.getItem('user');
+    const user = JSON.parse(savedUser);
+    Alert.alert(
+      'Confirm send',
+      `Send ${student.first_name} ${student.last_name}'s card to "${user.email}"?`,
+      [
+        {
+          text: 'Cancel',
+          style: 'cancel',
+        },
+        {
+          text: 'Send',
+          onPress: () => sendEmail(),
+        },
+      ],
+      {
+        cancelable: true,
+      }
+    );
+  };
+
+  const sendEmail = async () => {
+    try {
+      await systemAPI.sendReportCard(token, { student_id: student.id });
+    } catch (error) {
+      console.log(JSON.stringify(error));
+    }
   };
 
   return (
@@ -33,7 +66,6 @@ export default function StudentInfo() {
               paddingLeft: 16,
               backgroundColor: "#fff",
               marginTop: 10,
-              // paddingVertical: 16,
             }}
           >
             <ContentLoader
@@ -45,7 +77,7 @@ export default function StudentInfo() {
               aShape={"circle"}
             />
           </View>
-          <View
+          {/* <View
             style={{
               paddingLeft: 16,
               backgroundColor: "#fff",
@@ -59,7 +91,7 @@ export default function StudentInfo() {
               pWidth={[SCREEN_WIDTH - 35]}
               tWidth={SCREEN_WIDTH - 35}
             />
-          </View>
+          </View> */}
         </>
       ) : (
         <View style={styles.container}>
@@ -75,8 +107,19 @@ export default function StudentInfo() {
               </Title>
               <Text>Class {student.class_name}</Text>
             </View>
+            <Button
+              mode="outlined"
+              uppercase={false}
+              onPress={confirmSendEmail}
+              style={{
+                borderRadius: 50,
+                marginLeft: 'auto',
+              }}
+            >
+              Save to email
+            </Button>
           </View>
-          <View style={[styles.row, styles.infoContainer]}>
+          {/* <View style={[styles.row, styles.infoContainer]}>
             <Text style={styles.infoTitle}>Date of Birth</Text>
             <Text style={{ color: colors.secondary }}>
               {moment(student.date_of_birth).format("D MMM YYYY")}
@@ -95,7 +138,7 @@ export default function StudentInfo() {
             <Text style={{ color: colors.secondary }}>
               {student.parent_name}
             </Text>
-          </View>
+          </View> */}
         </View>
       )}
     </>

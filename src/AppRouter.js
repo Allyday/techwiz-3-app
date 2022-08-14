@@ -1,9 +1,6 @@
-import { useEffect } from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import { useToken } from './hooks/useToken';
 import RootStack from './navigation/RootStack';
 import SplashScreen from './screens/auth/SplashScreen';
 import LoginScreen from './screens/auth/LoginScreen';
@@ -12,17 +9,6 @@ import ViewPDF from './screens/viewPDF/ViewPDF';
 const Stack = createNativeStackNavigator();
 
 export default function App() {
-  const [token, setToken] = useToken();
-
-  useEffect(() => {
-    getToken();
-  }, []);
-
-  const getToken = async () => {
-    const savedToken = await AsyncStorage.getItem('access');
-    if (savedToken) setToken(savedToken);
-  };
-
   return (
     <NavigationContainer>
       <Stack.Navigator>
