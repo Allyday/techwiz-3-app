@@ -50,40 +50,35 @@ export default function AddResourcesButton() {
       if (resGetSubject.data.payload.length > 0) {
         setSubject(resGetSubject.data.payload);
         setIsLoading(true);
-      } else {
-        console.log("Lỗi subj");
       }
     };
     a();
   }, []);
   const addResources = async () => {
     setIsLoadingButton(true);
-    console.log({
-      name: title,
-      link: link,
-      type: type,
-      subject: idSub.id,
-    });
-    try {
-      const resAddResourcesAPI = await resourceAPI.addResourcesAPI(
-        {
-          name: title,
-          link: link,
-          type: type,
-          subject: idSub.id,
-        },
-        token
-      );
-      if (resAddResourcesAPI.data.data) {
-        ToastAndroid.show("Resource added successfully!", ToastAndroid.SHORT);
-        setModalVisible(false);
-      } else {
-        throw new Error("Wrong password");
+    const checkLink = validateLink();
+    if (checkLink) {
+      try {
+        const resAddResourcesAPI = await resourceAPI.addResourcesAPI(
+          {
+            name: title,
+            link: link,
+            type: type,
+            subject: idSub.id,
+          },
+          token
+        );
+        if (resAddResourcesAPI.data.data) {
+          ToastAndroid.show('Resource added successfully!', ToastAndroid.SHORT);
+          setModalVisible(false);
+        } else {
+          throw new Error('Wrong password');
+        }
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setIsLoadingButton(false);
       }
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setIsLoadingButton(false);
     }
   };
 

@@ -10,7 +10,6 @@ export default {
     );
   },
   post: async (route, payload, token) => {
-    console.log(payload);
     return AXIOS.post(
       route,
       payload,

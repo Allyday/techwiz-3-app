@@ -12,6 +12,7 @@ import { TabView, TabBar } from "react-native-tab-view";
 import { List, Text, useTheme } from "react-native-paper";
 import { FontAwesome5 } from "@expo/vector-icons";
 import ContentLoader from "react-native-easy-content-loader";
+import { useSelector } from 'react-redux';
 
 import subjectAPI from "../../apis/subjectAPI";
 import resourceAPI from "../../apis/resourceAPI";
@@ -22,6 +23,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import StyledScreen from "../../components/wrappers/StyledScreen";
 
 export default function Resources({ navigation }) {
+  const userRedux = useSelector((state) => state.user.user);
   const [routes, setRoutes] = React.useState([]);
   const { colors } = useTheme();
   const gameItemExtractorKey = (item, index) => {
@@ -234,9 +236,6 @@ export default function Resources({ navigation }) {
       if (resStudyResource.data.data.length > 0) {
         const { data } = resStudyResource.data;
         setDsResources(dsResources.concat(data));
-        console.log(totalCount);
-      } else {
-        console.log("sai mật khẩu rồi mày ơi");
       }
       var de = dem + 1;
       setDem(de);
@@ -322,9 +321,9 @@ export default function Resources({ navigation }) {
 
   React.useEffect(() => {
     const getData = async () => {
-      const savedUser = await AsyncStorage.getItem("user");
-      const user = JSON.parse(savedUser);
-      console.log(user);
+      // const savedUser = await AsyncStorage.getItem("user");
+      // const user = JSON.parse(savedUser);
+      const user = userRedux;
       setRole(user.role);
       let params = {
         page: 1,
@@ -353,8 +352,6 @@ export default function Resources({ navigation }) {
         setDsResources(data);
         setTotalCount(page_info.total);
         setIsLoadingRenderScene(true);
-      } else {
-        console.log("Lỗi subj");
       }
     };
     getData();
@@ -392,7 +389,6 @@ export default function Resources({ navigation }) {
             setTotalCount(page_info.total);
           } else {
             setDsResources(["No resources"]);
-            console.log("sai mật khẩu rồi mày ơi");
           }
         }}
       />

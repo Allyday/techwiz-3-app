@@ -27,15 +27,12 @@ export default function HelplinesScreen({ navigation }) {
         const { data } = resHelpline.data;
         setHelpline(data);
         setIsLoading(true);
-      } else {
-        console.log("sai mật khẩu rồi mày ơi");
-      }
+      } 
     };
     getData();
   }, []);
 
   const callNumber = (phone) => {
-    console.log("callNumber ----> ", phone);
     let phoneNumber = phone;
     if (Platform.OS !== "android") {
       phoneNumber = `telprompt:${phone}`;
