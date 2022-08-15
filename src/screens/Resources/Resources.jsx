@@ -309,42 +309,42 @@ export default function Resources({ navigation }) {
   const [token] = useToken();
 
   React.useEffect(() => {
-    const getData = async () => {
-      // const savedUser = await AsyncStorage.getItem("user");
-      // const user = JSON.parse(savedUser);
-      const user = userRedux;
-      setRole(user.role);
-      let params = {
-        page: 1,
-        limit: 10,
-      };
-      const resGetSubject = await subjectAPI.getSubject(token);
-      if (resGetSubject.data.payload.length > 0) {
-        var dsMonHoc = [
-          {
-            key: 0,
-            title: "All",
-          },
-        ];
-        const sceneMapObj = { 0: SRoute };
-        resGetSubject.data.payload.map((subject) => {
-          dsMonHoc.push({
-            key: subject.id,
-            title: subject.name,
-          });
-          sceneMapObj[subject.id] = SRoute;
-        });
-        setSceneMap(sceneMapObj);
-        setRoutes(dsMonHoc);
-        const resStudyResource = await resourceAPI.studyResource(token, params);
-        const { data, page_info } = resStudyResource.data;
-        setDsResources(data);
-        setTotalCount(page_info.total);
-        setIsLoadingRenderScene(true);
-      }
-    };
     getData();
   }, []);
+  const getData = async () => {
+    // const savedUser = await AsyncStorage.getItem("user");
+    // const user = JSON.parse(savedUser);
+    const user = userRedux;
+    setRole(user.role);
+    let params = {
+      page: 1,
+      limit: 10,
+    };
+    const resGetSubject = await subjectAPI.getSubject(token);
+    if (resGetSubject.data.payload.length > 0) {
+      var dsMonHoc = [
+        {
+          key: 0,
+          title: "All",
+        },
+      ];
+      const sceneMapObj = { 0: SRoute };
+      resGetSubject.data.payload.map((subject) => {
+        dsMonHoc.push({
+          key: subject.id,
+          title: subject.name,
+        });
+        sceneMapObj[subject.id] = SRoute;
+      });
+      setSceneMap(sceneMapObj);
+      setRoutes(dsMonHoc);
+      const resStudyResource = await resourceAPI.studyResource(token, params);
+      const { data, page_info } = resStudyResource.data;
+      setDsResources(data);
+      setTotalCount(page_info.total);
+      setIsLoadingRenderScene(true);
+    }
+  };
 
   const renderTabBar = (SceneRendererProps) => (
     <View style={{ backgroundColor: colors.secondary }}>

@@ -16,7 +16,7 @@ import { resourceAPI, subjectAPI } from "../../../apis";
 import { useToken } from "../../../hooks/useToken";
 
 const SCREEN_WIDTH = Dimensions.get("window").width;
-export default function AddResourcesButton() {
+export default function AddResourcesButton({ onFinishAdding }) {
   const [token] = useToken();
   const { colors } = useTheme();
   const [isModalVisible, setModalVisible] = useState(false);
@@ -70,6 +70,7 @@ export default function AddResourcesButton() {
         );
         if (resAddResourcesAPI.data.data) {
           ToastAndroid.show('Resource added successfully!', ToastAndroid.SHORT);
+          if (onFinishAdding) await onFinishAdding();
           setModalVisible(false);
         } else {
           throw new Error('Wrong password');
