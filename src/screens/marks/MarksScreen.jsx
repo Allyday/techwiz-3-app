@@ -167,7 +167,7 @@ export default function MarksScreen({ navigation }) {
   };
 
   const StatisticsSection = () => {
-    const itemWidth = 95;
+    const itemWidth = 100;
     const itemHeight = 80;
     const loaderContainerStyle = {
       width: itemWidth,
@@ -198,7 +198,6 @@ export default function MarksScreen({ navigation }) {
           style={{
             flexDirection: 'row',
             justifyContent: 'space-around',
-            paddingHorizontal: 12,
           }}
         >
           {isLoading ? (
@@ -499,7 +498,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     paddingHorizontal: 12,
     paddingVertical: 8,
-    width: 95,
+    width: 100,
   },
   statisticsTitle: { fontSize: 24, fontWeight: 'bold', marginBottom: 0 },
   statisticsSubtitle: { fontSize: 16, fontWeight: 'normal' },
