@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   Dimensions,
   Image,
+  Linking,
 } from "react-native";
 import { TabView, TabBar } from "react-native-tab-view";
 import { List, Text, useTheme } from "react-native-paper";
@@ -128,6 +129,7 @@ export default function Resources({ navigation }) {
       </View>
     ) : value.item.type == "WEB" ? (
       <List.Item
+        onPress={() => Linking.openURL(value.item.link)}
         title={() => (
           <Text numberOfLines={1} style={{ fontSize: 16, fontWeight: "800" }}>
             {value.item.name}
@@ -161,6 +163,7 @@ export default function Resources({ navigation }) {
       />
     ) : (
       <List.Item
+        onPress={() => navigation.navigate("ViewPDF")}
         title={() => (
           <Text numberOfLines={1} style={{ fontSize: 16, fontWeight: "800" }}>
             {value.item.name}
@@ -168,8 +171,7 @@ export default function Resources({ navigation }) {
         )}
         description={() => <Text numberOfLines={1}>{value.item.link}</Text>}
         left={() => (
-          <TouchableOpacity
-            onPress={() => navigation.navigate("ViewPDF")}
+          <View
             style={{
               width: 50,
               height: 60,
@@ -194,7 +196,7 @@ export default function Resources({ navigation }) {
               size={24}
               color={colors.secondary}
             />
-          </TouchableOpacity>
+          </View>
         )}
         style={{
           padding: 16,
