@@ -42,7 +42,7 @@ export default function HelplinesScreen({ navigation }) {
     Linking.canOpenURL(phoneNumber)
       .then((supported) => {
         if (!supported) {
-          Alert.alert("Phone number is not available !!!");
+          Alert.alert("Phone number is invalid. Try entering the number directly into your phone");
         } else {
           return Linking.openURL(phoneNumber);
         }
@@ -81,12 +81,14 @@ export default function HelplinesScreen({ navigation }) {
                 title={v.name}
                 description={v.title + ' | ' + v.phone}
                 right={() => (
-                  <AntDesign
-                    style={{ marginTop: 12, marginRight: 8 }}
-                    name="phone"
-                    size={24}
-                    color="#473f97"
-                  />
+                  <TouchableOpacity onPress={() => callNumber(v.phone)}>
+                    <AntDesign
+                      style={{ marginTop: 12, marginRight: 8 }}
+                      name="phone"
+                      size={24}
+                      color="#473f97"
+                    />
+                  </TouchableOpacity>
                 )}
               />
             ))}
@@ -110,30 +112,29 @@ export default function HelplinesScreen({ navigation }) {
           {isLoading &&
             dsHelpline
               .filter((person) => person.type === 'STAFF')
-              .map(
-                (v, k) =>
-                  <List.Item
-                    style={{
-                      marginLeft: 28,
-                      backgroundColor: '#ffd4d4',
-                      marginRight: 28,
-                      borderRadius: 12,
-                      marginBottom: 10,
-                    }}
-                    title={v.name}
-                    description={v.title + ' | ' + v.phone}
-                    right={() => (
-                      <TouchableOpacity onPress={() => callNumber(v.phone)}>
-                        <AntDesign
-                          style={{ marginTop: 12, marginRight: 8 }}
-                          name="phone"
-                          size={24}
-                          color="#473f97"
-                        />
-                      </TouchableOpacity>
-                    )}
-                  />
-              )}
+              .map((v, k) => (
+                <List.Item
+                  style={{
+                    marginLeft: 28,
+                    backgroundColor: '#ffd4d4',
+                    marginRight: 28,
+                    borderRadius: 12,
+                    marginBottom: 10,
+                  }}
+                  title={v.name}
+                  description={v.title + ' | ' + v.phone}
+                  right={() => (
+                    <TouchableOpacity onPress={() => callNumber(v.phone)}>
+                      <AntDesign
+                        style={{ marginTop: 12, marginRight: 8 }}
+                        name="phone"
+                        size={24}
+                        color="#473f97"
+                      />
+                    </TouchableOpacity>
+                  )}
+                />
+              ))}
         </List.Accordion>
       </View>
     </StyledScreen>
