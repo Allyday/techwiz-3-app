@@ -4,7 +4,6 @@ import {
   useWindowDimensions,
   StyleSheet,
   FlatList,
-  TouchableOpacity,
   Dimensions,
   Image,
   Linking,
@@ -137,7 +136,7 @@ export default function Resources({ navigation }) {
         )}
         description={() => <Text numberOfLines={1}>{value.item.link}</Text>}
         left={() => (
-          <TouchableOpacity
+          <View
             style={{
               width: 50,
               height: 60,
@@ -150,7 +149,7 @@ export default function Resources({ navigation }) {
             }}
           >
             <FontAwesome5 name="globe" size={24} color={colors.secondary} />
-          </TouchableOpacity>
+          </View>
         )}
         style={{
           padding: 16,
