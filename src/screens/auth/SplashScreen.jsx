@@ -2,12 +2,10 @@ import { useLayoutEffect } from 'react';
 import { View, Image, StyleSheet } from 'react-native';
 import { useTheme } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useSelector } from 'react-redux';
 
 import { useToken } from '../../hooks/useToken';
 
 export default function SplashScreen({ navigation }) {
-  const userRedux = useSelector((state) => state.user.user);
   const [token, setToken] = useToken();
   const { colors } = useTheme();
 
@@ -17,9 +15,9 @@ export default function SplashScreen({ navigation }) {
 
   const checkIsSignedIn = async () => {
     const savedToken = await AsyncStorage.getItem('access');
-    // const savedUser = await AsyncStorage.getItem('user');
+    const savedUser = await AsyncStorage.getItem('user');
     if (savedToken) setToken(savedToken);
-    const user = userRedux;
+    const user = JSON.parse(savedUser);
     if (savedToken && user) {
       const savedInfoChild = await AsyncStorage.getItem('info_child');
       const info_child = JSON.parse(savedInfoChild);

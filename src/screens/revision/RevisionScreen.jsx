@@ -95,9 +95,9 @@ export default function RevisionScreen({ navigation }) {
   };
 
   const getUserData = async () => {
-    // const savedUser = await AsyncStorage.getItem("user");
-    // setUser(JSON.parse(savedUser));
-    setUser(userRedux);
+    const savedUser = await AsyncStorage.getItem("user");
+    setUser(JSON.parse(savedUser));
+    // setUser(userRedux);
   };
 
   const confirmSendEmail = () => {
