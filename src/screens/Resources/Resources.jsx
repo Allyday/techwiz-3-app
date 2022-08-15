@@ -147,19 +147,7 @@ export default function Resources({ navigation }) {
               borderWidth: 1,
             }}
           >
-            <FontAwesome5
-              name={
-                value.item.type == "WEB"
-                  ? "display"
-                  : value.item.type == "MP4"
-                  ? "file-video"
-                  : value.item.type == "IMAGE"
-                  ? "file-image"
-                  : "file-word"
-              }
-              size={24}
-              color={colors.secondary}
-            />
+            <FontAwesome5 name="globe" size={24} color={colors.secondary} />
           </TouchableOpacity>
         )}
         style={{
