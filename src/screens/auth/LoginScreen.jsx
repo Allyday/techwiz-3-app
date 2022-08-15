@@ -5,6 +5,7 @@ import {
   Dimensions,
   SafeAreaView,
   Image,
+  ScrollView
 } from "react-native";
 import { SimpleLineIcons } from "@expo/vector-icons";
 import { useTheme, Button, TextInput } from "react-native-paper";
@@ -59,6 +60,7 @@ const LoginScreen = ({ navigation }) => {
   });
   return (
     <SafeAreaView style={styles.container}>
+      <ScrollView>
       <View>
         <View style={styles.viewLogo}>
           <Image
@@ -100,6 +102,7 @@ const LoginScreen = ({ navigation }) => {
           navigation={navigation}
         />
       )}
+      </ScrollView>
     </SafeAreaView>
   );
 };

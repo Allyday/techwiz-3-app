@@ -9,16 +9,18 @@ import {
 } from 'react-native';
 import { Button, TextInput } from 'react-native-paper';
 import { DatePickerModal } from 'react-native-paper-dates';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 
 import { userAPI } from '../../apis';
 import StyledScreen from '../../components/wrappers/StyledScreen';
 import { useToken } from '../../hooks/useToken';
+import { saveUser } from '../../store-redux/actions/user';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 
 export default function ProfileScreen({ navigation }) {
   const userRedux = useSelector((state) => state.user.user);
+  const dispatch = useDispatch();
 
   const [token] = useToken();
   const [profileUser, setProfileUser] = useState({});
@@ -49,23 +51,35 @@ export default function ProfileScreen({ navigation }) {
   };
   const putProfile = async () => {
     try {
-      profileUser.date_of_birth = moment(dateOfBirth).format('YYYY-MM-DD');
-      const { data } = await userAPI.updateProfileUser(profileUser, token);
+      const payloadUpdate = {
+        date_of_birth: moment(dateOfBirth).format('YYYY-MM-DD'),
+        first_name: profileUser.first_name,
+        last_name: profileUser.last_name,
+        address: profileUser.address,
+        phone: profileUser.phone,
+        avatar_url: profileUser.avatar_url,
+        id: profileUser.id,
+      };
+      // return
+      const {data} = await userAPI.updateProfileUser(payloadUpdate, token);
       const { payload } = data;
       setProfileUser(payload);
-      
+
       // update AsyncStorage
-      const savedStudent = JSON.parse(await AsyncStorage.getItem('user'));
-      savedStudent.first_name = payload.first_name;
-      savedStudent.last_name = payload.last_name;
-      savedStudent.address = payload.address;
-      savedStudent.phone = payload.phone;
-      savedStudent.date_of_birth = payload.date_of_birth;
-      await AsyncStorage.setItem('user', JSON.stringify(savedStudent));
+      dispatch(saveUser(payload))
+
+
+      // const savedStudent = JSON.parse(await AsyncStorage.getItem('user'));
+      // savedStudent.first_name = payload.first_name;
+      // savedStudent.last_name = payload.last_name;
+      // savedStudent.address = payload.address;
+      // savedStudent.phone = payload.phone;
+      // savedStudent.date_of_birth = payload.date_of_birth;
+      // await AsyncStorage.setItem('user', JSON.stringify(savedStudent));
 
       ToastAndroid.show('Profile updated successfully!', ToastAndroid.SHORT);
     } catch (error) {
-      console.log(JSON.stringify(error));
+      console.error(JSON.stringify(error));
     }
   };
 

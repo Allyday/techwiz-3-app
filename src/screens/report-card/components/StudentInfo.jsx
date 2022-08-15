@@ -113,13 +113,13 @@ export default function StudentInfo({ studentData }) {
           <View style={[styles.row, { marginBottom: 16 }]}>
             <Avatar.Image
               size={40}
-              source={{ uri: student.avatar_url }}
+              source={{ uri: userRedux.avatar_url }}
               style={styles.avatar}
             />
             <View>
               <Title>
                 {student.full_name ??
-                  `${student.first_name} ${student.last_name}`}
+                  `${userRedux.first_name} ${userRedux.last_name}`}
               </Title>
               <Text>Class {student.class_name}</Text>
             </View>

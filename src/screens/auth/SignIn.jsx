@@ -1,4 +1,4 @@
-import { StyleSheet, View, Dimensions } from "react-native";
+import { StyleSheet, View, Dimensions, ScrollView } from "react-native";
 import { useTheme, Button, HelperText, TextInput } from "react-native-paper";
 import React, { useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -96,6 +96,7 @@ const SignIn = ({ setStatusLogin, navigation }) => {
     }
   };
   return (
+    // <ScrollView>
     <View style={{ backgroundColor: colors.secondary }}>
       <View style={styles.viewInput}>
         <>
@@ -152,6 +153,7 @@ const SignIn = ({ setStatusLogin, navigation }) => {
           /> */}
       </View>
     </View>
+    // </ScrollView>
   );
 };
 

@@ -20,12 +20,13 @@ const userReducer = (state = initialState, action) => {
       };
 
     case SAVE_USER: {
-      const newUser = { ...state.user };
+      const newUser = {...state.user};
       newUser.first_name = action.payload.first_name;
       newUser.last_name = action.payload.last_name;
       newUser.address = action.payload.address;
       newUser.phone = action.payload.phone;
       newUser.date_of_birth = action.payload.date_of_birth;
+      
       return { user: newUser };
     }
 
