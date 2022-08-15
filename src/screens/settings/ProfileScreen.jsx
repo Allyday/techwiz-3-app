@@ -9,18 +9,16 @@ import {
 } from 'react-native';
 import { Button, TextInput } from 'react-native-paper';
 import { DatePickerModal } from 'react-native-paper-dates';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { userAPI } from '../../apis';
 import StyledScreen from '../../components/wrappers/StyledScreen';
 import { useToken } from '../../hooks/useToken';
-import { saveUser } from '../../store-redux/actions/user';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 
 export default function ProfileScreen({ navigation }) {
   const userRedux = useSelector((state) => state.user.user);
-  const dispatch = useDispatch();
 
   const [token] = useToken();
   const [profileUser, setProfileUser] = useState({});
@@ -28,11 +26,11 @@ export default function ProfileScreen({ navigation }) {
   const [open, setOpen] = useState(false);
 
   const fixedData = [
-    { name: 'email', disabled: true },
-    { name: 'first_name', disabled: false },
-    { name: 'last_name', disabled: false },
-    { name: 'address', disabled: false },
-    { name: 'phone', disabled: false },
+    { name: 'email', disabled: true, displayName: 'Email' },
+    { name: 'first_name', disabled: false, displayName: 'First name' },
+    { name: 'last_name', disabled: false, displayName: 'Last name' },
+    { name: 'address', disabled: false, displayName: 'Address' },
+    { name: 'phone', disabled: false, displayName: 'Phone number' },
   ];
 
   useEffect(() => {
@@ -55,7 +53,16 @@ export default function ProfileScreen({ navigation }) {
       const { data } = await userAPI.updateProfileUser(profileUser, token);
       const { payload } = data;
       setProfileUser(payload);
-      dispatch(saveUser(payload));
+      
+      // update AsyncStorage
+      const savedStudent = JSON.parse(await AsyncStorage.getItem('user'));
+      savedStudent.first_name = payload.first_name;
+      savedStudent.last_name = payload.last_name;
+      savedStudent.address = payload.address;
+      savedStudent.phone = payload.phone;
+      savedStudent.date_of_birth = payload.date_of_birth;
+      await AsyncStorage.setItem('user', JSON.stringify(savedStudent));
+
       ToastAndroid.show('Profile updated successfully!', ToastAndroid.SHORT);
     } catch (error) {
       console.log(JSON.stringify(error));
@@ -100,7 +107,7 @@ export default function ProfileScreen({ navigation }) {
             key={index}
             error={false}
             style={styles.textInput}
-            label={field.name.toUpperCase()}
+            label={field.displayName}
             value={profileUser[field.name]}
             onChangeText={(e) => changeProfile(e, field.name)}
             autoCapitalize="none"
@@ -114,7 +121,7 @@ export default function ProfileScreen({ navigation }) {
         error={false}
         style={styles.textInput}
         label="BirthDay"
-        value={moment(dateOfBirth).format('DD/MM/YYYY')}
+        value={moment(profileUser.date_of_birth).format('DD/MM/YYYY')}
         autoCapitalize="none"
       />
       <View style={styles.wrapperButton}>
