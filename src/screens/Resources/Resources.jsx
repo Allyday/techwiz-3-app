@@ -399,6 +399,7 @@ export default function Resources({ navigation }) {
       {isLoadingRenderScene ? (
         <TabView
           lazy
+          swipeEnabled={false} // because data doesnt load on swipe :D
           navigationState={{ index, routes }}
           renderScene={renderSceneFnc}
           onIndexChange={setIndex}
