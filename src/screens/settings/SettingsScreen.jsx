@@ -45,7 +45,7 @@ export default function SettingsScreen({ navigation }) {
       leftIcon: 'help-circle-outline',
       rightIcon: 'chevron-right',
       handelPress: () => {
-        showAlert('hello');
+        showAlert(`To get help with using the app, send us an email at ${EMAIL}. We'd be happy to help!`);
       },
     },
   ];
