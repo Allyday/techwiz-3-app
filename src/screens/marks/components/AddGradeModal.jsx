@@ -52,7 +52,7 @@ export default function AddGradeModal({ subject }) {
     setGradeError(null);
     if (isLoading) return;
     const validGradeForSubmit = /^([0-9]{1,2}([.][0-9]{1})?|([.][0-9]{1})?)$/;
-    if (!grade.match(validGradeForSubmit)) {
+    if (grade === '' || !grade.match(validGradeForSubmit)) {
       setGradeError(
         'A valid grade is a number between 0 and 10, with maximum 1 decimal point.'
       );
@@ -61,7 +61,7 @@ export default function AddGradeModal({ subject }) {
     }
 
     const { startYear: start_year, endYear: end_year } = getCurrentSchoolYear();
-    const payload = {
+    const payloadRequest = {
       grade_id: student.grade_id,
       mark: +grade,
       start_year,
@@ -76,7 +76,9 @@ export default function AddGradeModal({ subject }) {
 
     try {
       setIsLoading(true);
-      const { data } = await gradeAPI.add(token, payload);
+      const { data } = await gradeAPI.add(token, payloadRequest);
+      const { payload } = data;
+
       // update list ui
       if (!student.grade)
         setExam({
@@ -85,8 +87,9 @@ export default function AddGradeModal({ subject }) {
         });
       setStudent({
         ...student,
-        grade: payload.mark,
-        exam_date: payload.exam_date,
+        grade: payloadRequest.mark,
+        grade_id: payload.id,
+        exam_date: payloadRequest.exam_date,
       });
       ToastAndroid.show('Grade updated successfully!', ToastAndroid.SHORT);
     } catch (error) {
