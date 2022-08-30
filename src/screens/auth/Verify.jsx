@@ -6,6 +6,7 @@ import { authAPI } from "../../apis";
 const SCREEN_HEIGHT = Dimensions.get("window").height;
 const SCREEN_WIDTH = Dimensions.get("window").width;
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import OTPInputView from "@twotalltotems/react-native-otp-input";
 
 const Verify = (props, { navigation }) => {
   const { colors } = useTheme();
@@ -22,13 +23,11 @@ const Verify = (props, { navigation }) => {
   const [number6, onChangeNumber6] = React.useState(null);
   const [passNew, setPassNew] = React.useState("adminadmin");
   const [valid, setValid] = React.useState(false);
+  const [otp, setOtp] = React.useState(null);
 
   const verify = async () => {
     const getPin = await AsyncStorage.getItem("getPin");
-    if (
-      `${number1}${number2}${number3}${number4}${number5}${number6}` ==
-      JSON.parse(getPin).pin
-    ) {
+    if (otp == JSON.parse(getPin).pin) {
       props.setStatusLogin(3);
       setValid(false);
       // const resVerifyOTP = await authAPI.verifyOTP({
@@ -78,10 +77,35 @@ const Verify = (props, { navigation }) => {
     <View style={{ backgroundColor: colors.secondary }}>
       <View style={styles.viewInput}>
         <View>
-          <Text style={{ fontSize: 16, marginBottom: 10, fontWeight: "600" }}>
+          <Text
+            style={{
+              fontSize: 16,
+              marginBottom: 10,
+              fontWeight: "600",
+              marginLeft: 30,
+            }}
+          >
             Enter OTP
           </Text>
-          <View style={{ flexDirection: "row" }}>
+          <View style={{ width: "100%", paddingHorizontal: 30 }}>
+            <OTPInputView
+              pinCount={6}
+              style={{
+                height: 50,
+                color: "#fd3667",
+              }}
+              codeInputFieldStyle={{
+                backgroundColor: "#eaecef",
+                borderWidth: 0,
+                color: "#fd3667",
+                fontSize: 16,
+                fontWeight: "600",
+              }}
+              placeholderTextColor={"#fd3667"}
+              onCodeChanged={(e) => setOtp(e)}
+            />
+          </View>
+          {/* <View style={{ flexDirection: "row" }}>
             <TextInput
               underlineColor="transparent"
               style={styles.textInput}
@@ -124,9 +148,9 @@ const Verify = (props, { navigation }) => {
               value={number6}
               keyboardType="numeric"
             />
-          </View>
+          </View> */}
           {/* UPDATE SAU */}
-          <HelperText type="error" visible={valid}>
+          <HelperText type="error" visible={valid} style={{ marginLeft: 20 }}>
             Sai OTP
           </HelperText>
         </View>

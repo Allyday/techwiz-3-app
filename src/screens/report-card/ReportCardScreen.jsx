@@ -12,7 +12,7 @@ import StyledScreen from '../../components/wrappers/StyledScreen';
 import StudentInfo from './components/StudentInfo';
 import Grades from './components/Grades';
 
-export default function ReportCardScreen({ route }) {
+export default function ReportCardScreen({ route, navigation }) {
   const { colors } = useTheme();
   const student = route?.params?.student;
   /* start tab view configs */
@@ -46,7 +46,7 @@ export default function ReportCardScreen({ route }) {
 
   return (
     <StyledScreen style={styles.container}>
-      <StudentInfo studentData={student} />
+      <StudentInfo studentData={student} navigation={navigation}/>
       <TabView
         navigationState={{ index, routes }}
         renderScene={renderScene}

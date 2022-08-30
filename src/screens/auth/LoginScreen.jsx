@@ -5,7 +5,8 @@ import {
   Dimensions,
   SafeAreaView,
   Image,
-  ScrollView
+  ScrollView,
+  KeyboardAvoidingView,
 } from "react-native";
 import { SimpleLineIcons } from "@expo/vector-icons";
 import { useTheme, Button, TextInput } from "react-native-paper";
@@ -59,51 +60,53 @@ const LoginScreen = ({ navigation }) => {
     },
   });
   return (
-    <SafeAreaView style={styles.container}>
-      <ScrollView>
-      <View>
-        <View style={styles.viewLogo}>
-          <Image
-            style={{
-              width: 280,
-              height: 150,
-            }}
-            source={require("../../assets/adaptive-icon.png")}
-          />
-          <Text style={styles.textLogo}>SMART Study</Text>
-          <Text style={styles.textSignin}>Sign In</Text>
-        </View>
-      </View>
-      {statusLogin == 0 && (
-        <SignIn
-          statusLogin={statusLogin}
-          setStatusLogin={(statusLogin) => setStatusLogin(statusLogin)}
-          navigation={navigation}
-        />
-      )}
-      {statusLogin == 1 && (
-        <GenerateOTP
-          statusLogin={statusLogin}
-          setStatusLogin={(statusLogin) => setStatusLogin(statusLogin)}
-          navigation={navigation}
-        />
-      )}
-      {statusLogin == 2 && (
-        <Verify
-          statusLogin={statusLogin}
-          setStatusLogin={(statusLogin) => setStatusLogin(statusLogin)}
-          navigation={navigation}
-        />
-      )}
-      {statusLogin == 3 && (
-        <Forgot
-          statusLogin={statusLogin}
-          setStatusLogin={(statusLogin) => setStatusLogin(statusLogin)}
-          navigation={navigation}
-        />
-      )}
-      </ScrollView>
-    </SafeAreaView>
+    <KeyboardAvoidingView behavior={"height"} style={{ flex: 1 }}>
+      <SafeAreaView style={styles.container}>
+        <ScrollView>
+          <View>
+            <View style={styles.viewLogo}>
+              <Image
+                style={{
+                  width: 280,
+                  height: 150,
+                }}
+                source={require("../../assets/adaptive-icon.png")}
+              />
+              <Text style={styles.textLogo}>SMART Study</Text>
+              <Text style={styles.textSignin}>Sign In</Text>
+            </View>
+          </View>
+          {statusLogin == 0 && (
+            <SignIn
+              statusLogin={statusLogin}
+              setStatusLogin={(statusLogin) => setStatusLogin(statusLogin)}
+              navigation={navigation}
+            />
+          )}
+          {statusLogin == 1 && (
+            <GenerateOTP
+              statusLogin={statusLogin}
+              setStatusLogin={(statusLogin) => setStatusLogin(statusLogin)}
+              navigation={navigation}
+            />
+          )}
+          {statusLogin == 2 && (
+            <Verify
+              statusLogin={statusLogin}
+              setStatusLogin={(statusLogin) => setStatusLogin(statusLogin)}
+              navigation={navigation}
+            />
+          )}
+          {statusLogin == 3 && (
+            <Forgot
+              statusLogin={statusLogin}
+              setStatusLogin={(statusLogin) => setStatusLogin(statusLogin)}
+              navigation={navigation}
+            />
+          )}
+        </ScrollView>
+      </SafeAreaView>
+    </KeyboardAvoidingView>
   );
 };
 

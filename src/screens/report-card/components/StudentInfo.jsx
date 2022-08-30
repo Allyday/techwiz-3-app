@@ -1,23 +1,23 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useLayoutEffect } from "react";
 import {
   View,
   StyleSheet,
   Dimensions,
   Alert,
   ToastAndroid,
-} from 'react-native';
-import { Avatar, Text, Button, Title, useTheme } from 'react-native-paper';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import moment from 'moment';
-import { useSelector } from 'react-redux';
-import ContentLoader from 'react-native-easy-content-loader';
+} from "react-native";
+import { Avatar, Text, Button, Title, useTheme } from "react-native-paper";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import moment from "moment";
+import { useSelector } from "react-redux";
+import ContentLoader from "react-native-easy-content-loader";
 
-import { systemAPI } from '../../../apis';
-import { useToken } from '../../../hooks/useToken';
+import { systemAPI } from "../../../apis";
+import { useToken } from "../../../hooks/useToken";
 
-const SCREEN_WIDTH = Dimensions.get('window').width;
+const SCREEN_WIDTH = Dimensions.get("window").width;
 
-export default function StudentInfo({ studentData }) {
+export default function StudentInfo(props, { studentData }) {
   const userRedux = useSelector((state) => state.user.user);
   const { colors } = useTheme();
   const [token] = useToken();
@@ -28,6 +28,23 @@ export default function StudentInfo({ studentData }) {
     if (!studentData) getStudentData(); // role === 'STUDENT'
     else setStudent(studentData); // role === 'PARENT'
   }, []);
+
+  useLayoutEffect(() => {
+    if (userRedux.role === "STUDENT")
+      props.navigation.setOptions({
+        headerRight: () => (
+          <Button
+            compact
+            uppercase={false}
+            onPress={confirmSendEmail}
+            style={{ marginRight: 8 }}
+            color="white"
+          >
+            Save to email
+          </Button>
+        ),
+      });
+  }, [props.navigation]);
 
   const getStudentData = async () => {
     setLoading(true);
@@ -45,15 +62,15 @@ export default function StudentInfo({ studentData }) {
       student.full_name ?? `${student.first_name} ${student.last_name}`;
 
     Alert.alert(
-      'Confirm send',
+      "Confirm send",
       `Send ${studentName}'s report card to "${user.email}"?`,
       [
         {
-          text: 'Cancel',
-          style: 'cancel',
+          text: "Cancel",
+          style: "cancel",
         },
         {
-          text: 'Send',
+          text: "Send",
           onPress: () => sendEmail(),
         },
       ],
@@ -66,12 +83,17 @@ export default function StudentInfo({ studentData }) {
   const sendEmail = async () => {
     try {
       await systemAPI.sendReportCard(token, { student_id: student.id });
-      ToastAndroid.show('Email sent!', ToastAndroid.SHORT);
+      ToastAndroid.show("Email sent!", ToastAndroid.SHORT);
     } catch (error) {
       console.log(JSON.stringify(error));
     }
   };
-
+  const initialName = (user) => {
+    var initName = "";
+    if (user.first_name) initName = initName + user.first_name[0];
+    if (user.last_name) initName = initName + user.last_name[0];
+    return initName.toLocaleUpperCase();
+  };
   return (
     <>
       {isLoading ? (
@@ -79,7 +101,7 @@ export default function StudentInfo({ studentData }) {
           <View
             style={{
               paddingLeft: 16,
-              backgroundColor: '#fff',
+              backgroundColor: "#fff",
               marginTop: 10,
             }}
           >
@@ -89,7 +111,7 @@ export default function StudentInfo({ studentData }) {
               aSize={40}
               pRows={1}
               pWidth={[100]}
-              aShape={'circle'}
+              aShape={"circle"}
             />
           </View>
           {/* <View
@@ -111,11 +133,20 @@ export default function StudentInfo({ studentData }) {
       ) : (
         <View style={styles.container}>
           <View style={[styles.row, { marginBottom: 16 }]}>
-            <Avatar.Image
-              size={40}
-              source={{ uri: userRedux.avatar_url }}
-              style={styles.avatar}
-            />
+            {userRedux.avatar_url != "" ? (
+              <Avatar.Text
+                size={40}
+                label={initialName(userRedux)}
+                style={styles.avatar}
+              />
+            ) : (
+              <Avatar.Image
+                size={40}
+                source={{ uri: userRedux.avatar_url }}
+                style={styles.avatar}
+              />
+            )}
+
             <View>
               <Title>
                 {student.full_name ??
@@ -123,17 +154,17 @@ export default function StudentInfo({ studentData }) {
               </Title>
               <Text>Class {student.class_name}</Text>
             </View>
-            <Button
+            {/* <Button
               mode="outlined"
               uppercase={false}
               onPress={confirmSendEmail}
               style={{
                 borderRadius: 50,
-                marginLeft: 'auto',
+                marginLeft: "auto",
               }}
             >
               Save to email
-            </Button>
+            </Button> */}
           </View>
           {/* <View style={[styles.row, styles.infoContainer]}>
             <Text style={styles.infoTitle}>Date of Birth</Text>
@@ -163,8 +194,8 @@ export default function StudentInfo({ studentData }) {
 
 const styles = StyleSheet.create({
   container: { paddingHorizontal: 24 },
-  row: { flexDirection: 'row', alignItems: 'center' },
+  row: { flexDirection: "row", alignItems: "center" },
   avatar: { marginRight: 16 },
-  infoContainer: { borderBottomWidth: 1, borderBottomColor: '#e8eaec' },
-  infoTitle: { fontWeight: '600', width: '50%', paddingVertical: 8 },
+  infoContainer: { borderBottomWidth: 1, borderBottomColor: "#e8eaec" },
+  infoTitle: { fontWeight: "600", width: "50%", paddingVertical: 8 },
 });

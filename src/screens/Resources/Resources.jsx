@@ -7,13 +7,17 @@ import {
   Dimensions,
   Image,
   Linking,
+  Modal,
+  StatusBar,
+  TouchableOpacity,
 } from "react-native";
 import { TabView, TabBar } from "react-native-tab-view";
 import { List, Text, useTheme } from "react-native-paper";
 import { FontAwesome5 } from "@expo/vector-icons";
 import ContentLoader from "react-native-easy-content-loader";
-import { useSelector } from 'react-redux';
-
+import { useSelector } from "react-redux";
+import ImageViewer from "react-native-image-zoom-viewer";
+import { Feather } from "@expo/vector-icons";
 import subjectAPI from "../../apis/subjectAPI";
 import resourceAPI from "../../apis/resourceAPI";
 import { useToken } from "../../hooks/useToken";
@@ -91,18 +95,31 @@ export default function Resources({ navigation }) {
           width: "100%",
         }}
       >
-        <Image
-          style={{
-            width: Dimensions.get("window").width - 80,
-            height: 150,
-            borderRadius: 10,
-            zIndex: 100,
-            marginBottom: 20,
+        <TouchableOpacity
+          onPress={() => {
+            setImages2([
+              {
+                url: value.item.link,
+                props: {},
+              },
+            ]);
+            setZoomAnh2(true);
           }}
-          source={{
-            uri: value.item.link,
-          }}
-        />
+        >
+          <Image
+            style={{
+              width: Dimensions.get("window").width - 80,
+              height: 150,
+              borderRadius: 10,
+              zIndex: 100,
+              marginBottom: 20,
+            }}
+            source={{
+              uri: value.item.link,
+            }}
+          />
+        </TouchableOpacity>
+
         <Text
           numberOfLines={1}
           style={{
@@ -393,7 +410,9 @@ export default function Resources({ navigation }) {
     const RenderedRoute = sceneMap[route.key];
     return <RenderedRoute resources={dsResources} />;
   };
+  const [zoomAnh2, setZoomAnh2] = React.useState(false);
 
+  const [images2, setImages2] = React.useState([]);
   return (
     <StyledScreen>
       {isLoadingRenderScene ? (
@@ -540,6 +559,33 @@ export default function Resources({ navigation }) {
         </View>
       )}
       {role == "TEACHER" && <AddResourcesButton />}
+      <Modal visible={zoomAnh2} transparent={true}>
+        <StatusBar barStyle="light-content" backgroundColor="#000" />
+        <View
+          style={{
+            width: "100%",
+            backgroundColor: "black",
+            alignItems: "flex-end",
+            paddingRight: 10,
+          }}
+        >
+          <TouchableOpacity
+            style={{
+              width: 30,
+              backgroundColor: "black",
+              marginTop:20
+            }}
+            onPress={() => setZoomAnh2(false)}
+          >
+            <Feather name="x" size={24} color="#fff" />
+          </TouchableOpacity>
+        </View>
+        <ImageViewer
+          imageUrls={images2}
+          enableSwipeDown={true}
+          onCancel={() => setZoomAnh2(false)}
+        />
+      </Modal>
     </StyledScreen>
   );
 }
