@@ -25,7 +25,9 @@ const LoginScreen = ({ navigation }) => {
 
   const styles = StyleSheet.create({
     container: {
+      flex:1,
       backgroundColor: "#fff",
+      justifyContent: "space-around"
     },
     viewLogo: {
       backgroundColor: colors.secondary,
@@ -60,9 +62,8 @@ const LoginScreen = ({ navigation }) => {
     },
   });
   return (
-    <KeyboardAvoidingView behavior={"height"} style={{ flex: 1 }}>
+    <KeyboardAvoidingView behavior={"height"} style={{flex:1}}>
       <SafeAreaView style={styles.container}>
-        <ScrollView>
           <View>
             <View style={styles.viewLogo}>
               <Image
@@ -104,7 +105,6 @@ const LoginScreen = ({ navigation }) => {
               navigation={navigation}
             />
           )}
-        </ScrollView>
       </SafeAreaView>
     </KeyboardAvoidingView>
   );
