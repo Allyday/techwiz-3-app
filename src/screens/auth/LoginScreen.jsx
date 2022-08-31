@@ -5,7 +5,7 @@ import {
   Dimensions,
   Platform,
   Image,
-  ScrollView,
+  SafeAreaView,
   KeyboardAvoidingView,
 } from "react-native";
 import { useTheme } from "react-native-paper";
@@ -31,7 +31,7 @@ const LoginScreen = ({ navigation }) => {
 
   return (
     <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{ flex: 1 }}>
-      <ScrollView contentContainerStyle={styles.container}>
+      <SafeAreaView style={styles.container}>
         <View style={[styles.viewLogo, { backgroundColor: colors.secondary }]}>
           <Image
             style={{
@@ -45,7 +45,7 @@ const LoginScreen = ({ navigation }) => {
           </Text>
           <Text style={styles.textSignin}>Sign In</Text>
         </View>
-        <View style={{ backgroundColor: colors.secondary }}>
+        <View style={{ flex: 1, backgroundColor: colors.secondary }}>
           <View style={styles.viewInput}>
             <CurrentAuthStep
               statusLogin={statusLogin}
@@ -56,9 +56,8 @@ const LoginScreen = ({ navigation }) => {
             />
           </View>
         </View>
-      </ScrollView>
+      </SafeAreaView>
     </KeyboardAvoidingView>
-
   );
 };
 
@@ -66,6 +65,7 @@ const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
     backgroundColor: "#fff",
+    justifyContent: "space-around",
   },
   viewLogo: {
     flex: 1,
