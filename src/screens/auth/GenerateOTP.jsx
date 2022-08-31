@@ -26,7 +26,6 @@ const GenerateOTP = (props) => {
       const resGetPin = await authAPI.getPin("", {
         email: text,
       });
-
       if (resGetPin.data.result == "success") {
         resGetPin.data.email = text;
         await AsyncStorage.setItem("getPin", JSON.stringify(resGetPin.data));

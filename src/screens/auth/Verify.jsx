@@ -1,26 +1,29 @@
 import { Text } from "react-native";
 import { useTheme, Button, HelperText } from "react-native-paper";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import OTPInputView from "@twotalltotems/react-native-otp-input";
+import { authAPI } from "../../apis";
+import { set } from "lodash";
 
 const OTP_LENGTH = 6;
 
 const Verify = (props) => {
   const { colors } = useTheme();
   const [valid, setValid] = useState(false);
-  const [otp, setOtp] = useState(null);
+  const [otp, setOtp] = useState("");
+  const [clearInput, setClearInput] = useState(false);
 
   // auto verify
-  useEffect(() => { 
+  useEffect(() => {
     if (otp.length === OTP_LENGTH) verify();
-  }, [otp])
+  }, [otp]);
 
   const verify = async () => {
+    // setOtp('');
     const getPin = await AsyncStorage.getItem("getPin");
     if (otp == JSON.parse(getPin).pin) {
       props.setStatusLogin(3);
-      setValid(false);
       // const resVerifyOTP = await authAPI.verifyOTP({
       //   pin: `${number1}${number2}${number3}${number4}${number5}${number6}`,
       //   token: JSON.parse(getPin).payload.token,
@@ -39,6 +42,21 @@ const Verify = (props) => {
     // } else {
     //   throw new Error("Wrong password");
     // }
+  };
+
+  const resendCode = async () => {
+    setOtp("");
+    setValid(false);
+    const getPin = await AsyncStorage.getItem("getPin");
+    const resGetPin = await authAPI.getPin("", {
+      email: JSON.parse(getPin).email,
+    });
+    if (resGetPin.data.result == "success") {
+      resGetPin.data.email = JSON.parse(getPin).email;
+      await AsyncStorage.setItem("getPin", JSON.stringify(resGetPin.data));
+    } else {
+      throw new Error("Wrong password");
+    }
   };
 
   return (
@@ -65,8 +83,12 @@ const Verify = (props) => {
           fontSize: 16,
           fontWeight: "600",
         }}
+        autoFocusOnLoad
         placeholderTextColor={colors.secondary}
+        // clearInputs={clearInput}
         onCodeChanged={setOtp}
+        onCodeFilled={e=>console.log(e)}
+        code={otp}
       />
       <HelperText type="error" visible={valid}>
         Invalid OTP.
@@ -74,7 +96,7 @@ const Verify = (props) => {
 
       <Button
         mode="contained"
-        // onPress={verify}
+        onPress={resendCode}
         uppercase={false}
         style={props.buttonStyle}
         contentStyle={props.buttonContentStyle}
