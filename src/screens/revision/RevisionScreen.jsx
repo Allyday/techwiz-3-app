@@ -1,7 +1,7 @@
 import { useLayoutEffect, useState } from "react";
 import { Alert, StyleSheet, ToastAndroid, View } from "react-native";
 import {
-  Button,
+  IconButton,
   List,
   Text,
   Title,
@@ -75,15 +75,13 @@ export default function RevisionScreen({ navigation }) {
     if (user.role === "STUDENT")
       navigation.setOptions({
         headerRight: () => (
-          <Button
-            compact
-            uppercase={false}
-            onPress={confirmSendEmail}
-            style={{ marginRight: 8 }}
+          <IconButton
+            icon="email-fast-outline"
             color="white"
-          >
-            Save to email
-          </Button>
+            size={32}
+            onPress={confirmSendEmail}
+          />
+
         ),
       });
   }, [navigation]);

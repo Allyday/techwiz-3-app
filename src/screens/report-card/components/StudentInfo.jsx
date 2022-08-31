@@ -2,22 +2,17 @@ import { useState, useEffect, useLayoutEffect } from "react";
 import {
   View,
   StyleSheet,
-  Dimensions,
   Alert,
   ToastAndroid,
 } from "react-native";
-import { Avatar, Text, Button, Title, useTheme } from "react-native-paper";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import moment from "moment";
+import { Avatar, Text, Button, IconButton, Title, useTheme } from "react-native-paper";
 import { useSelector } from "react-redux";
 import ContentLoader from "react-native-easy-content-loader";
 
 import { systemAPI } from "../../../apis";
 import { useToken } from "../../../hooks/useToken";
 
-const SCREEN_WIDTH = Dimensions.get("window").width;
-
-export default function StudentInfo(props, { studentData }) {
+export default function StudentInfo({ studentData }) {
   const userRedux = useSelector((state) => state.user.user);
   const { colors } = useTheme();
   const [token] = useToken();
@@ -28,24 +23,6 @@ export default function StudentInfo(props, { studentData }) {
     if (!studentData) getStudentData(); // role === 'STUDENT'
     else setStudent(studentData); // role === 'PARENT'
   }, []);
-
-  useLayoutEffect(() => {
-    if (userRedux.role === "STUDENT")
-      props.navigation.setOptions({
-        headerRight: () => (
-          <Button
-            compact
-            mode="contained"
-            uppercase={false}
-            onPress={confirmSendEmail}
-            style={{ marginRight: 8 }}
-            color="white"
-          >
-            Save to email
-          </Button>
-        ),
-      });
-  }, [props.navigation]);
 
   const getStudentData = async () => {
     setLoading(true);
@@ -147,25 +124,19 @@ export default function StudentInfo(props, { studentData }) {
                 style={styles.avatar}
               />
             )}
-
-            <View>
+            <View style={{ flex: 1 }}>
               <Title>
                 {student.full_name ??
                   `${userRedux.first_name} ${userRedux.last_name}`}
               </Title>
               <Text>Class {student.class_name}</Text>
             </View>
-            {/* <Button
-              mode="outlined"
-              uppercase={false}
+            <IconButton
+              icon="email-fast-outline"
+              color={colors.primary}
+              size={32}
               onPress={confirmSendEmail}
-              style={{
-                borderRadius: 50,
-                marginLeft: "auto",
-              }}
-            >
-              Save to email
-            </Button> */}
+            />
           </View>
           {/* <View style={[styles.row, styles.infoContainer]}>
             <Text style={styles.infoTitle}>Date of Birth</Text>
