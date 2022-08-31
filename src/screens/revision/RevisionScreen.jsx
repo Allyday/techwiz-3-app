@@ -132,67 +132,65 @@ export default function RevisionScreen({ navigation }) {
   };
 
   const renderSubjectItem = (item) => {
+    if (isLoading) return (
+      <View
+        style={{
+          paddingRight: 16,
+          backgroundColor: "#fff",
+          marginTop: 10,
+          paddingVertical: 16,
+        }}
+      >
+        <ContentLoader active pRows={0} pWidth={[100]} />
+      </View>
+    );
+
     return (
-      <>
-        {isLoading ? (
-          <View
-            style={{
-              paddingRight: 16,
-              backgroundColor: "#fff",
-              marginTop: 10,
-              paddingVertical: 16,
-            }}
-          >
-            <ContentLoader active pRows={0} pWidth={[100]} />
+      <List.Accordion
+        key={item.id_subject}
+        id={item.id_subject}
+        title={item.name_subject}
+      >
+        <View style={styles.accordionContent}>
+          <View style={styles.sectionTitleContainer}>
+            <Title style={styles.title}>Teacher</Title>
           </View>
-        ) : (
-          <List.Accordion
-            key={item.id_subject}
-            id={item.id_subject}
-            title={item.name_subject}
-          >
-            <View style={styles.accordionContent}>
-              <View style={styles.sectionTitleContainer}>
-                <Title style={styles.title}>Teacher</Title>
+          <Text>{item.name_teacher}</Text>
+          <View style={styles.sectionTitleContainer}>
+            <Title style={styles.title}>Weekly Schedule</Title>
+            {user.role === "TEACHER" && (
+              <Text>(Tap on lesson to edit)</Text>
+            )}
+          </View>
+          {item.lessons.map((lesson) => (
+            <TouchableRipple
+              key={`${item.id_subject}${lesson.id}`}
+              {...(user.role === "TEACHER" && {
+                onPress: () => openScheduleModal({ subject: item, lesson }),
+              })}
+              rippleColor={colors.darkGreen}
+              style={[
+                styles.lessonItemContainer,
+                { backgroundColor: colors.lightGreen },
+              ]}
+            >
+              <View style={styles.lessonItem}>
+                <Title style={styles.lessonInfoContainer}>
+                  {lesson.day_of_week}
+                </Title>
+                <View style={styles.verticalDivider} />
+                <View style={[styles.lessonInfoContainer, { flex: 3 }]}>
+                  <Text style={styles.lessonTimes}>
+                    {formatTimeString(lesson.time_start)} -{" "}
+                    {formatTimeString(lesson.time_end)}
+                  </Text>
+                  <Text>{getDurationString(lesson)}</Text>
+                </View>
               </View>
-              <Text>{item.name_teacher}</Text>
-              <View style={styles.sectionTitleContainer}>
-                <Title style={styles.title}>Weekly Schedule</Title>
-                {user.role === "TEACHER" && (
-                  <Text>(Tap on lesson to edit)</Text>
-                )}
-              </View>
-              {item.lessons.map((lesson) => (
-                <TouchableRipple
-                  key={`${item.id_subject}${lesson.id}`}
-                  {...(user.role === "TEACHER" && {
-                    onPress: () => openScheduleModal({ subject: item, lesson }),
-                  })}
-                  rippleColor={colors.darkGreen}
-                  style={[
-                    styles.lessonItemContainer,
-                    { backgroundColor: colors.lightGreen },
-                  ]}
-                >
-                  <View style={styles.lessonItem}>
-                    <Title style={styles.lessonInfoContainer}>
-                      {lesson.day_of_week}
-                    </Title>
-                    <View style={styles.verticalDivider} />
-                    <View style={[styles.lessonInfoContainer, { flex: 3 }]}>
-                      <Text style={styles.lessonTimes}>
-                        {formatTimeString(lesson.time_start)} -{" "}
-                        {formatTimeString(lesson.time_end)}
-                      </Text>
-                      <Text>{getDurationString(lesson)}</Text>
-                    </View>
-                  </View>
-                </TouchableRipple>
-              ))}
-            </View>
-          </List.Accordion>
-        )}
-      </>
+            </TouchableRipple>
+          ))}
+        </View>
+      </List.Accordion>
     );
   };
 

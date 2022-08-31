@@ -35,6 +35,7 @@ export default function StudentInfo(props, { studentData }) {
         headerRight: () => (
           <Button
             compact
+            mode="contained"
             uppercase={false}
             onPress={confirmSendEmail}
             style={{ marginRight: 8 }}
@@ -108,7 +109,7 @@ export default function StudentInfo(props, { studentData }) {
             <ContentLoader
               active
               avatar
-              aSize={40}
+              aSize={48}
               pRows={1}
               pWidth={[100]}
               aShape={"circle"}
@@ -135,13 +136,13 @@ export default function StudentInfo(props, { studentData }) {
           <View style={[styles.row, { marginBottom: 16 }]}>
             {userRedux.avatar_url != "" ? (
               <Avatar.Text
-                size={40}
+                size={48}
                 label={initialName(userRedux)}
                 style={styles.avatar}
               />
             ) : (
               <Avatar.Image
-                size={40}
+                size={48}
                 source={{ uri: userRedux.avatar_url }}
                 style={styles.avatar}
               />
