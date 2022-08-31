@@ -27,7 +27,7 @@ export default function HelplinesScreen({ navigation }) {
         const { data } = resHelpline.data;
         setHelpline(data);
         setIsLoading(true);
-      } 
+      }
     };
     getData();
   }, []);
@@ -71,6 +71,7 @@ export default function HelplinesScreen({ navigation }) {
             .filter((person) => person.type === 'TEACHER')
             .map((v, k) => (
               <List.Item
+                key={`${v.name}${k}`}
                 style={{
                   marginLeft: 28,
                   backgroundColor: '#d4f5ff',
@@ -114,6 +115,7 @@ export default function HelplinesScreen({ navigation }) {
               .filter((person) => person.type === 'STAFF')
               .map((v, k) => (
                 <List.Item
+                  key={`${v.name}${k}`}
                   style={{
                     marginLeft: 28,
                     backgroundColor: '#ffd4d4',
