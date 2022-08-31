@@ -1,12 +1,6 @@
-import {
-  StyleSheet,
-  View,
-  Dimensions,
-  ScrollView,
-  KeyboardAvoidingView,
-} from "react-native";
+import { useState } from "react";
+import { StyleSheet } from "react-native";
 import { useTheme, Button, HelperText, TextInput } from "react-native-paper";
-import React, { useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useDispatch } from "react-redux";
 
@@ -14,30 +8,11 @@ import authAPI from "../../apis/authAPI";
 import { useToken } from "../../hooks/useToken";
 import { loginUser } from "../../store-redux/actions/user";
 
-const SCREEN_HEIGHT = Dimensions.get("window").height;
-const SCREEN_WIDTH = Dimensions.get("window").width;
-
-const SignIn = ({ setStatusLogin, navigation }) => {
+const SignIn = ({ setStatusLogin, navigation, buttonStyle, buttonContentStyle }) => {
   const dispatch = useDispatch();
 
-  const { colors } = useTheme();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
-  const styles = StyleSheet.create({
-    viewInput: {
-      backgroundColor: "#fff",
-      width: "100%",
-      height: SCREEN_HEIGHT / 2,
-      alignItems: "center",
-      justifyContent: "space-around",
-      borderTopEndRadius: 30,
-    },
-    textInput: {
-      width: SCREEN_WIDTH - 80,
-      backgroundColor: "#fff",
-    },
-  });
   const [wrongPassword, setWrongPassword] = useState(false);
   const [token, setToken] = useToken();
   const [emailInvalid, setEmailInvalid] = useState(false);
@@ -102,78 +77,52 @@ const SignIn = ({ setStatusLogin, navigation }) => {
     }
   };
   return (
-    // <ScrollView>
-      <View style={{ backgroundColor: colors.secondary }}>
-        <View style={styles.viewInput}>
-          <>
-            <TextInput
-              error={false}
-              style={styles.textInput}
-              label="Email"
-              value={email}
-              onChangeText={setEmail}
-              autoCapitalize="none"
-            />
-            <HelperText type="error" visible={emailInvalid}>
-              Invalid email
-            </HelperText>
-          </>
-          <>
-            <TextInput
-              style={styles.textInput}
-              label="Password"
-              value={password}
-              secureTextEntry={true}
-              onChangeText={setPassword}
-            />
-            <HelperText type="error" visible={wrongPassword}>
-              Wrong password. Please try again :)
-            </HelperText>
-          </>
-          <Button
-            mode="contained"
-            uppercase={false}
-            onPress={signIn}
-            //   onPress={() => navigation.replace("Root", { screen: "Home" })}
-            style={{ borderRadius: 50, overflow: "hidden" }}
-            contentStyle={{
-              borderRadius: 50,
-              width: 300,
-              height: 50,
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            Sign In
-          </Button>
-          <Button
-            onPress={() => setStatusLogin(1)}
-            labelStyle={{ fontSize: 15 }}
-            uppercase={false}
-          >
-            Forgot password
-          </Button>
-          {/* <Button
-            title="Go to Home"
-            onPress={() => navigation.replace("Root", { screen: "Home" })}
-          /> */}
-        </View>
-      </View>
-    // </ScrollView>
+    <>
+      <TextInput
+        error={false}
+        style={styles.textInput}
+        label="Email"
+        value={email}
+        onChangeText={setEmail}
+        autoCapitalize="none"
+      />
+      <HelperText type="error" visible={emailInvalid}>
+        Invalid email
+      </HelperText>
+      <TextInput
+        style={styles.textInput}
+        label="Password"
+        value={password}
+        secureTextEntry={true}
+        onChangeText={setPassword}
+      />
+      <HelperText type="error" visible={wrongPassword}>
+        Wrong password. Please try again :)
+      </HelperText>
+      <Button
+        mode="contained"
+        uppercase={false}
+        onPress={signIn}
+        style={buttonStyle}
+        contentStyle={buttonContentStyle}
+      >
+        Sign In
+      </Button>
+      <Button
+        onPress={() => setStatusLogin(1)}
+        uppercase={false}
+        style={buttonStyle}
+        contentStyle={buttonContentStyle}
+      >
+        Forgot password
+      </Button>
+    </>
   );
 };
 
 const styles = StyleSheet.create({
-  viewInput: {
-    backgroundColor: "#fff",
-    width: "100%",
-    height: SCREEN_HEIGHT / 2,
-    alignItems: "center",
-    justifyContent: "space-around",
-    borderTopEndRadius: 30,
-  },
   textInput: {
-    width: SCREEN_WIDTH - 80,
+    width: '100%',
     backgroundColor: "#fff",
   },
 });

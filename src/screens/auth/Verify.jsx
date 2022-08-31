@@ -1,29 +1,20 @@
-import { StyleSheet, Text, View, Dimensions, SafeAreaView } from "react-native";
-import { SimpleLineIcons } from "@expo/vector-icons";
-import { useTheme, Button, TextInput, HelperText } from "react-native-paper";
-import React, { useState } from "react";
-import { authAPI } from "../../apis";
-const SCREEN_HEIGHT = Dimensions.get("window").height;
-const SCREEN_WIDTH = Dimensions.get("window").width;
+import { Text } from "react-native";
+import { useTheme, Button, HelperText } from "react-native-paper";
+import { useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import OTPInputView from "@twotalltotems/react-native-otp-input";
 
-const Verify = (props, { navigation }) => {
+const OTP_LENGTH = 6;
+
+const Verify = (props) => {
   const { colors } = useTheme();
-  const [text, setText] = useState("");
-  const [number1, onChangeNumber1] = React.useState(null);
-  const [number2, onChangeNumber2] = React.useState(null);
+  const [valid, setValid] = useState(false);
+  const [otp, setOtp] = useState(null);
 
-  const [number3, onChangeNumber3] = React.useState(null);
-
-  const [number4, onChangeNumber4] = React.useState(null);
-
-  const [number5, onChangeNumber5] = React.useState(null);
-
-  const [number6, onChangeNumber6] = React.useState(null);
-  const [passNew, setPassNew] = React.useState("adminadmin");
-  const [valid, setValid] = React.useState(false);
-  const [otp, setOtp] = React.useState(null);
+  // auto verify
+  useEffect(() => { 
+    if (otp.length === OTP_LENGTH) verify();
+  }, [otp])
 
   const verify = async () => {
     const getPin = await AsyncStorage.getItem("getPin");
@@ -50,139 +41,55 @@ const Verify = (props, { navigation }) => {
     // }
   };
 
-  const styles = StyleSheet.create({
-    viewInput: {
-      backgroundColor: "#fff",
-      width: "100%",
-      height: SCREEN_HEIGHT / 2,
-      alignItems: "center",
-      justifyContent: "space-around",
-      borderTopEndRadius: 30,
-    },
-    textSignin: {
-      color: "#fff",
-      marginTop: 30,
-      fontSize: 30,
-      fontWeight: "400",
-    },
-    textInput: {
-      width: 50,
-      height: 50,
-      backgroundColor: "#eaecef",
-      borderRadius: 10,
-      margin: 5,
-    },
-  });
   return (
-    <View style={{ backgroundColor: colors.secondary }}>
-      <View style={styles.viewInput}>
-        <View>
-          <Text
-            style={{
-              fontSize: 16,
-              marginBottom: 10,
-              fontWeight: "600",
-              marginLeft: 30,
-            }}
-          >
-            Enter OTP
-          </Text>
-          <View style={{ width: "100%", paddingHorizontal: 30 }}>
-            <OTPInputView
-              pinCount={6}
-              style={{
-                height: 50,
-                color: "#fd3667",
-              }}
-              codeInputFieldStyle={{
-                backgroundColor: "#eaecef",
-                borderWidth: 0,
-                color: "#fd3667",
-                fontSize: 16,
-                fontWeight: "600",
-              }}
-              placeholderTextColor={"#fd3667"}
-              onCodeChanged={(e) => setOtp(e)}
-            />
-          </View>
-          {/* <View style={{ flexDirection: "row" }}>
-            <TextInput
-              underlineColor="transparent"
-              style={styles.textInput}
-              onChangeText={onChangeNumber1}
-              value={number1}
-              keyboardType="numeric"
-            />
-            <TextInput
-              underlineColor="transparent"
-              style={styles.textInput}
-              onChangeText={onChangeNumber2}
-              value={number2}
-              keyboardType="numeric"
-            />
-            <TextInput
-              underlineColor="transparent"
-              style={styles.textInput}
-              onChangeText={onChangeNumber3}
-              value={number3}
-              keyboardType="numeric"
-            />
-            <TextInput
-              underlineColor="transparent"
-              style={styles.textInput}
-              onChangeText={onChangeNumber4}
-              value={number4}
-              keyboardType="numeric"
-            />
-            <TextInput
-              underlineColor="transparent"
-              style={styles.textInput}
-              onChangeText={onChangeNumber5}
-              value={number5}
-              keyboardType="numeric"
-            />
-            <TextInput
-              underlineColor="transparent"
-              style={styles.textInput}
-              onChangeText={onChangeNumber6}
-              value={number6}
-              keyboardType="numeric"
-            />
-          </View> */}
-          {/* UPDATE SAU */}
-          <HelperText type="error" visible={valid} style={{ marginLeft: 20 }}>
-            Sai OTP
-          </HelperText>
-        </View>
+    <>
+      <Text
+        style={{
+          fontSize: 16,
+          marginBottom: 10,
+          fontWeight: "600",
+        }}
+      >
+        Enter OTP
+      </Text>
+      <OTPInputView
+        pinCount={OTP_LENGTH}
+        style={{
+          height: 50,
+          color: colors.secondary,
+        }}
+        codeInputFieldStyle={{
+          backgroundColor: "#eaecef",
+          borderWidth: 0,
+          color: colors.secondary,
+          fontSize: 16,
+          fontWeight: "600",
+        }}
+        placeholderTextColor={colors.secondary}
+        onCodeChanged={setOtp}
+      />
+      <HelperText type="error" visible={valid}>
+        Invalid OTP.
+      </HelperText>
 
-        <View>
-          <Button
-            mode="contained"
-            onPress={() => verify()}
-            style={{
-              borderRadius: 50,
-              width: 300,
-              height: 50,
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            Verify
-          </Button>
-          <Button
-            onPress={() => props.setStatusLogin(0)}
-            labelStyle={{ fontSize: 15 }}
-          >
-            Cancel
-          </Button>
-        </View>
-
-        {/* <Button
-            title="Go to Home"
-            onPress={() => navigation.replace("Root", { screen: "Home" })}
-          /> */}
-      </View>
-    </View>
+      <Button
+        mode="contained"
+        // onPress={verify}
+        uppercase={false}
+        style={props.buttonStyle}
+        contentStyle={props.buttonContentStyle}
+      >
+        Resend code
+      </Button>
+      <Button
+        onPress={() => props.setStatusLogin(0)}
+        uppercase={false}
+        style={props.buttonStyle}
+        contentStyle={props.buttonContentStyle}
+      >
+        Cancel
+      </Button>
+    </>
   );
 };
 

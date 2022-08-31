@@ -1,16 +1,16 @@
 import { StyleSheet, View, Dimensions } from "react-native";
-import { useTheme, Button, TextInput, HelperText } from "react-native-paper";
-import React, { useState } from "react";
-const SCREEN_HEIGHT = Dimensions.get("window").height;
-const SCREEN_WIDTH = Dimensions.get("window").width;
+import { Button, TextInput, HelperText } from "react-native-paper";
+import { useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+
 import { authAPI } from "../../apis";
 
-const Forgot = ({ setStatusLogin }) => {
-  const { colors } = useTheme();
+const SCREEN_WIDTH = Dimensions.get("window").width;
+
+const Forgot = ({ setStatusLogin, ...props }) => {
   const [text, setText] = useState("");
   const [passNew, setPassNew] = useState("");
-  const [valid, setValid] = React.useState(false);
+  const [valid, setValid] = useState(false);
 
   const layMatKhau = async () => {
     const getPin = await AsyncStorage.getItem("getPin");
@@ -25,78 +25,63 @@ const Forgot = ({ setStatusLogin }) => {
       });
       if (resVerifyOTP.data) {
         setStatusLogin(0);
-      } 
+      }
     } else {
       setValid(true);
     }
   };
 
-  const styles = StyleSheet.create({
-    viewInput: {
-      backgroundColor: "#fff",
-      width: "100%",
-      height: SCREEN_HEIGHT / 2,
-      alignItems: "center",
-      justifyContent: "space-around",
-      borderTopEndRadius: 30,
-    },
-    textSignin: {
-      color: "#fff",
-      marginTop: 30,
-      fontSize: 30,
-      fontWeight: "400",
-    },
-    textInput: {
-      width: SCREEN_WIDTH - 80,
-      backgroundColor: "#fff",
-    },
-  });
   return (
-    <View style={{ backgroundColor: colors.secondary }}>
-      <View style={styles.viewInput}>
-        <TextInput
-          style={styles.textInput}
-          label="Create New Password"
-          value={passNew}
-          secureTextEntry={true}
-          onChangeText={setPassNew}
-        />
-        <TextInput
-          style={styles.textInput}
-          label="Confim New Password"
-          value={text}
-          secureTextEntry={true}
-          onChangeText={setText}
-        />
-        <HelperText type="error" visible={valid}>
-          Password does not match.
-        </HelperText>
-        <Button
-          mode="contained"
-          onPress={layMatKhau}
-          style={{
-            borderRadius: 50,
-            width: 300,
-            height: 50,
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          Submit
-        </Button>
-        <Button
-          onPress={() => setStatusLogin(1)}
-          labelStyle={{ fontSize: 15 }}
-        >
-          Cancel
-        </Button>
-        {/* <Button
-            title="Go to Home"
-            onPress={() => navigation.replace("Root", { screen: "Home" })}
-          /> */}
-      </View>
-    </View>
+    <>
+      <TextInput
+        style={styles.textInput}
+        label="New password"
+        value={passNew}
+        secureTextEntry={true}
+        onChangeText={setPassNew}
+      />
+      <TextInput
+        style={styles.textInput}
+        label="Confim new password"
+        value={text}
+        secureTextEntry={true}
+        onChangeText={setText}
+      />
+      <HelperText type="error" visible={valid}>
+        Password does not match.
+      </HelperText>
+      <Button
+        mode="contained"
+        onPress={layMatKhau}
+        uppercase={false}
+        style={props.buttonStyle}
+        contentStyle={props.buttonContentStyle}
+      >
+        Submit
+      </Button>
+      <Button
+        onPress={() => setStatusLogin(1)}
+        uppercase={false}
+        style={props.buttonStyle}
+        contentStyle={props.buttonContentStyle}
+      >
+        Cancel
+      </Button>
+    </>
   );
 };
+
+const styles = StyleSheet.create({
+  textSignin: {
+    color: "#fff",
+    marginTop: 30,
+    fontSize: 30,
+    fontWeight: "400",
+  },
+  textInput: {
+    width: '100%',
+    backgroundColor: "#fff",
+  },
+});
 
 export default Forgot;

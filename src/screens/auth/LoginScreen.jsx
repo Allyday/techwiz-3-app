@@ -3,111 +3,106 @@ import {
   Text,
   View,
   Dimensions,
-  SafeAreaView,
+  Platform,
   Image,
   ScrollView,
   KeyboardAvoidingView,
 } from "react-native";
-import { SimpleLineIcons } from "@expo/vector-icons";
-import { useTheme, Button, TextInput } from "react-native-paper";
-import React, { useState } from "react";
+import { useTheme } from "react-native-paper";
+import { useState, useMemo } from "react";
+
 import SignIn from "./SignIn";
 import GenerateOTP from "./GenerateOTP";
 import Verify from "./Verify";
 import Forgot from "./Forgot";
+
 const SCREEN_HEIGHT = Dimensions.get("window").height;
 const SCREEN_WIDTH = Dimensions.get("window").width;
 
+const authSteps = [SignIn, GenerateOTP, Verify, Forgot];
+
 const LoginScreen = ({ navigation }) => {
   const { colors } = useTheme();
-  const [text, setText] = useState("");
   const [statusLogin, setStatusLogin] = useState(0);
 
-  const styles = StyleSheet.create({
-    container: {
-      flex:1,
-      backgroundColor: "#fff",
-      justifyContent: "space-around"
-    },
-    viewLogo: {
-      backgroundColor: colors.secondary,
-      width: "100%",
-      height: SCREEN_HEIGHT / 2,
-      alignItems: "center",
-      justifyContent: "center",
-      borderBottomStartRadius: 30,
-    },
-    viewInput: {
-      backgroundColor: "#fff",
-      width: "100%",
-      height: SCREEN_HEIGHT / 2,
-      alignItems: "center",
-      justifyContent: "space-around",
-      borderTopEndRadius: 30,
-    },
-    textLogo: {
-      fontSize: 16,
-      fontWeight: "800",
-      color: colors.primary,
-    },
-    textSignin: {
-      color: "#fff",
-      marginTop: 30,
-      fontSize: 30,
-      fontWeight: "400",
-    },
-    textInput: {
-      width: SCREEN_WIDTH - 80,
-      backgroundColor: "#fff",
-    },
-  });
+  const CurrentAuthStep = useMemo(
+    () => authSteps[statusLogin], [statusLogin, authSteps]
+  );
+
   return (
-    <KeyboardAvoidingView behavior={"height"} style={{flex:1}}>
-      <SafeAreaView style={styles.container}>
-          <View>
-            <View style={styles.viewLogo}>
-              <Image
-                style={{
-                  width: 280,
-                  height: 150,
-                }}
-                source={require("../../assets/adaptive-icon.png")}
-              />
-              <Text style={styles.textLogo}>SMART Study</Text>
-              <Text style={styles.textSignin}>Sign In</Text>
-            </View>
+    <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{ flex: 1 }}>
+      <ScrollView contentContainerStyle={styles.container}>
+        <View style={[styles.viewLogo, { backgroundColor: colors.secondary }]}>
+          <Image
+            style={{
+              width: SCREEN_WIDTH,
+              height: SCREEN_WIDTH * 150 / 280,
+            }}
+            source={require("../../assets/adaptive-icon.png")}
+          />
+          <Text style={[styles.textLogo, { color: colors.primary }]}>
+            Smart Study
+          </Text>
+          <Text style={styles.textSignin}>Sign In</Text>
+        </View>
+        <View style={{ backgroundColor: colors.secondary }}>
+          <View style={styles.viewInput}>
+            <CurrentAuthStep
+              statusLogin={statusLogin}
+              setStatusLogin={setStatusLogin}
+              navigation={navigation}
+              buttonStyle={styles.buttonStyle}
+              buttonContentStyle={styles.buttonContentStyle}
+            />
           </View>
-          {statusLogin == 0 && (
-            <SignIn
-              statusLogin={statusLogin}
-              setStatusLogin={(statusLogin) => setStatusLogin(statusLogin)}
-              navigation={navigation}
-            />
-          )}
-          {statusLogin == 1 && (
-            <GenerateOTP
-              statusLogin={statusLogin}
-              setStatusLogin={(statusLogin) => setStatusLogin(statusLogin)}
-              navigation={navigation}
-            />
-          )}
-          {statusLogin == 2 && (
-            <Verify
-              statusLogin={statusLogin}
-              setStatusLogin={(statusLogin) => setStatusLogin(statusLogin)}
-              navigation={navigation}
-            />
-          )}
-          {statusLogin == 3 && (
-            <Forgot
-              statusLogin={statusLogin}
-              setStatusLogin={(statusLogin) => setStatusLogin(statusLogin)}
-              navigation={navigation}
-            />
-          )}
-      </SafeAreaView>
+        </View>
+      </ScrollView>
     </KeyboardAvoidingView>
+
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flexGrow: 1,
+    backgroundColor: "#fff",
+  },
+  viewLogo: {
+    flex: 1,
+    maxHeight: SCREEN_HEIGHT / 2,
+    width: "100%",
+    alignItems: "center",
+    justifyContent: "center",
+    borderBottomStartRadius: 30,
+  },
+  viewInput: {
+    flex: 1,
+    backgroundColor: "#fff",
+    width: "100%",
+    alignItems: "center",
+    justifyContent: "space-around",
+    borderTopEndRadius: 30,
+    paddingVertical: 16,
+    paddingHorizontal: 24,
+  },
+  textLogo: {
+    fontSize: 16,
+    fontWeight: '600',
+    marginTop: -32,
+  },
+  textSignin: {
+    color: "#fff",
+    marginVertical: 24,
+    fontSize: 30,
+  },
+  buttonStyle: { borderRadius: 50, overflow: "hidden", marginTop: 8 },
+  buttonContentStyle: {
+    borderRadius: 50,
+    width: 300,
+    height: 50,
+    alignItems: "center",
+    justifyContent: "center",
+  }
+});
 
 export default LoginScreen;
