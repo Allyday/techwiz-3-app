@@ -1,16 +1,16 @@
-import { useState } from 'react';
-import { StyleSheet, View, Alert } from 'react-native';
-import { Button, TextInput } from 'react-native-paper';
-import { systemAPI } from '../../apis';
-import { useToken } from '../../hooks/useToken';
+import { useState } from "react";
+import { StyleSheet, View, Alert } from "react-native";
+import { Button, TextInput } from "react-native-paper";
+import { systemAPI } from "../../apis";
+import { useToken } from "../../hooks/useToken";
 
 export default function FeedbackScreen() {
-  const [title, setTitle] = useState('');
-  const [content, setContent] = useState('');
+  const [title, setTitle] = useState("");
+  const [content, setContent] = useState("");
   const [token] = useToken();
 
   const onChangeInput = (text, type) => {
-    if (type === 'title') {
+    if (type === "title") {
       setTitle(text);
     } else {
       setContent(text);
@@ -20,11 +20,11 @@ export default function FeedbackScreen() {
   const showAlert = (message) =>
     Alert.alert(
       message,
-      '',
+      "",
       [
         {
-          text: 'Cancel',
-          style: 'cancel',
+          text: "Cancel",
+          style: "cancel",
         },
       ],
       {
@@ -35,7 +35,7 @@ export default function FeedbackScreen() {
 
   const handleSubmit = async () => {
     if (title.length <= 0 || content.length <= 0) {
-      showAlert('Please, Fill in the data');
+      showAlert("Please, Fill in the data");
       return;
     }
     const data = {
@@ -46,10 +46,12 @@ export default function FeedbackScreen() {
     await systemAPI
       .sendFeedback(token, data)
       .then((res) => {
-        showAlert('Thanks for your feedback');
+        setTitle("");
+        setContent("");
+        showAlert("Thanks for your feedback");
       })
       .catch((error) => {
-        showAlert('Error! An error occurred. Please try again later');
+        showAlert("Error! An error occurred. Please try again later");
       });
   };
   return (
@@ -59,14 +61,14 @@ export default function FeedbackScreen() {
         label="Title"
         style={styles.input}
         autoCapitalize="none"
-        onChangeText={(value) => onChangeInput(value, 'title')}
+        onChangeText={(value) => onChangeInput(value, "title")}
       />
 
       <TextInput
         value={content}
         style={[styles.input, styles.inputContent]}
         autoCapitalize="none"
-        onChangeText={(value) => onChangeInput(value, 'content')}
+        onChangeText={(value) => onChangeInput(value, "content")}
         multiline={true}
         numberOfLines={4}
       />
@@ -80,7 +82,7 @@ export default function FeedbackScreen() {
 
 const styles = StyleSheet.create({
   container: {
-    justifyContent: 'center',
+    justifyContent: "center",
     marginHorizontal: 30,
     marginTop: 15,
   },
@@ -90,7 +92,7 @@ const styles = StyleSheet.create({
   },
   inputContent: {
     height: 200,
-    textAlignVertical: 'top',
+    textAlignVertical: "top",
   },
   btn: {
     borderRadius: 50,
