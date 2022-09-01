@@ -14,7 +14,9 @@
     "updates": {
       "fallbackToCacheTimeout": 0
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true,
       "requireFullScreen": true
@@ -27,6 +29,7 @@
         "backgroundColor": "#483f97"
       },
       "googleServicesFile": "./google-services.json"
-    }
+    },
+    "jsEngine": "hermes"
   }
 }

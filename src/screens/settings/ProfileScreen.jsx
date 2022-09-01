@@ -135,7 +135,7 @@ export default function ProfileScreen({ navigation }) {
         error={false}
         style={styles.textInput}
         label="BirthDay"
-        value={moment(profileUser.date_of_birth).format("DD/MM/YYYY")}
+        value={moment(dateOfBirth).format("DD/MM/YYYY")}
         autoCapitalize="none"
       />
       <View style={styles.wrapperButton}>
