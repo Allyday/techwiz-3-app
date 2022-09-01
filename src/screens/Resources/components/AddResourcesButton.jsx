@@ -56,8 +56,8 @@ export default function AddResourcesButton({ onFinishAdding }) {
   }, []);
   const addResources = async () => {
     setIsLoadingButton(true);
-    const checkLink = validateLink();
-    if (checkLink) {
+    // const checkLink = validateLink();
+    // if (checkLink) {
       try {
         const resAddResourcesAPI = await resourceAPI.addResourcesAPI(
           {
@@ -80,7 +80,7 @@ export default function AddResourcesButton({ onFinishAdding }) {
       } finally {
         setIsLoadingButton(false);
       }
-    }
+    // }
   };
 
   const [title, setTitle] = useState("");
