@@ -1,9 +1,8 @@
-import { useState, useEffect, useLayoutEffect } from "react";
+import { useState, useEffect } from "react";
 import { View, StyleSheet, Alert, ToastAndroid } from "react-native";
 import {
   Avatar,
   Text,
-  Button,
   IconButton,
   Title,
   useTheme,
@@ -114,8 +113,8 @@ export default function StudentInfo({ studentData }) {
         <View style={styles.container}>
           <View style={[styles.row, { marginBottom: 16 }]}>
             {userRedux.avatar_url != "" ? (
-              <View style={{width:50, height:50, borderRadius:25, backgroundColor:"#fd3667", justifyContent: 'center', alignItems: 'center', marginRight:16}}>
-                <Text style={{fontSize:16, fontWeight:"600", color:'#fff'}}>{initialName(userRedux)}</Text>
+              <View style={{ width: 48, height: 48, borderRadius: 25, backgroundColor: "#fd3667", justifyContent: 'center', alignItems: 'center', marginRight: 16 }}>
+                <Text style={{ fontSize: 16, fontWeight: "600", color: '#fff' }}>{initialName(userRedux)}</Text>
               </View>
             ) : (
               <Avatar.Image

@@ -1,4 +1,4 @@
-import { useLayoutEffect, useState } from "react";
+import { useLayoutEffect, useEffect, useState } from "react";
 import { Alert, StyleSheet, ToastAndroid, View } from "react-native";
 import {
   IconButton,
@@ -9,13 +9,12 @@ import {
   useTheme,
 } from "react-native-paper";
 import { useSelector } from 'react-redux';
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import ContentLoader from "react-native-easy-content-loader";
 
 import StyledScreen from "../../components/wrappers/StyledScreen";
 import { revisionAPI, systemAPI } from "../../apis";
 import { useToken } from "../../hooks/useToken";
 import UpdateScheduleModal from "./components/UpdateScheduleModal";
-import ContentLoader from "react-native-easy-content-loader";
 
 const formatLessonsIntoClasses = (lessons) => {
   const classes = [];
@@ -56,10 +55,9 @@ const getDurationString = ({ time_start, time_end }) => {
 };
 
 export default function RevisionScreen({ navigation }) {
-  const userRedux = useSelector((state) => state.user.user);
+  const user = useSelector((state) => state.user.user);
   const { colors } = useTheme();
   const [subjects, setSubjects] = useState([]);
-  const [user, setUser] = useState({});
   const [isLoading, setLoading] = useState(true);
   const [currentSubject, setCurrentSubject] = useState({ lessons: [] });
   const [currentLesson, setCurrentLesson] = useState({});
@@ -68,10 +66,6 @@ export default function RevisionScreen({ navigation }) {
 
   /* set header button */
   useLayoutEffect(() => {
-    Promise.all([getRevisionClasses(), getUserData()]).finally(() =>
-      setLoading(false)
-    );
-
     if (user.role === "STUDENT")
       navigation.setOptions({
         headerRight: () => (
@@ -86,16 +80,14 @@ export default function RevisionScreen({ navigation }) {
       });
   }, [navigation]);
 
+  useEffect(() => {
+    getRevisionClasses().finally(() => setLoading(false));
+  }, []);
+
   const getRevisionClasses = async () => {
     const { data } = await revisionAPI.getAll(token);
     const revisionClasses = formatLessonsIntoClasses(data.revision_class);
     setSubjects(revisionClasses);
-  };
-
-  const getUserData = async () => {
-    const savedUser = await AsyncStorage.getItem("user");
-    setUser(JSON.parse(savedUser));
-    // setUser(userRedux);
   };
 
   const confirmSendEmail = () => {

@@ -23,7 +23,7 @@
     },
     "android": {
       "package": "com.gaorangers.smartstudy",
-      "versionCode": 8,
+      "versionCode": 10,
       "adaptiveIcon": {
         "foregroundImage": "./src/assets/adaptive-icon.png",
         "backgroundColor": "#483f97"
