@@ -1,12 +1,6 @@
 import { useState, useEffect } from "react";
 import { View, StyleSheet, Alert, ToastAndroid } from "react-native";
-import {
-  Avatar,
-  Text,
-  IconButton,
-  Title,
-  useTheme,
-} from "react-native-paper";
+import { Avatar, Text, IconButton, Title, useTheme } from "react-native-paper";
 import { useSelector } from "react-redux";
 import ContentLoader from "react-native-easy-content-loader";
 
@@ -68,8 +62,10 @@ export default function StudentInfo({ studentData }) {
     }
   };
   const initialName = (user) => {
+    console.log(user.full_name);
     var initName = "";
-    if (user.first_name) initName = initName + user.first_name[0];
+    // if (user.first_name) initName = initName + user.first_name[0];
+    if (user.full_name) initName = initName + user.full_name[0];
     if (user.last_name) initName = initName + user.last_name[0];
     return initName.toLocaleUpperCase();
   };
@@ -113,8 +109,22 @@ export default function StudentInfo({ studentData }) {
         <View style={styles.container}>
           <View style={[styles.row, { marginBottom: 16 }]}>
             {userRedux.avatar_url != "" ? (
-              <View style={{ width: 48, height: 48, borderRadius: 25, backgroundColor: "#fd3667", justifyContent: 'center', alignItems: 'center', marginRight: 16 }}>
-                <Text style={{ fontSize: 16, fontWeight: "600", color: '#fff' }}>{initialName(userRedux)}</Text>
+              <View
+                style={{
+                  width: 48,
+                  height: 48,
+                  borderRadius: 25,
+                  backgroundColor: "#fd3667",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  marginRight: 16,
+                }}
+              >
+                <Text
+                  style={{ fontSize: 16, fontWeight: "600", color: "#fff" }}
+                >
+                  {initialName(student ?? userRedux)}
+                </Text>
               </View>
             ) : (
               <Avatar.Image

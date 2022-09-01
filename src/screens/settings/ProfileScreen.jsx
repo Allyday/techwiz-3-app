@@ -101,7 +101,7 @@ export default function ProfileScreen({ navigation }) {
   );
   const initialName = (user) => {
     var initName = "";
-    if (user.first_name) initName = initName + user.first_name[0];
+    // if (user.first_name) initName = initName + user.first_name[0];
     if (user.last_name) initName = initName + user.last_name[0];
     return initName.toLocaleUpperCase();
   };
