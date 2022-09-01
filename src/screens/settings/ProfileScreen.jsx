@@ -6,6 +6,7 @@ import {
   StyleSheet,
   ToastAndroid,
   View,
+  Text,
 } from "react-native";
 import { Button, TextInput } from "react-native-paper";
 import { DatePickerModal } from "react-native-paper-dates";
@@ -98,7 +99,12 @@ export default function ProfileScreen({ navigation }) {
     },
     [setOpen]
   );
-
+  const initialName = (user) => {
+    var initName = "";
+    if (user.first_name) initName = initName + user.first_name[0];
+    if (user.last_name) initName = initName + user.last_name[0];
+    return initName.toLocaleUpperCase();
+  };
   return (
     <StyledScreen
       style={styles.container}
@@ -108,12 +114,30 @@ export default function ProfileScreen({ navigation }) {
       scrollable
     >
       <View style={styles.wrapperImage}>
-        <Image
-          style={styles.tinyLogo}
-          source={{
-            uri: profileUser.avatar_url,
-          }}
-        />
+        {profileUser.avatar_url == null ? (
+          <View
+            style={{
+              width: 50,
+              height: 50,
+              borderRadius: 25,
+              backgroundColor: "#fd3667",
+              justifyContent: "center",
+              alignItems: "center",
+              marginRight: 16,
+            }}
+          >
+            <Text style={{ fontSize: 16, fontWeight: "600", color: "#fff" }}>
+              {initialName(profileUser)}
+            </Text>
+          </View>
+        ) : (
+          <Image
+            style={styles.tinyLogo}
+            source={{
+              uri: profileUser.avatar_url,
+            }}
+          />
+        )}
       </View>
       {fixedData.map((field, index) => {
         return (
