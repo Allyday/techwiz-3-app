@@ -54,8 +54,11 @@ export default function StudentInfo({ studentData }) {
   };
 
   const sendEmail = async () => {
+    console.log("dm", student.student_id);
     try {
-      await systemAPI.sendReportCard(token, { student_id: student.id });
+      await systemAPI.sendReportCard(token, {
+        student_id: student.id ? student.id : student.student_id,
+      });
       ToastAndroid.show("Email sent!", ToastAndroid.SHORT);
     } catch (error) {
       console.log(JSON.stringify(error));
