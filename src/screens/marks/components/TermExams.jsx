@@ -1,17 +1,17 @@
-import _ from 'lodash';
-import { useEffect, useMemo, useState } from 'react';
-import { ScrollView, View } from 'react-native';
-import { List } from 'react-native-paper';
-import ContentLoader from 'react-native-easy-content-loader';
+import _ from "lodash";
+import { useEffect, useMemo, useState } from "react";
+import { ScrollView, View } from "react-native";
+import { List } from "react-native-paper";
+import ContentLoader from "react-native-easy-content-loader";
 
-import { gradeAPI } from '../../../apis';
-import { useToken } from '../../../hooks/useToken';
-import StudentGradeItem from './StudentGradeItem';
+import { gradeAPI } from "../../../apis";
+import { useToken } from "../../../hooks/useToken";
+import StudentGradeItem from "./StudentGradeItem";
 
 export const examNameMap = {
-  ASSIGNMENT: 'Assignment',
-  MIDDLE: 'Midterm',
-  FINAL: 'Final',
+  ASSIGNMENT: "Assignment",
+  MIDDLE: "Midterm",
+  FINAL: "Final",
 };
 
 export default function TermExams({ classSubject, students, term }) {
@@ -44,7 +44,7 @@ export default function TermExams({ classSubject, students, term }) {
       {isLoading ? (
         <View
           style={{
-            alignItems: 'center',
+            alignItems: "center",
             paddingVertical: 16,
           }}
         >
@@ -106,18 +106,18 @@ const ExamItem = ({ exam, students }) => {
 
   useEffect(() => {
     const mergedStudents = _.merge(
-      _.keyBy(exam.grades, 'id'),
-      _.keyBy(students, 'id')
+      _.keyBy(exam.grades, "id"),
+      _.keyBy(students, "id")
     );
-    const studentsWithGrades = _.sortBy(_.values(mergedStudents), 'name');
+    const studentsWithGrades = _.sortBy(_.values(mergedStudents), "name");
     setStudentGrades(studentsWithGrades);
   }, [exam.grades, students]);
 
   const mergedStudents = _.merge(
-    _.keyBy(exam.grades, 'id'),
-    _.keyBy(students, 'id')
+    _.keyBy(exam.grades, "id"),
+    _.keyBy(students, "id")
   );
-  const studentsWithGrades = _.sortBy(_.values(mergedStudents), 'name');
+  const studentsWithGrades = _.sortBy(_.values(mergedStudents), "name");
 
   exam.studentGrades = useMemo(() => studentGrades, [studentGrades]);
   exam.studentCount = useMemo(
@@ -127,18 +127,18 @@ const ExamItem = ({ exam, students }) => {
   exam.studentHasGradeCount = studentHasGradeCount;
   exam.name = examNameMap[exam.exam_name];
 
-  const renderStudentGrade = (student) => (
-    <StudentGradeItem
-      key={student.id}
-      student={student}
-      exam={exam}
-      studentHasGradeCount={studentHasGradeCount}
-      setStudentHasGradeCount={setStudentHasGradeCount}
-      studentGrades={studentGrades}
-      setStudentGrades={setStudentGrades}
-    />
-  );
-
+  const renderStudentGrade = (student) =>
+    student.name && (
+      <StudentGradeItem
+        key={student.id}
+        student={student}
+        exam={exam}
+        studentHasGradeCount={studentHasGradeCount}
+        setStudentHasGradeCount={setStudentHasGradeCount}
+        studentGrades={studentGrades}
+        setStudentGrades={setStudentGrades}
+      />
+    );
   return (
     <List.Accordion
       id={exam.name}

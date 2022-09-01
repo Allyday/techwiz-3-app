@@ -66,11 +66,11 @@ export default function FeedbackScreen() {
 
       <TextInput
         value={content}
-        style={[styles.input, styles.inputContent]}
+        style={[styles.input, styles.inputContent, { width: "100%" }]}
         autoCapitalize="none"
         onChangeText={(value) => onChangeInput(value, "content")}
         multiline={true}
-        numberOfLines={4}
+        numberOfLines={10}
       />
 
       <Button style={styles.btn} onPress={handleSubmit}>
@@ -91,7 +91,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   inputContent: {
-    height: 200,
+    // height: 200,
     textAlignVertical: "top",
   },
   btn: {
