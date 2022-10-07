@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Colors, useTheme } from 'react-native-paper';
@@ -19,6 +19,7 @@ import ReportCardScreen from '../screens/report-card/ReportCardScreen';
 import useRegisterNotifications from '../hooks/useRegisterNotifications';
 import useNotificationListeners from '../hooks/useNotificationListeners';
 import ParentHomeScreen from '../screens/report-card/ParentHomeScreen';
+import io from 'socket.io-client';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -44,6 +45,18 @@ export default function RootStack({ route }) {
   const { role } = route.params;
   useRegisterNotifications();
   useNotificationListeners();
+
+  useEffect(() => {
+    const newSocket = io(`http://localhost:5005`);
+    newSocket.on('connect', () => {
+      newSocket.emit('user_connected', role);
+    });
+    newSocket.on('typing', (data) => {
+      console.log('data from typing: ', data);
+    });
+
+    return () => newSocket.close();
+  }, []);
 
   const screenOptions = ({ route }) => ({
     title: tabBarConfig[route.name].label,
