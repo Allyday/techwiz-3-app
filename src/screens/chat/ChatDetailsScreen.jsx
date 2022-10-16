@@ -15,6 +15,7 @@ export default function ChatScreen({ route, navigation }) {
   const { colors } = useTheme();
   const { otherUser } = route.params;
   const userData = useSelector((state) => state.user.user);
+  const details = useSelector((state) => state.user.details);
   const messages = useSelector((state) => state.chat.messages);
   useMessages(otherUser);
 
@@ -60,16 +61,20 @@ export default function ChatScreen({ route, navigation }) {
     );
   };
 
-  const onSend = useCallback((messages = []) => {
-    const { _id, text, user } = messages[0];
+  const onSend = useCallback(
+    (messages = []) => {
+      const { _id, text, user } = messages[0];
+      if (details.length) user.details = details;
 
-    chatAPI.createMessage({
-      _id,
-      text,
-      user,
-      otherUser,
-    });
-  }, []);
+      chatAPI.createMessage({
+        _id,
+        text,
+        user,
+        otherUser,
+      });
+    },
+    [details]
+  );
 
   return (
     <StyledScreen hasBottomInset>

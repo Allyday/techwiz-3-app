@@ -5,6 +5,7 @@ import {
   INIT_STATE_USER,
   REMOVE_USER,
   LOGIN_USER,
+  SET_USER_DETAILS,
 } from '../constant';
 
 export const saveUser = (body) => {
@@ -26,6 +27,11 @@ export const removeUser = () => {
     type: REMOVE_USER,
   };
 };
+
+export const setUserDetails = (payload) => ({
+  type: SET_USER_DETAILS,
+  payload,
+});
 
 const setInit = (result) => {
   return {

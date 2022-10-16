@@ -1,4 +1,5 @@
 import _ from 'lodash';
+
 import { ROLES } from './constants';
 
 export function getChatUserInfo(user) {
@@ -21,12 +22,14 @@ export function getChatUserInfo(user) {
       break;
 
     case ROLES.PARENT:
-      if (user.details) {
+      if (user.details?.length) {
         const children = user.details.map((child) => {
-          const name = [
-            child.student_first_name.trim(),
-            child.student_last_name.trim(),
-          ].join(' ');
+          const name =
+            child.full_name ??
+            [
+              child.student_first_name.trim(),
+              child.student_last_name.trim(),
+            ].join(' ');
 
           return `${name} (${child.class_name})`;
         });

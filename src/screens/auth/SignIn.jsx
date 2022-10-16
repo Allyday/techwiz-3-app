@@ -1,12 +1,13 @@
 import { useState } from "react";
 import { StyleSheet } from "react-native";
-import { useTheme, Button, HelperText, TextInput } from "react-native-paper";
+import { Button, HelperText, TextInput } from "react-native-paper";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useDispatch } from "react-redux";
 
 import authAPI from "../../apis/authAPI";
 import { useToken } from "../../hooks/useToken";
-import { loginUser } from "../../store-redux/actions/user";
+import { loginUser, setUserDetails } from "../../store-redux/actions/user";
+import { ROLES } from "../../utils/constants";
 
 const SignIn = ({ setStatusLogin, navigation, buttonStyle, buttonContentStyle }) => {
   const dispatch = useDispatch();
@@ -41,12 +42,15 @@ const SignIn = ({ setStatusLogin, navigation, buttonStyle, buttonContentStyle })
           await AsyncStorage.setItem("user", JSON.stringify(user));
           dispatch(loginUser(user));
 
-          if (user.role === "PARENT") {
-            if (info_child)
+          if (user.role === ROLES.PARENT) {
+            if (info_child) {
+              // this will be added to conversation info when create chat
+              dispatch(setUserDetails(info_child));
               await AsyncStorage.setItem(
-                "info_child",
+                'info_child',
                 JSON.stringify(info_child)
               );
+            }
             /* navigate straight to report card if only have 1 child */
             if (info_child.length === 1)
               navigation.replace("Root", {

@@ -2,12 +2,16 @@ import { useLayoutEffect } from 'react';
 import { View, Image, StyleSheet } from 'react-native';
 import { useTheme } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useDispatch } from 'react-redux';
 
 import { useToken } from '../../hooks/useToken';
+import { setUserDetails } from '../../store-redux/actions/user';
+import { ROLES } from '../../utils/constants';
 
 export default function SplashScreen({ navigation }) {
   const [token, setToken] = useToken();
   const { colors } = useTheme();
+  const dispatch = useDispatch();
 
   useLayoutEffect(() => {
     checkIsSignedIn();
@@ -22,7 +26,10 @@ export default function SplashScreen({ navigation }) {
       const savedInfoChild = await AsyncStorage.getItem('info_child');
       const info_child = JSON.parse(savedInfoChild);
 
-      if (user.role === 'PARENT' && info_child) {
+      if (user.role === ROLES.PARENT && info_child) {
+        // this will be added to conversation info when create chat
+        dispatch(setUserDetails(info_child));
+
         if (info_child.length === 1)
           navigation.replace('Root', {
             screen: 'ReportCard',

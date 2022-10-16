@@ -17,6 +17,8 @@ import { useToken } from '../../hooks/useToken';
 import StyledScreen from '../../components/wrappers/StyledScreen';
 import { examNameMap } from './components/TermExams';
 import moment from 'moment';
+import { useDispatch } from 'react-redux';
+import { setUserDetails } from '../../store-redux/actions/user';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 
@@ -32,6 +34,7 @@ export default function MarksScreen({ navigation }) {
   const [classesList, setClassesList] = useState([]);
   const [classes, setClasses] = useState([]);
   const [isLoading, setLoading] = useState(true);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     Promise.all([getDashboardData(), getSubjects()]).finally(() =>
@@ -74,6 +77,15 @@ export default function MarksScreen({ navigation }) {
       );
       setStudentCount(totalStudentCount);
       setClassesList(classesData);
+
+      // this will be added to conversation info when create chat
+      const teacherDetails = payload.map((obj) => ({
+        class_name: obj.class.name,
+        class_id: obj.class.id,
+        subject_name: obj.subject.name,
+        subject_id: obj.subject.id,
+      }));
+      dispatch(setUserDetails(teacherDetails));
     } catch (error) {
       console.log(error.response);
     }
