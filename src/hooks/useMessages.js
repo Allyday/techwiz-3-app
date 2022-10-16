@@ -15,7 +15,9 @@ export default function useMessages(otherUser) {
       return;
     }
 
-    const conversationId = [user.id, otherUser.id].sort().join('---');
+    const conversationId = [user.id, otherUser.id]
+      .sort((a, b) => a - b)
+      .join('---');
 
     const q = query(
       collection(firestore, 'conversations', conversationId, 'messages'),

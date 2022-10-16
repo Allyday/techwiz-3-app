@@ -14,7 +14,9 @@ import {
 import { firestore } from '../config/firebase.config';
 
 const createMessage = async ({ _id, text, user, otherUser }) => {
-  const conversationId = [user.id, otherUser.id].sort().join('---');
+  const conversationId = [user.id, otherUser.id]
+    .sort((a, b) => a - b)
+    .join('---');
   const conversationRef = doc(firestore, 'conversations', conversationId);
 
   const conversationDoc = await getDoc(conversationRef);
