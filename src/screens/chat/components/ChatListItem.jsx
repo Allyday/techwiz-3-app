@@ -18,6 +18,26 @@ export default function ChatListItem({ conversation }) {
   );
   const { title } = getChatUserInfo(otherUser);
 
+  const lastMessageAt = moment(conversation.lastMessageAt);
+  let lastMessageAtString;
+  switch (true) {
+    case lastMessageAt.isAfter(moment().startOf('minute')):
+      lastMessageAtString = 'Just now';
+      break;
+    case lastMessageAt.isAfter(moment().startOf('day')):
+      lastMessageAtString = lastMessageAt.format('hh:mm A');
+      break;
+    case lastMessageAt.isAfter(moment().startOf('week')):
+      lastMessageAtString = lastMessageAt.format('ddd');
+      break;
+    case lastMessageAt.isAfter(moment().startOf('year')):
+      lastMessageAtString = lastMessageAt.format('MMM DD');
+      break;
+    default:
+      lastMessageAtString = lastMessageAt.format('DD/MM/YYYY');
+      break;
+  }
+
   const avatarBackgroundColor = useMemo(() => {
     switch (otherUser.role) {
       case ROLES.TEACHER:
@@ -28,23 +48,6 @@ export default function ChatListItem({ conversation }) {
         return colors.darkBlue;
     }
   }, [otherUser.role]);
-
-  const lastMessageString = useMemo(() => {
-    const lastMessageAt = moment(conversation.lastMessageAt);
-
-    switch (true) {
-      case lastMessageAt.isAfter(moment().startOf('minute')):
-        return 'Just now';
-      case lastMessageAt.isAfter(moment().startOf('day')):
-        return lastMessageAt.format('hh:mm A');
-      case lastMessageAt.isAfter(moment().startOf('week')):
-        return lastMessageAt.format('ddd');
-      case lastMessageAt.isAfter(moment().startOf('year')):
-        return lastMessageAt.format('MMM DD');
-      default:
-        return lastMessageAt.format('DD/MM/YYYY');
-    }
-  }, [conversation.lastMessageAt]);
 
   const onClickConversation = useCallback(() => {
     navigation.navigate('ChatDetails', { otherUser });
@@ -83,7 +86,7 @@ export default function ChatListItem({ conversation }) {
       }}
       right={(props) => (
         <Text {...props} style={styles.lastMessageAt}>
-          {lastMessageString}
+          {lastMessageAtString}
         </Text>
       )}
     />
