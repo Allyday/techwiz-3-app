@@ -15,3 +15,4 @@ web-build/
 
 # credentials
 google-services.json
+.env
