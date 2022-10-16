@@ -37,6 +37,9 @@ export default function useMessages(otherUser) {
       dispatch(setMessages(data));
     });
 
-    return () => unsubscribe();
+    return () => {
+      unsubscribe();
+      dispatch(setMessages([]));
+    };
   }, [user, otherUser]);
 }
