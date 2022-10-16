@@ -36,8 +36,8 @@ export default function useConversations() {
 
         return {
           id: doc.id,
-          createdAt: createdAt.toDate(),
-          lastMessageAt: lastMessageAt.toDate(),
+          createdAt: createdAt?.toDate() ?? new Date(), // serverTimestamp() is temporarily null,
+          lastMessageAt: lastMessageAt?.toDate() ?? new Date(), // serverTimestamp() is temporarily null,
           ...rest,
         };
       });

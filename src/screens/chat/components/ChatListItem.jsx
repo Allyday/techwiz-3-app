@@ -1,27 +1,29 @@
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import { StyleSheet, Text } from 'react-native';
 import { Avatar, List, useTheme } from 'react-native-paper';
 import { useSelector } from 'react-redux';
+import { useNavigation } from '@react-navigation/native';
 import moment from 'moment';
 
-import useChatUserInfo from '../../../hooks/useChatUserInfo';
+import { getChatUserInfo } from '../../../utils/chat.utils';
 import { ROLES } from '../../../utils/constants';
 
 export default function ChatListItem({ conversation }) {
   const { colors } = useTheme();
+  const navigation = useNavigation();
   const user = useSelector((state) => state.user.user);
   const otherUser = useMemo(
     () => conversation.members.find((u) => u.id !== user.id),
     [conversation, user.id]
   );
-  const { title } = useChatUserInfo(otherUser);
+  const { title } = getChatUserInfo(otherUser);
 
   const avatarBackgroundColor = useMemo(() => {
     switch (otherUser.role) {
       case ROLES.TEACHER:
         return colors.secondary;
       case ROLES.STUDENT:
-        return colors.veryDarkGreen;
+        return colors.primary;
       case ROLES.PARENT:
         return colors.darkBlue;
     }
@@ -44,10 +46,15 @@ export default function ChatListItem({ conversation }) {
     }
   }, [conversation.lastMessageAt]);
 
+  const onClickConversation = useCallback(() => {
+    navigation.navigate('ChatDetails', { otherUser });
+  }, [navigation, otherUser]);
+
   return (
     <List.Item
       id={user.id}
       title={title}
+      onPress={onClickConversation}
       description={(props) => (
         <Text {...props} style={styles.lastMessage} numberOfLines={1}>
           {conversation.lastMessage}

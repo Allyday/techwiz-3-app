@@ -1,4 +1,5 @@
 export { default as authAPI } from './authAPI';
+export { default as chatAPI } from './chatAPI';
 export { default as gradeAPI } from './gradeAPI';
 export { default as resourceAPI } from './resourceAPI';
 export { default as revisionAPI } from './revisionAPI';

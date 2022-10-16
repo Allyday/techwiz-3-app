@@ -1,4 +1,5 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useLayoutEffect } from 'react';
+import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Colors, useTheme } from 'react-native-paper';
@@ -17,6 +18,7 @@ import ProfileScreen from '../screens/settings/ProfileScreen';
 import ReportCardScreen from '../screens/report-card/ReportCardScreen';
 import ParentHomeScreen from '../screens/report-card/ParentHomeScreen';
 import ChatListScreen from '../screens/chat/ChatListScreen';
+import ChatDetailsScreen from '../screens/chat/ChatDetailsScreen';
 
 import useRegisterNotifications from '../hooks/useRegisterNotifications';
 import useNotificationListeners from '../hooks/useNotificationListeners';
@@ -176,8 +178,19 @@ const ParentHomeStack = () => {
   );
 };
 
-const ChatStack = () => {
+const ChatStack = ({ navigation, route }) => {
   const { colors } = useTheme();
+
+  useLayoutEffect(() => {
+    const routeName = getFocusedRouteNameFromRoute(route);
+    if (routeName && ['ChatDetails'].includes(routeName)) {
+      navigation.setOptions({ tabBarStyle: { display: 'none' } });
+    } else {
+      navigation.setOptions({
+        tabBarStyle: { display: 'flex' },
+      });
+    }
+  }, [navigation, route]);
 
   const screenOptions = ({ route }) => ({
     headerStyle: {
@@ -194,6 +207,7 @@ const ChatStack = () => {
         component={ChatListScreen}
         options={{ title: 'All conversations' }}
       />
+      <Stack.Screen name="ChatDetails" component={ChatDetailsScreen} />
     </Stack.Navigator>
   );
 };
