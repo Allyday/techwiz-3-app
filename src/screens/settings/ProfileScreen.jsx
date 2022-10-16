@@ -1,5 +1,6 @@
-import moment from "moment";
-import { useCallback, useEffect, useState } from "react";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import moment from 'moment';
+import { useCallback, useEffect, useState } from 'react';
 import {
   Dimensions,
   Image,
@@ -7,17 +8,17 @@ import {
   ToastAndroid,
   View,
   Text,
-} from "react-native";
-import { Button, TextInput } from "react-native-paper";
-import { DatePickerModal } from "react-native-paper-dates";
-import { useSelector, useDispatch } from "react-redux";
+} from 'react-native';
+import { Button, TextInput } from 'react-native-paper';
+import { DatePickerModal } from 'react-native-paper-dates';
+import { useSelector, useDispatch } from 'react-redux';
 
-import { userAPI } from "../../apis";
-import StyledScreen from "../../components/wrappers/StyledScreen";
-import { useToken } from "../../hooks/useToken";
-import { saveUser } from "../../store-redux/actions/user";
+import { chatAPI, userAPI } from '../../apis';
+import StyledScreen from '../../components/wrappers/StyledScreen';
+import { useToken } from '../../hooks/useToken';
+import { saveUser } from '../../store-redux/actions/user';
 
-const SCREEN_WIDTH = Dimensions.get("window").width;
+const SCREEN_WIDTH = Dimensions.get('window').width;
 
 export default function ProfileScreen({ navigation }) {
   const userRedux = useSelector((state) => state.user.user);
@@ -29,11 +30,11 @@ export default function ProfileScreen({ navigation }) {
   const [open, setOpen] = useState(false);
 
   const fixedData = [
-    { name: "email", disabled: true, displayName: "Email" },
-    { name: "first_name", disabled: false, displayName: "First name" },
-    { name: "last_name", disabled: false, displayName: "Last name" },
-    { name: "address", disabled: false, displayName: "Address" },
-    { name: "phone", disabled: false, displayName: "Phone number" },
+    { name: 'email', disabled: true, displayName: 'Email' },
+    { name: 'first_name', disabled: false, displayName: 'First name' },
+    { name: 'last_name', disabled: false, displayName: 'Last name' },
+    { name: 'address', disabled: false, displayName: 'Address' },
+    { name: 'phone', disabled: false, displayName: 'Phone number' },
   ];
 
   useEffect(() => {
@@ -53,7 +54,7 @@ export default function ProfileScreen({ navigation }) {
   const putProfile = async () => {
     try {
       const payloadUpdate = {
-        date_of_birth: moment(dateOfBirth).format("YYYY-MM-DD"),
+        date_of_birth: moment(dateOfBirth).format('YYYY-MM-DD'),
         first_name: profileUser.first_name,
         last_name: profileUser.last_name,
         address: profileUser.address,
@@ -65,19 +66,19 @@ export default function ProfileScreen({ navigation }) {
       const { data } = await userAPI.updateProfileUser(payloadUpdate, token);
       const { payload } = data;
       setProfileUser(payload);
-
+      await chatAPI.updateUserInfoChat({ user: payload });
       // update AsyncStorage
       dispatch(saveUser(payload));
 
-      // const savedStudent = JSON.parse(await AsyncStorage.getItem('user'));
-      // savedStudent.first_name = payload.first_name;
-      // savedStudent.last_name = payload.last_name;
-      // savedStudent.address = payload.address;
-      // savedStudent.phone = payload.phone;
-      // savedStudent.date_of_birth = payload.date_of_birth;
-      // await AsyncStorage.setItem('user', JSON.stringify(savedStudent));
+      const savedStudent = JSON.parse(await AsyncStorage.getItem('user'));
+      savedStudent.first_name = payload.first_name;
+      savedStudent.last_name = payload.last_name;
+      savedStudent.address = payload.address;
+      savedStudent.phone = payload.phone;
+      savedStudent.date_of_birth = payload.date_of_birth;
+      await AsyncStorage.setItem('user', JSON.stringify(savedStudent));
 
-      ToastAndroid.show("Profile updated successfully!", ToastAndroid.SHORT);
+      ToastAndroid.show('Profile updated successfully!', ToastAndroid.SHORT);
       navigation.goBack();
     } catch (error) {
       console.error(JSON.stringify(error));
@@ -100,7 +101,7 @@ export default function ProfileScreen({ navigation }) {
     [setOpen]
   );
   const initialName = (user) => {
-    var initName = "";
+    var initName = '';
     // if (user.first_name) initName = initName + user.first_name[0];
     if (user.last_name) initName = initName + user.last_name[0];
     return initName.toLocaleUpperCase();
@@ -109,7 +110,7 @@ export default function ProfileScreen({ navigation }) {
     <StyledScreen
       style={styles.container}
       contentContainerStyle={{
-        alignItems: "center",
+        alignItems: 'center',
       }}
       scrollable
     >
@@ -120,13 +121,13 @@ export default function ProfileScreen({ navigation }) {
               width: 50,
               height: 50,
               borderRadius: 25,
-              backgroundColor: "#fd3667",
-              justifyContent: "center",
-              alignItems: "center",
+              backgroundColor: '#fd3667',
+              justifyContent: 'center',
+              alignItems: 'center',
               marginRight: 16,
             }}
           >
-            <Text style={{ fontSize: 16, fontWeight: "600", color: "#fff" }}>
+            <Text style={{ fontSize: 16, fontWeight: '600', color: '#fff' }}>
               {initialName(profileUser)}
             </Text>
           </View>
@@ -159,7 +160,7 @@ export default function ProfileScreen({ navigation }) {
         error={false}
         style={styles.textInput}
         label="BirthDay"
-        value={moment(dateOfBirth).format("DD/MM/YYYY")}
+        value={moment(dateOfBirth).format('DD/MM/YYYY')}
         autoCapitalize="none"
       />
       <View style={styles.wrapperButton}>
@@ -208,25 +209,25 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   wrapperColumn: {
-    display: "flex",
-    alignItems: "center",
+    display: 'flex',
+    alignItems: 'center',
   },
   textInput: {
     width: SCREEN_WIDTH - 80,
-    backgroundColor: "#fff",
+    backgroundColor: '#fff',
   },
   wrapperImage: {
     marginBottom: 15,
   },
   wrapperButton: {
     marginTop: 40,
-    width: "100%",
+    width: '100%',
     marginBottom: 20,
   },
   btnStyle: {
     marginBottom: 20,
     borderWidth: 1,
-    borderColor: "red",
+    borderColor: 'red',
   },
   tinyLogo: {
     width: 50,

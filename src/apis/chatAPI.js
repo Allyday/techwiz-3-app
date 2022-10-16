@@ -1,9 +1,14 @@
 import {
+  collection,
   doc,
   getDoc,
+  getDocs,
+  orderBy,
+  query,
   serverTimestamp,
   setDoc,
   updateDoc,
+  where,
 } from 'firebase/firestore';
 
 import { firestore } from '../config/firebase.config';
@@ -52,4 +57,34 @@ const createConversation = async ({ user, otherUser, conversationId }) => {
   }
 };
 
-export default { createMessage };
+const updateUserInfoChat = async ({ user }) => {
+  try {
+    const userConversationsRef = await getDocs(
+      query(
+        collection(firestore, 'conversations'),
+        where('memberIds', 'array-contains', user.id),
+        orderBy('lastMessageAt', 'desc')
+      )
+    );
+
+    const promises = [];
+    userConversationsRef.docs.forEach(async (doc) => {
+      const { members } = doc.data();
+
+      const otherUsers = members.filter((u) => u.id !== user.id);
+      const current = members.filter((u) => u.id === user.id);
+
+      promises.push(
+        updateDoc(doc.ref, {
+          members: [{ ...current, ...user }, ...otherUsers],
+        })
+      );
+    });
+
+    await Promise.all(promises);
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export default { createMessage, updateUserInfoChat };
