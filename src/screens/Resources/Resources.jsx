@@ -18,13 +18,14 @@ import ContentLoader from "react-native-easy-content-loader";
 import { useSelector } from "react-redux";
 import ImageViewer from "react-native-image-zoom-viewer";
 import { Feather } from "@expo/vector-icons";
+
 import subjectAPI from "../../apis/subjectAPI";
 import resourceAPI from "../../apis/resourceAPI";
 import { useToken } from "../../hooks/useToken";
 import AddResourcesButton from "./components/AddResourcesButton";
 import CustomVideo from "./components/CustomVideo";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import StyledScreen from "../../components/wrappers/StyledScreen";
+import { ROLES } from '../../utils/constants';
 
 export default function Resources({ navigation }) {
   const userRedux = useSelector((state) => state.user.user);
@@ -558,7 +559,7 @@ export default function Resources({ navigation }) {
           </View>
         </View>
       )}
-      {role == "TEACHER" && <AddResourcesButton />}
+      {role == ROLES.TEACHER && <AddResourcesButton />}
       <Modal visible={zoomAnh2} transparent={true}>
         <StatusBar barStyle="light-content" backgroundColor="#000" />
         <View

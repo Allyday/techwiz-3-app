@@ -14,6 +14,7 @@ import { useToken } from "../../hooks/useToken";
 
 import StyledScreen from "../../components/wrappers/StyledScreen";
 import helplinesAPI from "../../apis/helplinesAPI";
+import { ROLES } from '../../utils/constants';
 
 export default function HelplinesScreen({ navigation }) {
   const [dsHelpline, setHelpline] = React.useState([]);
@@ -68,7 +69,7 @@ export default function HelplinesScreen({ navigation }) {
       >
         {isLoading &&
           dsHelpline
-            .filter((person) => person.type === 'TEACHER')
+            .filter((person) => person.type === ROLES.TEACHER)
             .map((v, k) => (
               <List.Item
                 key={`${v.name}${k}`}

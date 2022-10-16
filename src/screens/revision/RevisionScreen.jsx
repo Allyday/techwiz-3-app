@@ -15,6 +15,7 @@ import StyledScreen from "../../components/wrappers/StyledScreen";
 import { revisionAPI, systemAPI } from "../../apis";
 import { useToken } from "../../hooks/useToken";
 import UpdateScheduleModal from "./components/UpdateScheduleModal";
+import { ROLES } from '../../utils/constants';
 
 const formatLessonsIntoClasses = (lessons) => {
   const classes = [];
@@ -66,7 +67,7 @@ export default function RevisionScreen({ navigation }) {
 
   /* set header button */
   useLayoutEffect(() => {
-    if (user.role === "STUDENT")
+    if (user.role === ROLES.STUDENT)
       navigation.setOptions({
         headerRight: () => (
           <IconButton
@@ -148,14 +149,14 @@ export default function RevisionScreen({ navigation }) {
           <Text>{item.name_teacher}</Text>
           <View style={styles.sectionTitleContainer}>
             <Title style={styles.title}>Weekly Schedule</Title>
-            {user.role === "TEACHER" && (
+            {user.role === ROLES.TEACHER && (
               <Text>(Tap on lesson to edit)</Text>
             )}
           </View>
           {item.lessons.map((lesson) => (
             <TouchableRipple
               key={`${item.id_subject}${lesson.id}`}
-              {...(user.role === "TEACHER" && {
+              {...(user.role === ROLES.TEACHER && {
                 onPress: () => openScheduleModal({ subject: item, lesson }),
               })}
               rippleColor={colors.darkGreen}

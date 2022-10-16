@@ -3,8 +3,8 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Colors, useTheme } from 'react-native-paper';
 import { FontAwesome5 } from '@expo/vector-icons';
+import io from 'socket.io-client';
 
-import HomeScreen from '../screens/home/HomeScreen';
 import Resources from '../screens/Resources/Resources';
 import HelplinesScreen from '../screens/helplines/HelplinesScreen';
 import MarksScreen from '../screens/marks/MarksScreen';
@@ -15,11 +15,11 @@ import SettingsScreen from '../screens/settings/SettingsScreen';
 import FeedbackScreen from '../screens/settings/FeedbackScreen';
 import ProfileScreen from '../screens/settings/ProfileScreen';
 import ReportCardScreen from '../screens/report-card/ReportCardScreen';
+import ParentHomeScreen from '../screens/report-card/ParentHomeScreen';
 
 import useRegisterNotifications from '../hooks/useRegisterNotifications';
 import useNotificationListeners from '../hooks/useNotificationListeners';
-import ParentHomeScreen from '../screens/report-card/ParentHomeScreen';
-import io from 'socket.io-client';
+import { ROLES } from '../utils/constants';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -32,12 +32,6 @@ const tabBarConfig = {
   Marks: { icon: 'home', label: 'Home' },
   Progress: { icon: 'chalkboard-teacher', label: 'Progress' },
   Settings: { icon: 'cog', label: 'Settings' },
-};
-
-const ROLES = {
-  STUDENT: 'STUDENT',
-  TEACHER: 'TEACHER',
-  PARENT: 'PARENT',
 };
 
 export default function RootStack({ route }) {
