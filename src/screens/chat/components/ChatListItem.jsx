@@ -114,7 +114,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const getInitials = (fullName) =>
+export const getInitials = (fullName) =>
   fullName
     .split(' ')
     .map((name) => name[0])

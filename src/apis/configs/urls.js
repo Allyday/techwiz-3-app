@@ -25,8 +25,10 @@ export default {
   revision: "revision/",
   revisionTimeTable: "revision/time-table/",
 
-  /* getProfileUser */
-  getProfileUser: "user/",
+  /* users */
+  user: 'user/',
+  searchUserChat: 'user/search-user-chat',
+
   /* helplines */
   helplines: "helplines/",
 

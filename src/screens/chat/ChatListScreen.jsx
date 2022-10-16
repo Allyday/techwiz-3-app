@@ -14,10 +14,11 @@ export default function ChatListScreen({ navigation }) {
     navigation.setOptions({
       headerRight: () => (
         <IconButton
-          icon="email-fast-outline"
+          icon="magnify"
           color="white"
-          size={32}
+          size={28}
           onPress={() => navigation.navigate('UserList')}
+          style={{ marginTop: 0, marginRight: -4 }}
         />
       ),
     });

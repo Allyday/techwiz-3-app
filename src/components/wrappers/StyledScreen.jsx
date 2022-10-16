@@ -2,7 +2,12 @@ import { ScrollView, View } from 'react-native';
 import { useTheme } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-export default function StyledScreen({ children, scrollable, ...props }) {
+export default function StyledScreen({
+  children,
+  scrollable,
+  hasBottomInset,
+  ...props
+}) {
   const { colors } = useTheme();
   const Screen = scrollable ? ScrollView : View;
 
@@ -31,7 +36,9 @@ export default function StyledScreen({ children, scrollable, ...props }) {
           {children}
         </Screen>
       </View>
-      <SafeAreaView edges={['bottom']} style={{ backgroundColor: 'white' }} />
+      {hasBottomInset && (
+        <SafeAreaView edges={['bottom']} style={{ backgroundColor: 'white' }} />
+      )}
     </>
   );
 }

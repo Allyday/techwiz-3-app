@@ -19,6 +19,7 @@ import ReportCardScreen from '../screens/report-card/ReportCardScreen';
 import ParentHomeScreen from '../screens/report-card/ParentHomeScreen';
 import ChatListScreen from '../screens/chat/ChatListScreen';
 import ChatDetailsScreen from '../screens/chat/ChatDetailsScreen';
+import UserListScreen from '../screens/chat/UserListScreen';
 
 import useRegisterNotifications from '../hooks/useRegisterNotifications';
 import useNotificationListeners from '../hooks/useNotificationListeners';
@@ -183,7 +184,7 @@ const ChatStack = ({ navigation, route }) => {
 
   useLayoutEffect(() => {
     const routeName = getFocusedRouteNameFromRoute(route);
-    if (routeName && ['ChatDetails'].includes(routeName)) {
+    if (routeName && ['ChatDetails', 'UserList'].includes(routeName)) {
       navigation.setOptions({ tabBarStyle: { display: 'none' } });
     } else {
       navigation.setOptions({
@@ -208,6 +209,11 @@ const ChatStack = ({ navigation, route }) => {
         options={{ title: 'All conversations' }}
       />
       <Stack.Screen name="ChatDetails" component={ChatDetailsScreen} />
+      <Stack.Screen
+        name="UserList"
+        component={UserListScreen}
+        options={{ title: 'Select a user', gestureDirection: 'vertical' }}
+      />
     </Stack.Navigator>
   );
 };

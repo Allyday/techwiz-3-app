@@ -3,6 +3,7 @@ import { StyleSheet, View } from 'react-native';
 import { Bubble, GiftedChat } from 'react-native-gifted-chat';
 import { Text, useTheme } from 'react-native-paper';
 import { useSelector } from 'react-redux';
+import { HeaderBackButton } from '@react-navigation/elements';
 
 import { chatAPI } from '../../apis';
 import { getChatUserInfo } from '../../utils/chat.utils';
@@ -27,6 +28,10 @@ export default function ChatScreen({ route, navigation }) {
           <Text style={styles.headerTitle}>{title}</Text>
           <Text style={styles.headerSubtitle}>{description}</Text>
         </View>
+      ),
+      // dont go back to search screen
+      headerLeft: (props) => (
+        <HeaderBackButton {...props} onPress={navigation.popToTop} />
       ),
     });
   }, []);
@@ -67,7 +72,7 @@ export default function ChatScreen({ route, navigation }) {
   }, []);
 
   return (
-    <StyledScreen>
+    <StyledScreen hasBottomInset>
       <GiftedChat
         messages={messages}
         onSend={(messages) => onSend(messages)}
