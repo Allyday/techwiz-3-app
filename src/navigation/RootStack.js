@@ -16,9 +16,11 @@ import FeedbackScreen from '../screens/settings/FeedbackScreen';
 import ProfileScreen from '../screens/settings/ProfileScreen';
 import ReportCardScreen from '../screens/report-card/ReportCardScreen';
 import ParentHomeScreen from '../screens/report-card/ParentHomeScreen';
+import ChatListScreen from '../screens/chat/ChatListScreen';
 
 import useRegisterNotifications from '../hooks/useRegisterNotifications';
 import useNotificationListeners from '../hooks/useNotificationListeners';
+import useConversations from '../hooks/useConversations';
 import { ROLES } from '../utils/constants';
 
 const Tab = createBottomTabNavigator();
@@ -31,6 +33,7 @@ const tabBarConfig = {
   Helplines: { icon: 'phone', label: 'Helplines' },
   Marks: { icon: 'home', label: 'Home' },
   Progress: { icon: 'chalkboard-teacher', label: 'Progress' },
+  Chat: { icon: 'comments', label: 'Chat' },
   Settings: { icon: 'cog', label: 'Settings' },
 };
 
@@ -39,6 +42,7 @@ export default function RootStack({ route }) {
   const { role } = route.params;
   useRegisterNotifications();
   useNotificationListeners();
+  useConversations();
 
   useEffect(() => {
     const newSocket = io(`http://localhost:5005`);
@@ -105,6 +109,11 @@ export default function RootStack({ route }) {
         <Tab.Screen name="Helplines" component={HelplinesScreen} />
       )}
       <Tab.Screen
+        name="Chat"
+        component={ChatStack}
+        options={{ headerShown: false }}
+      />
+      <Tab.Screen
         name="Settings"
         component={SettingsStack}
         options={{ headerShown: false }}
@@ -162,6 +171,28 @@ const ParentHomeStack = () => {
         name="ReportCardScreen"
         component={ReportCardScreen}
         options={{ title: 'Report Card' }}
+      />
+    </Stack.Navigator>
+  );
+};
+
+const ChatStack = () => {
+  const { colors } = useTheme();
+
+  const screenOptions = ({ route }) => ({
+    headerStyle: {
+      backgroundColor: colors.secondary,
+      borderBottomStartRadius: 30, // doesnt work??
+    },
+    headerTintColor: 'white',
+  });
+
+  return (
+    <Stack.Navigator screenOptions={screenOptions}>
+      <Stack.Screen
+        name="ChatList"
+        component={ChatListScreen}
+        options={{ title: 'All conversations' }}
       />
     </Stack.Navigator>
   );
