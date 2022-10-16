@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import { ROLES } from './constants';
 
 export function getChatUserInfo(user) {
@@ -9,8 +10,12 @@ export function getChatUserInfo(user) {
       description = `Class ${user.class_name}`;
       break;
     case ROLES.TEACHER:
-      if (user.details) {
-        const subjects = user.details.map((subj) => subj.subject_name);
+      if (user.details?.length) {
+        const subjects = _.uniqBy(
+          user.details.map((subj) => subj.subject_name),
+          (e) => e.subject_id
+        );
+        user.details.map((subj) => subj.subject_name);
         description = `Teaches ${subjects.join(', ')}`;
       }
       break;
