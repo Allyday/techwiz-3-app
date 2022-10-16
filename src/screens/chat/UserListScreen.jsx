@@ -1,6 +1,7 @@
 import { useEffect, useLayoutEffect, useState } from 'react';
 import { FlatList } from 'react-native';
 import { Button, Searchbar } from 'react-native-paper';
+import { useSelector } from 'react-redux';
 
 import { useToken } from '../../hooks/useToken';
 import { userAPI } from '../../apis';
@@ -9,6 +10,7 @@ import UserListItem from './components/UserListItem';
 
 export default function UserListScreen({ navigation }) {
   const [userToken] = useToken();
+  const user = useSelector((state) => state.user.user);
   const [searchString, setSearchString] = useState('');
   const [users, setUsers] = useState([]);
 
@@ -41,10 +43,12 @@ export default function UserListScreen({ navigation }) {
       name: searchString,
     });
 
-    const formattedUsers = data.payload.map(({ user_id, ...data }) => ({
-      id: user_id,
-      ...data,
-    }));
+    const formattedUsers = data.payload
+      .filter((u) => u.user_id !== user.id)
+      .map(({ user_id, ...data }) => ({
+        id: user_id,
+        ...data,
+      }));
 
     setUsers(formattedUsers);
   };
