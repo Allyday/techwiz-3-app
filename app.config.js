@@ -4,7 +4,7 @@ module.exports = {
   expo: {
     name: 'FPT Aptech Hanoi - Gao Rangers',
     slug: 'smart-study',
-    version: '1.0.0',
+    version: '1.1.0',
     orientation: 'portrait',
     icon: './src/assets/icon.png',
     userInterfaceStyle: 'light',
@@ -23,7 +23,7 @@ module.exports = {
     },
     android: {
       package: 'com.gaorangers.smartstudy',
-      versionCode: 10,
+      versionCode: 11,
       adaptiveIcon: {
         foregroundImage: './src/assets/adaptive-icon.png',
         backgroundColor: '#483f97',
@@ -32,6 +32,9 @@ module.exports = {
     },
     jsEngine: 'hermes',
     extra: {
+      eas: {
+        projectId: process.env.EAS_PROJECT_ID,
+      },
       apiKey: process.env.API_KEY,
       authDomain: process.env.AUTH_DOMAIN,
       projectId: process.env.PROJECT_ID,
