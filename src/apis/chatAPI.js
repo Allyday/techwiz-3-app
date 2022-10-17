@@ -54,7 +54,7 @@ const createMessage = async ({ _id, text, user, otherUser }, token) => {
   const notification = {
     title,
     content: text,
-    data: JSON.stringify({ type: NOTI_TYPE, payload: { otherUser } }),
+    data: JSON.stringify({ type: NOTI_TYPE.CHAT_NEW_MESSAGE, payload: { otherUser } }),
     user_ids: [otherUser.id],
   };
   await sendChatNoti(token, notification);
