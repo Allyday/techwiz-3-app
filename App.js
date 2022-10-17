@@ -1,3 +1,4 @@
+import { LogBox } from 'react-native';
 import { DefaultTheme, Provider as PaperProvider } from 'react-native-paper';
 
 import AppRouter from './src/AppRouter';
@@ -34,3 +35,5 @@ export default function App() {
     </Provider>
   );
 }
+
+LogBox.ignoreAllLogs();
