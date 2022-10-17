@@ -29,6 +29,9 @@ export default {
   user: 'user/',
   searchUserChat: 'user/search-user-chat',
 
+  /* chat */
+  notiChat: 'noti-chat',
+
   /* helplines */
   helplines: "helplines/",
 

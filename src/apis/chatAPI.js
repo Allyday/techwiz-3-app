@@ -12,8 +12,11 @@ import {
 } from 'firebase/firestore';
 
 import { firestore } from '../config/firebase.config';
+import { getChatUserInfo } from '../utils/chat.utils';
+import { NOTI_TYPE } from '../utils/constants';
+import { requests, urls } from './configs';
 
-const createMessage = async ({ _id, text, user, otherUser }) => {
+const createMessage = async ({ _id, text, user, otherUser }, token) => {
   const conversationId = [user.id, otherUser.id]
     .sort((a, b) => a - b)
     .join('---');
@@ -33,16 +36,32 @@ const createMessage = async ({ _id, text, user, otherUser }) => {
 
   const now = serverTimestamp();
 
+  // add message
   await setDoc(messageRef, {
     createdAt: now,
     text,
     createdBy: user.id,
   });
 
+  // update conversation
   await updateDoc(conversationRef, {
     lastMessage: text,
     lastMessageAt: now,
   });
+
+  // send noti
+  const { title } = getChatUserInfo(user);
+  const notification = {
+    title,
+    content: text,
+    data: JSON.stringify({ type: NOTI_TYPE, payload: { otherUser } }),
+    user_ids: [otherUser.id],
+  };
+  await sendChatNoti(token, notification);
+};
+
+const sendChatNoti = async (token, payload) => {
+  return requests.post(urls.notiChat, payload, token);
 };
 
 const createConversation = async ({ user, otherUser, conversationId }) => {

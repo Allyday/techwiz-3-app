@@ -3,3 +3,7 @@ export const ROLES = {
   TEACHER: 'TEACHER',
   PARENT: 'PARENT',
 };
+
+export const NOTI_TYPE = {
+  CHAT_NEW_MESSAGE: 'CHAT_NEW_MESSAGE',
+};

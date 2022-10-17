@@ -7,12 +7,14 @@ import { HeaderBackButton } from '@react-navigation/elements';
 
 import { chatAPI } from '../../apis';
 import { getChatUserInfo } from '../../utils/chat.utils';
+import { useToken } from '../../hooks/useToken';
 import useMessages from '../../hooks/useMessages';
 import { ROLES } from '../../utils/constants';
 import StyledScreen from '../../components/wrappers/StyledScreen';
 
 export default function ChatScreen({ route, navigation }) {
   const { colors } = useTheme();
+  const [token] = useToken();
   const { otherUser } = route.params;
   const userData = useSelector((state) => state.user.user);
   const details = useSelector((state) => state.user.details);
@@ -66,12 +68,15 @@ export default function ChatScreen({ route, navigation }) {
       const { _id, text, user } = messages[0];
       if (details.length) user.details = details;
 
-      chatAPI.createMessage({
-        _id,
-        text,
-        user,
-        otherUser,
-      });
+      chatAPI.createMessage(
+        {
+          _id,
+          text,
+          user,
+          otherUser,
+        },
+        token
+      );
     },
     [details]
   );
