@@ -1,5 +1,5 @@
 import React, { useCallback, useLayoutEffect, useMemo } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { Platform, StyleSheet, View } from 'react-native';
 import { Bubble, GiftedChat } from 'react-native-gifted-chat';
 import { Text, useTheme } from 'react-native-paper';
 import { useSelector } from 'react-redux';
@@ -97,7 +97,7 @@ export default function ChatScreen({ route, navigation }) {
 
 const styles = StyleSheet.create({
   headerContainer: {
-    alignItems: 'center',
+    alignItems: Platform.OS === 'ios' ? 'center' : 'flex-start',
   },
   headerTitle: {
     fontSize: 16,
